@@ -1,125 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
+// --- GAME DATA CENTER ---
+// Add new games here. Use 'type: "internal"' for games we build ourselves.
+const ALL_GAMES = [
+  { id: 1, name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', type: 'external', url: 'https://www.google.com/logos/2010/pacman10-i.html' },
+  { id: 2, name: 'Dino Dash', color: '#FF6347', icon: '🦖', type: 'internal', hint: 'Tap to Jump!' },
+  { id: 3, name: 'Space Trip', color: '#9370DB', icon: '🚀', type: 'internal', hint: 'Avoid the stars!' },
+  { id: 4, name: 'Color Fun', color: '#1E90FF', icon: '🎨', type: 'external', url: 'https://kleki.com/' },
+  { id: 5, name: 'Music Box', color: '#32CD32', icon: '🎵', type: 'external', url: 'https://pianu.com/' },
+  // Add more games as you build them!
+];
+
 function App() {
-  // 1. ALL STATES (The "Brain" of Booply)
   const [activeGame, setActiveGame] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [mascotText, setMascotText] = useState("Hi! I'm Boop! Tap a bubble!");
   const [stickers, setStickers] = useState([]);
+  const [mascotText, setMascotText] = useState("Hi! I'm Boop!");
 
-  const stickerList = ['⭐', '❤️', '🍦', '🚀', '🦄', '🍎', '🎈', '🐯', '🦖', '🍭'];
-  const games = [
-    { id: 1, name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', url: 'https://www.google.com/logos/2010/pacman10-i.html', hint: 'I love puzzles!' },
-    { id: 2, name: 'Dino Dash', color: '#FF6347', icon: '🦖', url: 'https://wayou.github.io/t-rex-runner/', hint: 'Run, Dino, Run!' },
-    { id: 3, name: 'Color Fun', color: '#1E90FF', icon: '🎨', url: 'https://kleki.com/', hint: 'Let’s paint a rainbow!' },
-    { id: 4, name: 'Music Box', color: '#32CD32', icon: '🎵', url: 'https://pianu.com/', hint: 'Time for some music!' },
-    { id: 5, name: 'Space Trip', color: '#9370DB', icon: '🚀', url: 'https://playcanv.as/p/2OFE7j9V/', hint: 'To the stars!' },
-    { id: 6, name: 'Memory Match', color: '#FF9F1C', icon: '🧠', url: 'https://santatracker.google.com/memories.html', hint: 'Where is the pair?' },
-    { id: 7, name: 'Block Build', color: '#E71D36', icon: '🧱', url: 'https://browsercraft.io/', hint: 'Let’s build a house!' },
-    { id: 8, name: 'Fruit Slice', color: '#2EC4B6', icon: '🍎', url: 'https://poki.com/en/g/fruit-ninja', hint: 'Watch out for bombs!' },
-    { id: 9, name: 'Quiz Kid', color: '#7209B7', icon: '💡', url: 'https://mathies.ca/games.php', hint: 'You are so smart!' },
-    { id: 10, name: 'Bubble Pop', color: '#4CC9F0', icon: '🫧', url: 'https://www.bubblegame.org/', hint: 'Pop them all!' },
-  ];
-
-  // 2. SAVING & LOADING (LocalStorage)
+  // --- PERSISTENCE (Save Progress) ---
   useEffect(() => {
-    const saved = localStorage.getItem('booply_stickers');
+    const saved = localStorage.getItem('booply_data');
     if (saved) setStickers(JSON.parse(saved));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('booply_stickers', JSON.stringify(stickers));
+    localStorage.setItem('booply_data', JSON.stringify(stickers));
   }, [stickers]);
 
-  // 3. SPECIAL FUNCTIONS
-  const playBoopSound = () => {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(500, ctx.currentTime);
-    osc.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.1);
-  };
-
-  const openGame = (game) => {
-    playBoopSound();
-    setMascotText("Yay! Off we go!");
+  // --- CORE ACTIONS ---
+  const handleOpenGame = (game) => {
     setLoading(true);
     setActiveGame(game);
+    setMascotText(`Let's play ${game.name}!`);
   };
 
-  const goHome = () => {
-    const prize = stickerList[Math.floor(Math.random() * stickerList.length)];
-    if (stickers.length < 10) {
-      setStickers([...stickers, prize]);
-      setMascotText(`Boop! You won a ${prize}!`);
-    }
+  const handleGoHome = () => {
+    // Award a sticker for playing!
+    const items = ['⭐', '🍦', '🚀', '🎨', '🦖'];
+    const newPrize = items[Math.floor(Math.random() * items.length)];
+    if (stickers.length < 10) setStickers([...stickers, newPrize]);
+
     setActiveGame(null);
+    setMascotText("That was fun! Pick another one!");
   };
 
-  const openParentalGate = () => {
-    const n1 = Math.floor(Math.random() * 10);
-    const n2 = Math.floor(Math.random() * 5);
-    const ans = window.prompt(`Grown-ups Only: What is ${n1} + ${n2}?`);
-    if (parseInt(ans) === n1 + n2) alert("Settings Unlocked! (Feature coming soon)");
-    else alert("Boop! Wrong answer!");
+  // --- THE GAME ENGINE (The Switchboard) ---
+  const renderGameContent = () => {
+    if (!activeGame) return null;
+
+    // Type 1: Internal Games (Built by us)
+    if (activeGame.type === 'internal') {
+      return (
+        <div className="game-canvas">
+          <div className="game-header">Playing: {activeGame.name}</div>
+          {/* We will build specific logic for each icon here */}
+          <div className="internal-placeholder">
+            <span className="bouncing-icon">{activeGame.icon}</span>
+            <p>Game Logic Coming Soon!</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Type 2: External Games (Linked)
+    return (
+      <iframe
+        src={activeGame.url}
+        className="game-frame"
+        onLoad={() => setLoading(false)}
+        title={activeGame.name}
+      />
+    );
   };
 
-  // 4. THE LAYOUT (The Visuals)
   return (
     <div className="booply-container">
       {!activeGame ? (
         <>
-          <header>
+          <header className="header-section">
             <h1 className="logo">Booply</h1>
-
             <div className="sticker-book">
-              <p>My Sticker Collection</p>
               <div className="sticker-row">
                 {stickers.map((s, i) => <span key={i} className="sticker-item">{s}</span>)}
-                {[...Array(10 - stickers.length)].map((_, i) => (
-                  <span key={i} className="sticker-slot">?</span>
-                ))}
+                {[...Array(10 - stickers.length)].map((_, i) => <span key={i} className="slot">?</span>)}
               </div>
             </div>
           </header>
 
-          <main className="lobby">
-            {games.map((game) => (
+          <main className="lobby-grid">
+            {ALL_GAMES.map(game => (
               <button
                 key={game.id}
-                className="game-bubble"
-                style={{ backgroundColor: game.color }}
-                onClick={() => openGame(game)}
-                onMouseEnter={() => setMascotText(game.hint)}
-                onMouseLeave={() => setMascotText("Tap a bubble to play!")}
+                className="game-card"
+                style={{ '--bg-color': game.color }}
+                onClick={() => handleOpenGame(game)}
+                onMouseEnter={() => setMascotText(game.hint || "Ready?")}
               >
-                <span className="game-icon">{game.icon}</span>
-                <span className="game-name">{game.name}</span>
+                <span className="card-icon">{game.icon}</span>
+                <span className="card-name">{game.name}</span>
               </button>
             ))}
           </main>
-
-          <button className="parent-btn" onClick={openParentalGate}>⚙️ Parents Only</button>
         </>
       ) : (
-        <div className="game-view">
-          {loading && <div className="loader-overlay">🚀 Boop is flying to the game...</div>}
-          <button className="back-button" onClick={goHome}>🏠 Home</button>
-          <iframe
-            src={activeGame.url}
-            title={activeGame.name}
-            className="game-frame"
-            onLoad={() => setLoading(false)}
-          />
+        <div className="active-game-overlay">
+          <button className="exit-btn" onClick={handleGoHome}>🏠 Home</button>
+          {loading && activeGame.type === 'external' && <div className="loader">Magic is happening...</div>}
+          {renderGameContent()}
         </div>
       )}
 
-      <div className="mascot-area">
-        <div className="speech-bubble">{mascotText}</div>
-        <div className="boop-character" onClick={() => setMascotText("Hehe! That tickles!")}>👀</div>
+      <div className="mascot-box">
+        <div className="bubble">{mascotText}</div>
+        <div className="boop-avatar">👀</div>
       </div>
     </div>
   );
