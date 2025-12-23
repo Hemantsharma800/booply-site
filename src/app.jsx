@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './App.css';
+import './app.css'; // Ensuring lowercase match
 
 // =====================================================================
-// 🎮 1. IMPORTS - All game filenames must be in small letters
+// 🎮 1. IMPORTS - All filenames must be strictly lowercase
 // =====================================================================
 import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
 
 
 // =====================================================================
-// ⚙️ 2. REGISTRY - Connect your IDs to the components
+// ⚙️ 2. REGISTRY - Maps game IDs to their components
 // =====================================================================
 const INTERNAL_GAMES = {
   'dino-jungle-v1': DinoGame,
@@ -17,7 +17,7 @@ const INTERNAL_GAMES = {
 };
 
 // =====================================================================
-// 🎈 3. MASTER GAME LIST - This creates the bubbles in the lobby
+// 🎈 3. MASTER GAME LIST - Defines the lobby bubbles
 // =====================================================================
 const MASTER_GAME_LIST = [
   {
@@ -42,14 +42,13 @@ const MASTER_GAME_LIST = [
 ];
 
 function App() {
-  // --- States ---
   const [activeGame, setActiveGame] = useState(null);
   const [score, setScore] = useState(0);
   const [mascotText, setMascotText] = useState("Hi! I'm Boop! Tap a bubble!");
   const [stickers, setStickers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // --- Persistence: Load & Save Data ---
+  // Persistence: Load & Save progress
   useEffect(() => {
     const savedStickers = localStorage.getItem('booply_stickers');
     const savedScore = localStorage.getItem('booply_score');
@@ -62,7 +61,6 @@ function App() {
     localStorage.setItem('booply_score', score.toString());
   }, [stickers, score]);
 
-  // --- Handlers ---
   const handleOpenGame = (game) => {
     setActiveGame(game);
     setMascotText(`Let's play ${game.name}!`);
@@ -75,7 +73,6 @@ function App() {
   }, []);
 
   const handleExit = useCallback(() => {
-    // Award a random sticker on exit
     const prizeList = ['⭐', '❤️', '🍦', '🚀', '🦄', '🍎'];
     const prize = prizeList[Math.floor(Math.random() * prizeList.length)];
     if (stickers.length < 10) setStickers(prev => [...prev, prize]);
@@ -85,19 +82,18 @@ function App() {
     setMascotText("Welcome back! Pick another game!");
   }, [stickers]);
 
-  // --- The Engine: Decides what game to show ---
+  // The Engine: Automatically renders the correct game based on ID
   const renderGameView = () => {
     if (!activeGame) return null;
 
     if (activeGame.type === 'internal') {
       const Component = INTERNAL_GAMES[activeGame.id];
-      // If the ID isn't in the registry, show an error instead of a blank screen
       return Component ? (
         <Component onExit={handleExit} onCorrectClick={handleCorrect} />
       ) : (
         <div className="game-overlay" style={{ background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <h2>Boop! Error: Game ID "{activeGame.id}" not found.</h2>
-          <button onClick={() => setActiveGame(null)}>Back Home</button>
+          <button className="back-btn" onClick={() => setActiveGame(null)}>Back Home</button>
         </div>
       );
     }
@@ -123,7 +119,7 @@ function App() {
           <header className="header-section">
             <h1 className="logo">Booply</h1>
             <div className="sticker-book">
-              <p>My Stickers: {score} ⭐</p>
+              <p>My Stars: {score} ⭐</p>
               <div className="sticker-row">
                 {stickers.map((s, i) => <span key={i} className="sticker-item">{s}</span>)}
                 {[...Array(10 - stickers.length)].map((_, i) => <span key={i} className="slot">?</span>)}
