@@ -1,85 +1,50 @@
-/* Center all content */
+/* Global Reset & Font */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Comic Sans MS', sans-serif;
+}
+
+/* Main Container */
 .booply-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background: #f0faff;
-  font-family: 'Comic Sans MS', sans-serif;
+  width: 100%;
+  background: radial-gradient(circle, #ffffff 0%, #dcf2ff 100%);
+  padding: 20px;
   text-align: center;
 }
 
-/* Jungle Game Styles */
-.jungle-world {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(#b7e4c7, #74c69d);
-  /* Jungle Green */
-  z-index: 1000;
+/* Header & Lobby */
+.header-section {
+  margin-bottom: 30px;
 }
 
-.target-banner {
-  position: absolute;
-  top: 20px;
-  width: 100%;
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #1b4332;
-  z-index: 10;
-}
-
-.target-banner span {
-  color: #ff477e;
-  background: white;
-  padding: 5px 20px;
-  border-radius: 50px;
-}
-
-.wild-animal {
-  position: absolute;
-  font-size: 5rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
-}
-
-.wild-animal:hover {
-  transform: scale(1.2);
-}
-
-.jungle-guide {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+.logo {
   font-size: 4rem;
-  background: white;
-  border: 4px solid #ff477e;
-  border-radius: 50%;
-  padding: 10px;
+  font-weight: 900;
+  background: linear-gradient(to right, #ff477e, #fbb13c, #20bbfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Home button */
-.back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 2000;
-  padding: 10px 20px;
-  border-radius: 50px;
-  border: none;
-  background: #ff477e;
-  color: white;
+.score-board {
+  font-size: 1.5rem;
+  color: #ff477e;
   font-weight: bold;
-  cursor: pointer;
 }
 
-/* Lobby bubbles */
 .lobby-grid {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 25px;
   flex-wrap: wrap;
-  margin-top: 50px;
 }
 
 .game-bubble {
@@ -89,4 +54,131 @@
   border: 6px solid white;
   cursor: pointer;
   color: white;
+  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.game-bubble:hover {
+  transform: scale(1.05) rotate(-3deg);
+  border-radius: 50%;
+}
+
+.game-icon {
+  font-size: 4rem;
+  display: block;
+}
+
+.game-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* === REALISTIC JUNGLE STYLES === */
+.game-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: black;
+}
+
+.jungle-world-realistic {
+  width: 100%;
+  height: 100%;
+  /* High-res Jungle Background Image */
+  background: url('https://images.unsplash.com/photo-1534171472150-949070439400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+  background-size: cover;
+  /* Ensures it fills the screen */
+  position: relative;
+  overflow: hidden;
+}
+
+/* The Banner at the top */
+.target-banner-realistic {
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  text-align: center;
+  font-size: 2rem;
+  color: white;
+  text-shadow: 2px 2px 8px black;
+  z-index: 20;
+}
+
+.target-banner-realistic span {
+  background: rgba(255, 71, 126, 0.9);
+  padding: 5px 25px;
+  border-radius: 50px;
+  text-transform: uppercase;
+}
+
+/* The Animal Containers */
+.realistic-animal-container {
+  position: absolute;
+  cursor: pointer;
+  /* Add a shadow to make them look placed in the scene */
+  filter: drop-shadow(5px 10px 15px rgba(0, 0, 0, 0.6));
+  transition: transform 0.2s ease-out;
+}
+
+.realistic-animal-container:hover {
+  transform: scale(1.15) !important;
+  /* Pop out on hover */
+  z-index: 100;
+}
+
+/* Sizing the photos */
+.animal-photo {
+  max-width: 180px;
+  /* Ensures they aren't too huge */
+  height: auto;
+  display: block;
+}
+
+/* The Dino Guide */
+.jungle-guide-realistic {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 120px;
+  filter: drop-shadow(2px 4px 6px black);
+}
+
+/* Buttons & Mascot */
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 3000;
+  padding: 12px 24px;
+  border-radius: 50px;
+  border: none;
+  background: #ff477e;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.mascot-area {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.speech-bubble {
+  background: white;
+  border: 4px solid #ff477e;
+  border-radius: 20px;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  max-width: 200px;
+}
+
+.boop-avatar {
+  font-size: 4rem;
 }

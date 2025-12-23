@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// 1. Data for the Jungle Explorer
+// 1. REALISTIC ANIMAL DATA (Using transparent PNG images)
 const JUNGLE_ANIMALS = [
-  { name: 'Lion', icon: '🦁' },
-  { name: 'Elephant', icon: '🐘' },
-  { name: 'Giraffe', icon: '🦒' },
-  { name: 'Monkey', icon: '🐒' },
-  { name: 'Zebra', icon: '🦓' },
-  { name: 'Parrot', icon: '🦜' },
+  { name: 'Lion', img: 'https://purepng.com/public/uploads/large/purepng.com-lionlionferal-animal-cat-leolions-1701527845068n746r.png' },
+  { name: 'Elephant', img: 'https://purepng.com/public/uploads/large/purepng.com-elephantelephantlarge-mammalsplant-eating-animalslong-trunkears-1701527582725ngy8f.png' },
+  { name: 'Giraffe', img: 'https://purepng.com/public/uploads/large/purepng.com-giraffegiraffetallest-living-terrestrial-animalmammalartiodactyl-17015276823113z05x.png' },
+  { name: 'Monkey', img: 'https://purepng.com/public/uploads/large/purepng.com-monkeymonkeyprimatecercopithecidae-170152789793921t0z.png' },
+  { name: 'Zebra', img: 'https://purepng.com/public/uploads/large/purepng.com-zebrazebraafrican-equidsdistinctive-black-and-white-striped-coats-1701528163047k016v.png' },
+  { name: 'Macaw Parrot', img: 'https://purepng.com/public/uploads/large/purepng.com-macaw-parrotmacaw-parrotbirdcolorful-1701527862151n7gq5.png' },
+  { name: 'Tiger', img: 'https://purepng.com/public/uploads/large/purepng.com-tigertigercatwild-catstripe-1701528097823e8391.png' },
+  { name: 'Hippo', img: 'https://purepng.com/public/uploads/large/purepng.com-hippopotamushippopotamushippolarge-semiaquatic-mammalsub-saharan-africa-1701527729047s424c.png' },
+  { name: 'Gorilla', img: 'https://purepng.com/public/uploads/large/purepng.com-gorillagorillagreat-apesherbivorous-ground-dwelling-170152768951397z8t.png' },
+  { name: 'Snake', img: 'https://purepng.com/public/uploads/large/purepng.com-snakesnakeanimalreptileelongatedlegless-carnivorous-reptiles-17015280684687o36h.png' },
+  { name: 'Toucan', img: 'https://purepng.com/public/uploads/large/purepng.com-toucantoucanramphastidaebrightly-marked-passerine-birds-17015281251589i1g1.png' },
+  { name: 'Crocodile', img: 'https://purepng.com/public/uploads/large/purepng.com-crocodilecrocodilelarge-aquatic-reptilescarnivorous-reptile-1701527528708d9z7k.png' },
 ];
 
 function App() {
@@ -26,16 +32,23 @@ function App() {
     { id: 5, name: 'Space Trip', color: '#9370DB', icon: '🚀', url: 'https://playcanv.as/p/2OFE7j9V/' },
   ];
 
-  // 2. The Logic to create the Jungle
+  // Generate a realistic jungle layout
   const refreshJungle = () => {
-    const mapWithPositions = JUNGLE_ANIMALS.map(animal => ({
+    // Pick 8 random animals from the list of 12 so it's different every time
+    const shuffled = [...JUNGLE_ANIMALS].sort(() => 0.5 - Math.random()).slice(0, 8);
+
+    const mapWithPositions = shuffled.map((animal, index) => ({
       ...animal,
-      top: Math.floor(Math.random() * 60) + 20 + "%",
-      left: Math.floor(Math.random() * 80) + 5 + "%"
+      // Ensure they don't overlap too much by dividing the screen
+      top: Math.floor(Math.random() * 50) + 25 + "%", // Keep them in the middle band
+      left: Math.floor(Math.random() * 80) + 5 + "%",
+      // Add slight random rotation for realism
+      rot: Math.floor(Math.random() * 20) - 10 + "deg",
+      // Vary the size slightly for depth perspective
+      scale: Math.random() * 0.4 + 0.8
     }));
     setJungleMap(mapWithPositions);
-    const randomTarget = mapWithPositions[Math.floor(Math.random() * mapWithPositions.length)];
-    setTargetAnimal(randomTarget);
+    setTargetAnimal(mapWithPositions[Math.floor(Math.random() * mapWithPositions.length)]);
   };
 
   const handleOpenGame = (game) => {
@@ -46,9 +59,10 @@ function App() {
   const handleAnimalClick = (name) => {
     if (name === targetAnimal.name) {
       setScore(s => s + 1);
-      refreshJungle(); // New round!
+      setMascotText(`Yay! You found the ${name}!`);
+      refreshJungle();
     } else {
-      setMascotText(`Boop! That's a ${name}! Find the ${targetAnimal.name}!`);
+      setMascotText(`Boop! That's a realistic ${name}. Look for the ${targetAnimal.name}!`);
     }
   };
 
@@ -58,7 +72,7 @@ function App() {
         <>
           <header className="header-section">
             <h1 className="logo">Booply</h1>
-            <div className="score-board">Stars: {score} ⭐</div>
+            <div className="score-board">Stars earned: {score} ⭐</div>
           </header>
           <main className="lobby-grid">
             {games.map(game => (
@@ -74,14 +88,29 @@ function App() {
           <button className="back-btn" onClick={() => setActiveGame(null)}>🏠 Home</button>
 
           {activeGame.type === 'internal' ? (
-            <div className="jungle-world">
-              <div className="target-banner">Find the: <span>{targetAnimal?.name}</span></div>
+            // REALISTIC JUNGLE WORLD
+            <div className="jungle-world-realistic">
+              <div className="target-banner-realistic">
+                Can you spot the real: <span>{targetAnimal?.name}</span>?
+              </div>
+
               {jungleMap.map((animal, i) => (
-                <div key={i} className="wild-animal" style={{ top: animal.top, left: animal.left }} onClick={() => handleAnimalClick(animal.name)}>
-                  {animal.icon}
+                <div
+                  key={i}
+                  className="realistic-animal-container"
+                  style={{
+                    top: animal.top,
+                    left: animal.left,
+                    transform: `rotate(${animal.rot}) scale(${animal.scale})`
+                  }}
+                  onClick={() => handleAnimalClick(animal.name)}
+                >
+                  {/* Using IMG tag instead of emoji */}
+                  <img src={animal.img} alt={animal.name} className="animal-photo" />
                 </div>
               ))}
-              <div className="jungle-guide">🦖</div>
+              {/* Using a cute cartoon dino image for the guide */}
+              <img src="https://cdn-icons-png.flaticon.com/512/3407/3407241.png" className="jungle-guide-realistic" alt="Dino Guide" />
             </div>
           ) : (
             <iframe src={activeGame.url} className="game-frame" title={activeGame.name} />
