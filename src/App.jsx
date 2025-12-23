@@ -100,5 +100,98 @@ function App() {
     </div>
   );
 }
+import React, { useState, useEffect } from 'react';
+import './App.css';
+
+// 1. Data for our Jungle Animals
+const JUNGLE_ANIMALS = [
+  { name: 'Lion', icon: '🦁', color: '#f4a261' },
+  { name: 'Elephant', icon: '🐘', color: '#a8dadc' },
+  { name: 'Giraffe', icon: '🦒', color: '#e9c46a' },
+  { name: 'Monkey', icon: '🐒', color: '#8d99ae' },
+  { name: 'Zebra', icon: '🦓', color: '#edf2f4' },
+  { name: 'Parrot', icon: '🦜', color: '#2a9d8f' },
+];
+
+function App() {
+  const [activeGame, setActiveGame] = useState(null);
+  const [targetAnimal, setTargetAnimal] = useState(null);
+  const [jungleMap, setJungleMap] = useState([]);
+  const [score, setScore] = useState(0);
+
+  // 2. Function to generate a new random map
+  const refreshJungle = () => {
+    const shuffled = [...JUNGLE_ANIMALS].sort(() => 0.5 - Math.random());
+    // Assign random positions (x, y) to each animal
+    const mapWithPositions = shuffled.map(animal => ({
+      ...animal,
+      top: Math.floor(Math.random() * 60) + 20 + "%",
+      left: Math.floor(Math.random() * 80) + 5 + "%"
+    }));
+    setJungleMap(mapWithPositions);
+    setTargetAnimal(mapWithPositions[Math.floor(Math.random() * mapWithPositions.length)]);
+  };
+
+  // Start the game when Dino Dash is clicked
+  useEffect(() => {
+    if (activeGame?.name === 'Dino Dash') refreshJungle();
+  }, [activeGame]);
+
+  const handleAnimalClick = (clickedName) => {
+    if (clickedName === targetAnimal.name) {
+      setScore(s => s + 1);
+      // Visual feedback: briefly change mascot text
+      refreshJungle();
+    } else {
+      alert("Boop! That's not it, try again!");
+    }
+  };
+
+  return (
+    <div className="booply-container">
+      {!activeGame ? (
+        <main className="lobby-grid">
+          {/* Your existing lobby code here... */}
+          <button className="game-card" onClick={() => setActiveGame({ name: 'Dino Dash', icon: '🦖' })}>
+            <span className="card-icon">🦖</span>
+            <span className="card-name">Dino Jungle</span>
+          </button>
+        </main>
+      ) : (
+        <div className="jungle-game-overlay">
+          <header className="game-header-ui">
+            <button className="exit-btn" onClick={() => setActiveGame(null)}>🏠 Home</button>
+            <div className="target-box">
+              <span>Find the: </span>
+              <strong className="animal-name-highlight">{targetAnimal?.name}</strong>
+            </div>
+            <div className="score-badge">Stars: {score} ⭐</div>
+          </header>
+
+          <div className="jungle-scene">
+            {/* Background Decorations */}
+            <div className="jungle-plant p1">🌿</div>
+            <div className="jungle-plant p2">🌴</div>
+
+            {/* The Animals */}
+            {jungleMap.map((animal, index) => (
+              <div
+                key={index}
+                className="wild-animal"
+                style={{ top: animal.top, left: animal.left }}
+                onClick={() => handleAnimalClick(animal.name)}
+              >
+                {animal.icon}
+              </div>
+            ))}
+
+            {/* Your Mascot Guide */}
+            <div className="dino-guide">🦖</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default App;
