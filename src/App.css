@@ -1,190 +1,54 @@
-/* 1. Animated Background Shapes */
+/* Ensure everything is centered and takes up the whole screen */
 .booply-container {
-  background: #f0faff;
-  background-image:
-    radial-gradient(circle at 10% 20%, rgba(255, 193, 7, 0.2) 0%, transparent 20%),
-    radial-gradient(circle at 90% 80%, rgba(0, 123, 255, 0.2) 0%, transparent 20%);
-  overflow: hidden;
-}
-
-/* 2. Rainbow "Booply" Logo */
-.logo {
-  font-size: 6rem;
-  font-weight: 900;
-  background: linear-gradient(to right, #ff477e, #ff85a1, #fbb13c, #20bbfe, #52e3e1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(4px 4px 0px #fff);
-  animation: float 3s ease-in-out infinite, rainbow-move 5s linear infinite;
-}
-
-@keyframes rainbow-move {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 100% 50%;
-  }
-}
-
-/* 3. The "Blob" Game Buttons */
-.game-bubble {
-  width: 180px;
-  height: 180px;
-  /* This creates an organic, uneven shape */
-  border-radius: 40% 60% 70% 30% / 40% 50% 60% 40%;
-  border: 6px solid white;
-  box-shadow: 0 15px 0px rgba(0, 0, 0, 0.1);
-  /* 3D effect */
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.game-bubble:hover {
-  transform: scale(1.1) rotate(-5deg);
-  border-radius: 50%;
-  /* Smooths out when hovered */
-  box-shadow: 0 5px 0px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
-  /* Sinks down like a real button */
-}
-
-.logo {
-
-  /* Upgraded Booply Logo */
-  .logo {
-    font-size: 5rem;
-    color: #ff477e;
-    text-shadow: 4px 4px 0px #ffffff, 8px 8px 0px rgba(0, 0, 0, 0.05);
-    margin-bottom: 5px;
-    letter-spacing: -2px;
-    display: inline-block;
-    animation: float 3s ease-in-out infinite;
-    /* This makes it float! */
-  }
-
-  /* This is the magic "Floating" animation */
-  @keyframes float {
-    0% {
-      transform: translateY(0px) rotate(0deg);
-    }
-
-    50% {
-      transform: translateY(-10px) rotate(2deg);
-    }
-
-    100% {
-      transform: translateY(0px) rotate(0deg);
-    }
-  }
-
-  /* Add a nice background gradient to the whole page */
-  .booply-container {
-    text-align: center;
-    background: radial-gradient(circle, #ffffff 0%, #dcf2ff 100%);
-    min-height: 100vh;
-    padding: 20px;
-    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
-    overflow-x: hidden;
-  }
-}
-
-.lobby {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
-  margin-top: 50px;
-}
-
-.game-bubble {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: 8px solid white;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  color: white;
+  /* This centers everything horizontally */
+  text-align: center;
+  background: radial-gradient(circle, #ffffff 0%, #dcf2ff 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Comic Sans MS', sans-serif;
+  position: relative;
 }
 
-.game-bubble:hover {
-  transform: scale(1.1) rotate(5deg);
+/* Fix the Logo size and spacing */
+.logo {
+  font-size: clamp(3rem, 10vw, 5rem);
+  /* Makes it shrink on smaller screens */
+  margin: 0 auto 20px auto;
+  display: block;
 }
 
-.game-icon {
-  font-size: 3rem;
-}
-
-.game-name {
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.mascot {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+/* Center the Sticker Book */
+.sticker-book {
   background: white;
-  padding: 15px;
+  padding: 15px 25px;
   border-radius: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 3px dashed #ff477e;
+  margin-bottom: 40px;
+  display: inline-block;
 }
 
-.boop-character {
-  font-size: 2rem;
+.sticker-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
 }
 
-.boop-character {
-  font-size: 3rem;
-  cursor: pointer;
-  transition: transform 0.1s;
+/* Ensure the Game Lobby is centered */
+.lobby {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  width: 100%;
 }
 
-.boop-character:active {
-  animation: jump 0.3s ease;
-}
-
-@keyframes jump {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-.game-bubble:active {
-  filter: brightness(1.2) contrast(1.1);
-  transform: scale(0.9);
-}
-
-/* A floating animation for the icons inside the bubbles */
-.game-icon {
-  font-size: 4rem;
-  animation: wiggle 2s ease-in-out infinite;
-}
-
-@keyframes wiggle {
-
-  0%,
-  100% {
-    transform: rotate(-10deg);
-  }
-
-  50% {
-    transform: rotate(10deg);
-  }
-}
-
-/* Mascot & Speech Bubble Styling */
+/* Keep the Mascot in the bottom right */
 .mascot-area {
   position: fixed;
   bottom: 30px;
@@ -192,98 +56,4 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 1000;
-}
-
-.speech-bubble {
-  position: relative;
-  background: #ffffff;
-  border: 4px solid #ff477e;
-  border-radius: 20px;
-  padding: 15px 20px;
-  margin-bottom: 20px;
-  font-weight: bold;
-  color: #333;
-  box-shadow: 0 10px 0px rgba(255, 71, 126, 0.2);
-  max-width: 200px;
-  animation: float 3s ease-in-out infinite;
-}
-
-/* The little triangle at the bottom of the speech bubble */
-.speech-bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  right: 50%;
-  border-width: 10px;
-  border-style: solid;
-  border-color: #ff477e transparent transparent transparent;
-}
-
-.boop-character {
-  font-size: 4rem;
-  background: white;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 5px solid #ff477e;
-  cursor: pointer;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.boop-character:hover {
-  transform: scale(1.1) rotate(5deg);
-}
-
-/* Sticker Book Styling */
-.sticker-book {
-  background: rgba(255, 255, 255, 0.7);
-  padding: 10px;
-  border-radius: 15px;
-  display: inline-block;
-  margin-top: 10px;
-  border: 2px dashed #ff477e;
-}
-
-.sticker-book p {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #ff477e;
-}
-
-.sticker-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 5px;
-}
-
-.sticker-item {
-  font-size: 1.5rem;
-  animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.sticker-slot {
-  font-size: 1.2rem;
-  color: #ccc;
-  width: 30px;
-  height: 30px;
-  background: #eee;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@keyframes pop-in {
-  0% {
-    transform: scale(0);
-  }
-
-  100% {
-    transform: scale(1);
-  }
 }
