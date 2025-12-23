@@ -1,50 +1,117 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
-// Change these lines to be completely lowercase
+// =====================================================================
+// 🎮 1. IMPORTS - All game filenames must be in small letters
+// =====================================================================
 import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
 
-// Also ensure the registry matches the imported names
+
+// =====================================================================
+// ⚙️ 2. REGISTRY - Connect your IDs to the components
+// =====================================================================
 const INTERNAL_GAMES = {
-  'dino-jungle': DinoGame,
-  'color-mix': ColorGame,
+  'dino-jungle-v1': DinoGame,
+  'color-mix-lab-v1': ColorGame,
 };
 
-// 2. Updated Registry
-const INTERNAL_GAMES = {
-  'dino-jungle': DinoGame,
-  'color-mix': ColorGame,
-};
+// =====================================================================
+// 🎈 3. MASTER GAME LIST - This creates the bubbles in the lobby
+// =====================================================================
+const MASTER_GAME_LIST = [
+  {
+    id: 'dino-jungle-v1',
+    type: 'internal',
+    name: 'Dino Dash',
+    color: '#FF6347',
+    icon: '🦖',
+    hint: 'Find real animals!'
+  },
+  {
+    id: 'color-mix-lab-v1',
+    type: 'internal',
+    name: 'Color Fun',
+    color: '#1E90FF',
+    icon: '🎨',
+    hint: 'Mix colors together!'
+  },
+  { id: 'ext-puzzle', type: 'external', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', url: 'https://www.google.com/logos/2010/pacman10-i.html' },
+  { id: 'ext-music', type: 'external', name: 'Music Box', color: '#32CD32', icon: '🎵', url: 'https://pianu.com/' },
+  { id: 'ext-space', type: 'external', name: 'Space Trip', color: '#9370DB', icon: '🚀', url: 'https://playcanv.as/p/2OFE7j9V/' },
+];
 
 function App() {
+  // --- States ---
   const [activeGame, setActiveGame] = useState(null);
   const [score, setScore] = useState(0);
+  const [mascotText, setMascotText] = useState("Hi! I'm Boop! Tap a bubble!");
+  const [stickers, setStickers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const games = [
-    { id: 'dino-jungle', name: 'Dino Dash', color: '#FF6347', icon: '🦖', type: 'internal' },
-    { id: 'color-mix', name: 'Color Fun', color: '#1E90FF', icon: '🎨', type: 'internal' },
-    // External games...
-    { id: 'ext-puzzle', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', type: 'external', url: 'https://www.google.com/logos/2010/pacman10-i.html' },
-    { id: 'ext-music', name: 'Music Box', color: '#32CD32', icon: '🎵', type: 'external', url: 'https://pianu.com/' },
-  ];
+  // --- Persistence: Load & Save Data ---
+  useEffect(() => {
+    const savedStickers = localStorage.getItem('booply_stickers');
+    const savedScore = localStorage.getItem('booply_score');
+    if (savedStickers) setStickers(JSON.parse(savedStickers));
+    if (savedScore) setScore(parseInt(savedScore));
+  }, []);
 
-  const handleCorrect = useCallback(() => setScore(s => s + 1), []);
+  useEffect(() => {
+    localStorage.setItem('booply_stickers', JSON.stringify(stickers));
+    localStorage.setItem('booply_score', score.toString());
+  }, [stickers, score]);
 
-  const renderGame = () => {
+  // --- Handlers ---
+  const handleOpenGame = (game) => {
+    setActiveGame(game);
+    setMascotText(`Let's play ${game.name}!`);
+    if (game.type === 'external') setLoading(true);
+  };
+
+  const handleCorrect = useCallback(() => {
+    setScore(s => s + 1);
+    setMascotText("Yay! Great job!");
+  }, []);
+
+  const handleExit = useCallback(() => {
+    // Award a random sticker on exit
+    const prizeList = ['⭐', '❤️', '🍦', '🚀', '🦄', '🍎'];
+    const prize = prizeList[Math.floor(Math.random() * prizeList.length)];
+    if (stickers.length < 10) setStickers(prev => [...prev, prize]);
+
+    setActiveGame(null);
+    setLoading(false);
+    setMascotText("Welcome back! Pick another game!");
+  }, [stickers]);
+
+  // --- The Engine: Decides what game to show ---
+  const renderGameView = () => {
     if (!activeGame) return null;
 
     if (activeGame.type === 'internal') {
       const Component = INTERNAL_GAMES[activeGame.id];
+      // If the ID isn't in the registry, show an error instead of a blank screen
       return Component ? (
-        <Component onExit={() => setActiveGame(null)} onCorrectClick={handleCorrect} />
-      ) : <div className="error">Game Not Found</div>;
+        <Component onExit={handleExit} onCorrectClick={handleCorrect} />
+      ) : (
+        <div className="game-overlay" style={{ background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <h2>Boop! Error: Game ID "{activeGame.id}" not found.</h2>
+          <button onClick={() => setActiveGame(null)}>Back Home</button>
+        </div>
+      );
     }
 
     return (
-      <div className="game-overlay-dino">
-        <button className="back-btn" onClick={() => setActiveGame(null)}>🏠 Home</button>
-        <iframe src={activeGame.url} className="game-frame" title={activeGame.name} style={{ width: '100%', height: '100%', border: 'none' }} />
+      <div className="game-overlay">
+        <button className="back-btn" onClick={handleExit}>🏠 Home</button>
+        {loading && <div style={{ position: 'absolute', top: '50%', left: '50%', color: 'white' }}>Loading...</div>}
+        <iframe
+          src={activeGame.url}
+          className="game-frame"
+          title={activeGame.name}
+          onLoad={() => setLoading(false)}
+        />
       </div>
     );
   };
@@ -53,18 +120,40 @@ function App() {
     <div className="booply-container">
       {!activeGame ? (
         <>
-          <h1 className="logo">Booply</h1>
-          <div className="score-board">Stars: {score} ⭐</div>
-          <div className="lobby-grid">
-            {games.map(g => (
-              <button key={g.id} className="game-bubble" style={{ backgroundColor: g.color }} onClick={() => setActiveGame(g)}>
-                <span className="game-icon">{g.icon}</span>
-                <span className="game-name">{g.name}</span>
+          <header className="header-section">
+            <h1 className="logo">Booply</h1>
+            <div className="sticker-book">
+              <p>My Stickers: {score} ⭐</p>
+              <div className="sticker-row">
+                {stickers.map((s, i) => <span key={i} className="sticker-item">{s}</span>)}
+                {[...Array(10 - stickers.length)].map((_, i) => <span key={i} className="slot">?</span>)}
+              </div>
+            </div>
+          </header>
+
+          <main className="lobby-grid">
+            {MASTER_GAME_LIST.map(game => (
+              <button
+                key={game.id}
+                className="game-bubble"
+                style={{ backgroundColor: game.color }}
+                onClick={() => handleOpenGame(game)}
+                onMouseEnter={() => setMascotText(game.hint)}
+              >
+                <span className="game-icon">{game.icon}</span>
+                <span className="game-name">{game.name}</span>
               </button>
             ))}
-          </div>
+          </main>
         </>
-      ) : renderGame()}
+      ) : (
+        renderGameView()
+      )}
+
+      <div className="mascot-area">
+        <div className="speech-bubble">{mascotText}</div>
+        <div className="boop-avatar">👀</div>
+      </div>
     </div>
   );
 }
