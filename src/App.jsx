@@ -40,31 +40,51 @@ function App() {
   };
 
   return (
+    return (
     <div className="booply-container">
-      <header>
-        <h1 className="logo">Booply!</h1>
-        <p>Tap a bubble to play</p>
-      </header>
+      {/* Background Decorative Blobs */}
+      <div className="bg-decoration shape1">⭐</div>
+      <div className="bg-decoration shape2">☁️</div>
+      <div className="bg-decoration shape3">🎈</div>
 
-      <main className="lobby">
-        {games.map((game) => (
-          <button
-            key={game.id}
-            className="game-bubble"
-            style={{ backgroundColor: game.color }}
-            onClick={() => handleBoop(game.name)}
-          >
-            <span className="game-icon">{game.icon}</span>
-            <span className="game-name">{game.name}</span>
-          </button>
-        ))}
-      </main>
-
-      <div className="mascot">
-        <div className="boop-character">👀</div>
-        <p>I'm Boop!</p>
-      </div>
+      {!activeGame ? (
+        <>
+          <header>
+            <h1 className="logo">Booply</h1>
+            <div className="speech-bubble">Which world should we visit today?</div>
+          </header>
+          {/* ... rest of your lobby code ... */}
+        </>
+      ) : (
+      /* ... game view code ... */
+    )}
     </div>
+  );
+  <div className="booply-container">
+    <header>
+      <h1 className="logo">Booply!</h1>
+      <p>Tap a bubble to play</p>
+    </header>
+
+    <main className="lobby">
+      {games.map((game) => (
+        <button
+          key={game.id}
+          className="game-bubble"
+          style={{ backgroundColor: game.color }}
+          onClick={() => handleBoop(game.name)}
+        >
+          <span className="game-icon">{game.icon}</span>
+          <span className="game-name">{game.name}</span>
+        </button>
+      ))}
+    </main>
+
+    <div className="mascot">
+      <div className="boop-character">👀</div>
+      <p>I'm Boop!</p>
+    </div>
+  </div>
   );
 }
 

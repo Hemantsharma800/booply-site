@@ -1,9 +1,52 @@
+/* 1. Animated Background Shapes */
 .booply-container {
-  text-align: center;
   background: #f0faff;
-  min-height: 100vh;
-  padding: 20px;
-  font-family: 'Arial Rounded MT Bold', sans-serif;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 193, 7, 0.2) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(0, 123, 255, 0.2) 0%, transparent 20%);
+  overflow: hidden;
+}
+
+/* 2. Rainbow "Booply" Logo */
+.logo {
+  font-size: 6rem;
+  font-weight: 900;
+  background: linear-gradient(to right, #ff477e, #ff85a1, #fbb13c, #20bbfe, #52e3e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(4px 4px 0px #fff);
+  animation: float 3s ease-in-out infinite, rainbow-move 5s linear infinite;
+}
+
+@keyframes rainbow-move {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* 3. The "Blob" Game Buttons */
+.game-bubble {
+  width: 180px;
+  height: 180px;
+  /* This creates an organic, uneven shape */
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 40%;
+  border: 6px solid white;
+  box-shadow: 0 15px 0px rgba(0, 0, 0, 0.1);
+  /* 3D effect */
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-bubble:hover {
+  transform: scale(1.1) rotate(-5deg);
+  border-radius: 50%;
+  /* Smooths out when hovered */
+  box-shadow: 0 5px 0px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  /* Sinks down like a real button */
 }
 
 .logo {
@@ -94,4 +137,49 @@
 
 .boop-character {
   font-size: 2rem;
+}
+
+.boop-character {
+  font-size: 3rem;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.boop-character:active {
+  animation: jump 0.3s ease;
+}
+
+@keyframes jump {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.game-bubble:active {
+  filter: brightness(1.2) contrast(1.1);
+  transform: scale(0.9);
+}
+
+/* A floating animation for the icons inside the bubbles */
+.game-icon {
+  font-size: 4rem;
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+
+  0%,
+  100% {
+    transform: rotate(-10deg);
+  }
+
+  50% {
+    transform: rotate(10deg);
+  }
 }
