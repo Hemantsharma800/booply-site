@@ -1,9 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import './App.css';
 
-// 1. Updated Imports to match your small-letter filenames
+// Change these lines to be completely lowercase
 import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
+
+// Also ensure the registry matches the imported names
+const INTERNAL_GAMES = {
+  'dino-jungle': DinoGame,
+  'color-mix': ColorGame,
+};
 
 // 2. Updated Registry
 const INTERNAL_GAMES = {
