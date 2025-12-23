@@ -2,6 +2,17 @@ import React from 'react';
 import './App.css';
 
 function App() {
+  const openParentalGate = () => {
+    const num1 = Math.floor(Math.random() * 10);
+    const num2 = Math.floor(Math.random() * 10);
+    const answer = window.prompt(`Parents Only: What is ${num1} + ${num2}?`);
+
+    if (parseInt(answer) === num1 + num2) {
+      alert("Access Granted to Settings!");
+    } else {
+      alert("Boop! That's for grown-ups.");
+    }
+  };
   const games = [
     { id: 1, name: 'Puzzle Pop', color: '#FFD700', icon: '🧩' },
     { id: 2, name: 'Dino Dash', color: '#FF6347', icon: '🦖' },
