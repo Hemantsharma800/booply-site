@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
+iimport React, { useState, useEffect } from 'react';
+// Add this line right here:
+import './DinoGame.css';
 
+const JUNGLE_ANIMALS = [
+// ... rest of the file ...
 // We don't need to import CSS here because it's already loaded globally by App.jsx
 
 const JUNGLE_ANIMALS = [
