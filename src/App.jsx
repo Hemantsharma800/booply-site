@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import './App.css';
 import DinoGame from './games/DinoGame';
-import ColorGame from './games/ColorGame'; // 1. Import the Color Game
+import ColorGame from './games/Colorgame'; // 1. Import the Color Game
 
 // 2. Add Color Fun to the registry
 const INTERNAL_GAMES = {
