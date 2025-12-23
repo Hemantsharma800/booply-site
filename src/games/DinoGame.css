@@ -44,8 +44,9 @@
 /* 3. The Banner */
 .target-banner-hybrid {
     position: absolute;
-    top: 30px;
+    top: 80px;
     width: 100%;
+    /* Moved down slightly to fit level badge */
     text-align: center;
     font-size: 2rem;
     color: white;
@@ -66,7 +67,6 @@
     position: absolute;
     cursor: pointer;
     transition: transform 0.1s ease-out;
-    /* Center the emoji inside the container */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,4 +94,57 @@
     background: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     padding: 5px;
+}
+
+/* === NEW STYLES FOR LEVELS === */
+
+/* The Level Badge in top right */
+.level-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 3000;
+    background: linear-gradient(to right, #ffba08, #faa307);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 3px solid #fff;
+    font-weight: bold;
+}
+
+.level-icon {
+    font-size: 1.5rem;
+}
+
+.level-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1.2rem;
+}
+
+.level-progress {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Feedback box at bottom center */
+.game-feedback-box {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: bold;
+    z-index: 200;
+    border: 3px solid #2d6a4f;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+    text-align: center;
 }
