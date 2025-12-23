@@ -19,6 +19,18 @@ function App() {
     oscillator.start();
     oscillator.stop(audioContext.currentTime + 0.1);
   };
+  // This code LOADS stickers when the app starts
+  useEffect(() => {
+    const savedStickers = localStorage.getItem('booply_stickers');
+    if (savedStickers) {
+      setStickers(JSON.parse(savedStickers));
+    }
+  }, []);
+
+  // This code SAVES stickers whenever the collection changes
+  useEffect(() => {
+    localStorage.setItem('booply_stickers', JSON.stringify(stickers));
+  }, [stickers]);
 
   const openGame = (game) => {
     playBoopSound();
