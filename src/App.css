@@ -1,0 +1,97 @@
+.booply-container {
+  text-align: center;
+  background: #f0faff;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Arial Rounded MT Bold', sans-serif;
+}
+
+.logo {
+
+  /* Upgraded Booply Logo */
+  .logo {
+    font-size: 5rem;
+    color: #ff477e;
+    text-shadow: 4px 4px 0px #ffffff, 8px 8px 0px rgba(0, 0, 0, 0.05);
+    margin-bottom: 5px;
+    letter-spacing: -2px;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+    /* This makes it float! */
+  }
+
+  /* This is the magic "Floating" animation */
+  @keyframes float {
+    0% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-10px) rotate(2deg);
+    }
+
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+  }
+
+  /* Add a nice background gradient to the whole page */
+  .booply-container {
+    text-align: center;
+    background: radial-gradient(circle, #ffffff 0%, #dcf2ff 100%);
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+.lobby {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 50px;
+}
+
+.game-bubble {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 8px solid white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.game-bubble:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.game-icon {
+  font-size: 3rem;
+}
+
+.game-name {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.mascot {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.boop-character {
+  font-size: 2rem;
+}
