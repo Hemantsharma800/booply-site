@@ -69,17 +69,15 @@ header {
 
 /* 5. The Lobby - FORCING it to spread out across the middle */
 .lobby {
-  display: flex;
-  justify-content: center;
-  /* Centers the bubbles */
-  align-items: center;
-  gap: 35px;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 1200px;
-  /* Limits width so it doesn't get too wide on huge screens */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  /* Automatically makes rows */
+  gap: 30px;
+  max-width: 1100px;
+  width: 90%;
   margin: 0 auto;
-  /* Extra insurance for centering */
+  justify-items: center;
+  /* Centers each bubble in its grid spot */
 }
 
 /* 6. The Bubbles */

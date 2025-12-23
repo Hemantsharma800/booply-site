@@ -10,11 +10,16 @@ function App() {
 
   const stickerList = ['⭐', '❤️', '🍦', '🚀', '🦄', '🍎', '🎈', '🐯', '🦖', '🍭'];
   const games = [
-    { id: 1, name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', url: 'https://www.google.com/logos/2010/pacman10-i.html', hint: 'I love mazes!' },
+    { id: 1, name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', url: 'https://www.google.com/logos/2010/pacman10-i.html', hint: 'I love puzzles!' },
     { id: 2, name: 'Dino Dash', color: '#FF6347', icon: '🦖', url: 'https://wayou.github.io/t-rex-runner/', hint: 'Run, Dino, Run!' },
-    { id: 3, name: 'Color Fun', color: '#1E90FF', icon: '🎨', url: 'https://kleki.com/', hint: 'Let’s paint together!' },
-    { id: 4, name: 'Music Box', color: '#32CD32', icon: '🎵', url: 'https://pianu.com/', hint: 'Let’s make music!' },
+    { id: 3, name: 'Color Fun', color: '#1E90FF', icon: '🎨', url: 'https://kleki.com/', hint: 'Let’s paint a rainbow!' },
+    { id: 4, name: 'Music Box', color: '#32CD32', icon: '🎵', url: 'https://pianu.com/', hint: 'Time for some music!' },
     { id: 5, name: 'Space Trip', color: '#9370DB', icon: '🚀', url: 'https://playcanv.as/p/2OFE7j9V/', hint: 'To the stars!' },
+    { id: 6, name: 'Memory Match', color: '#FF9F1C', icon: '🧠', url: 'https://santatracker.google.com/memories.html', hint: 'Where is the pair?' },
+    { id: 7, name: 'Block Build', color: '#E71D36', icon: '🧱', url: 'https://browsercraft.io/', hint: 'Let’s build a house!' },
+    { id: 8, name: 'Fruit Slice', color: '#2EC4B6', icon: '🍎', url: 'https://poki.com/en/g/fruit-ninja', hint: 'Watch out for bombs!' },
+    { id: 9, name: 'Quiz Kid', color: '#7209B7', icon: '💡', url: 'https://mathies.ca/games.php', hint: 'You are so smart!' },
+    { id: 10, name: 'Bubble Pop', color: '#4CC9F0', icon: '🫧', url: 'https://www.bubblegame.org/', hint: 'Pop them all!' },
   ];
 
   // 2. SAVING & LOADING (LocalStorage)
