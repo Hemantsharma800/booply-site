@@ -1,48 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  const openParentalGate = () => {
-    const num1 = Math.floor(Math.random() * 10);
-    const num2 = Math.floor(Math.random() * 10);
-    const answer = window.prompt(`Parents Only: What is ${num1} + ${num2}?`);
+  const [activeGame, setActiveGame] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // This state stores what Boop is currently saying
+  const [mascotText, setMascotText] = useState("Hi! I'm Boop! Tap a bubble!");
 
-    if (parseInt(answer) === num1 + num2) {
-      alert("Access Granted to Settings!");
-    } else {
-      alert("Boop! That's for grown-ups.");
-    }
-  };
   const games = [
-    { id: 1, name: 'Puzzle Pop', color: '#FFD700', icon: '🧩' },
-    { id: 2, name: 'Dino Dash', color: '#FF6347', icon: '🦖' },
-    { id: 3, name: 'Color Fun', color: '#1E90FF', icon: '🎨' },
-    { id: 4, name: 'Music Box', color: '#32CD32', icon: '🎵' },
+    { id: 1, name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', url: 'https://www.google.com/logos/2010/pacman10-i.html', hint: 'I love puzzles!' },
+    { id: 2, name: 'Dino Dash', color: '#FF6347', icon: '🦖', url: 'https://wayou.github.io/t-rex-runner/', hint: 'Run, Dino, Run!' },
+    { id: 3, name: 'Color Fun', color: '#1E90FF', icon: '🎨', url: 'https://kleki.com/', hint: 'Let’s paint a rainbow!' },
+    { id: 4, name: 'Music Box', color: '#32CD32', icon: '🎵', url: 'https://pianu.com/', hint: 'Time for some music!' },
   ];
 
-  const handleBoop = (name) => {
-    // This creates a "Pop" sound using your computer's speakers
+  const playBoopSound = () => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-
     oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // Pitch
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5);
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
+    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+    oscillator.connect(audioContext.destination);
     oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.5);
+    oscillator.stop(audioContext.currentTime + 0.1);
+  };
 
-    console.log(`Booply magic: Starting ${name}`);
+  const openGame = (game) => {
+    playBoopSound();
+    setMascotText("Yay! Let's go!");
+    setLoading(true);
+    setActiveGame(game);
   };
 
   return (
-    return (
     <div className="booply-container">
-      {/* Background Decorative Blobs */}
+      {/* Background Decorations */}
       <div className="bg-decoration shape1">⭐</div>
       <div className="bg-decoration shape2">☁️</div>
       <div className="bg-decoration shape3">🎈</div>
@@ -51,40 +42,39 @@ function App() {
         <>
           <header>
             <h1 className="logo">Booply</h1>
-            <div className="speech-bubble">Which world should we visit today?</div>
           </header>
-          {/* ... rest of your lobby code ... */}
+
+          <main className="lobby">
+            {games.map((game) => (
+              <button
+                key={game.id}
+                className="game-bubble"
+                style={{ backgroundColor: game.color }}
+                onClick={() => openGame(game)}
+                // Change Boop's text when the mouse enters or leaves the bubble
+                onMouseEnter={() => setMascotText(game.hint)}
+                onMouseLeave={() => setMascotText("Tap a bubble to play!")}
+              >
+                <span className="game-icon">{game.icon}</span>
+                <span className="game-name">{game.name}</span>
+              </button>
+            ))}
+          </main>
         </>
       ) : (
-      /* ... game view code ... */
-    )}
-    </div>
-  );
-  <div className="booply-container">
-    <header>
-      <h1 className="logo">Booply!</h1>
-      <p>Tap a bubble to play</p>
-    </header>
+        <div className="game-view">
+          {loading && <div className="loader-overlay">🚀 Boop is fetching your game...</div>}
+          <button className="back-button" onClick={() => setActiveGame(null)}>🏠 Home</button>
+          <iframe src={activeGame.url} title={activeGame.name} className="game-frame" onLoad={() => setLoading(false)} />
+        </div>
+      )}
 
-    <main className="lobby">
-      {games.map((game) => (
-        <button
-          key={game.id}
-          className="game-bubble"
-          style={{ backgroundColor: game.color }}
-          onClick={() => handleBoop(game.name)}
-        >
-          <span className="game-icon">{game.icon}</span>
-          <span className="game-name">{game.name}</span>
-        </button>
-      ))}
-    </main>
-
-    <div className="mascot">
-      <div className="boop-character">👀</div>
-      <p>I'm Boop!</p>
+      {/* The Mascot and Speech Bubble */}
+      <div className="mascot-area">
+        <div className="speech-bubble">{mascotText}</div>
+        <div className="boop-character" onClick={() => setMascotText("Hehe! Stop tickling me!")}>👀</div>
+      </div>
     </div>
-  </div>
   );
 }
 
