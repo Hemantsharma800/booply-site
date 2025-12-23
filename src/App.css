@@ -1,44 +1,59 @@
-/* 1. Global Reset - This makes sure there are no hidden gaps */
+/* 1. Reset everything to zero to stop the "left-pushing" */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 2. Main Container - The "Stage" for our app */
+body,
+html {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* 2. The Main Stage - FORCING full screen and center */
 .booply-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Centers everything left-to-right */
+  /* Forces horizontal center */
+  justify-content: flex-start;
   min-height: 100vh;
-  width: 100%;
+  width: 100vw;
+  /* Use 100% of the screen width */
   background: radial-gradient(circle, #ffffff 0%, #dcf2ff 100%);
-  padding: 40px 20px;
-  font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
-  overflow-x: hidden;
-  position: relative;
+  padding: 50px 20px;
+  font-family: 'Comic Sans MS', sans-serif;
+  text-align: center;
 }
 
-/* 3. The Logo - Big and Centered */
+/* 3. Header Fix - Making sure it's not squashed to the left */
+header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
 .logo {
-  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-size: clamp(3.5rem, 15vw, 6rem);
   font-weight: 900;
   background: linear-gradient(to right, #ff477e, #fbb13c, #20bbfe);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 20px;
-  animation: float 3s ease-in-out infinite;
+  margin-bottom: 15px;
+  filter: drop-shadow(2px 2px 0px white);
 }
 
-/* 4. Sticker Book - Centered Album */
+/* 4. Sticker Book Alignment */
 .sticker-book {
   background: white;
-  padding: 15px 30px;
-  border-radius: 25px;
+  padding: 20px 40px;
+  border-radius: 30px;
   border: 4px dashed #ff477e;
-  margin-bottom: 50px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -47,30 +62,32 @@
 .sticker-row {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 15px;
+  margin-top: 15px;
   flex-wrap: wrap;
-  /* Wraps stickers to next line if there are too many */
 }
 
-/* 5. The Lobby - The Grid of Games */
+/* 5. The Lobby - FORCING it to spread out across the middle */
 .lobby {
   display: flex;
   justify-content: center;
+  /* Centers the bubbles */
   align-items: center;
-  gap: 30px;
+  gap: 35px;
   flex-wrap: wrap;
-  max-width: 1100px;
   width: 100%;
+  max-width: 1200px;
+  /* Limits width so it doesn't get too wide on huge screens */
   margin: 0 auto;
+  /* Extra insurance for centering */
 }
 
-/* 6. The Blob Buttons */
+/* 6. The Bubbles */
 .game-bubble {
-  width: 180px;
-  height: 180px;
+  width: 190px;
+  height: 190px;
   border-radius: 40% 60% 70% 30% / 40% 50% 60% 40%;
-  border: 6px solid white;
+  border: 8px solid white;
   box-shadow: 0 12px 0px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   display: flex;
@@ -81,75 +98,23 @@
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.game-bubble:hover {
-  transform: scale(1.1) rotate(-3deg);
-  border-radius: 50%;
+.game-icon {
+  font-size: 4rem;
+  margin-bottom: 5px;
 }
 
-/* 7. The Mascot - Anchored to bottom right */
+.game-name {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* 7. Mascot area */
 .mascot-area {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 1000;
-}
-
-.speech-bubble {
-  background: white;
-  border: 4px solid #ff477e;
-  border-radius: 20px;
-  padding: 12px 18px;
-  margin-bottom: 15px;
-  font-weight: bold;
-  font-size: 1rem;
-  max-width: 180px;
-  box-shadow: 0 8px 0px rgba(255, 71, 126, 0.1);
-}
-
-/* Animations */
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-15px);
-  }
-}
-
-/* 8. Game View - Full Screen */
-.game-view {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #000;
-  z-index: 2000;
-}
-
-.game-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-.back-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  padding: 15px 25px;
-  font-size: 1.2rem;
-  background: #ff477e;
-  color: white;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  z-index: 2001;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
