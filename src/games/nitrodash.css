@@ -31,15 +31,72 @@
     animation: road-move 1s linear infinite;
 }
 
+/* --- Player Car Orientation Fix --- */
 .player-car {
     position: absolute;
     bottom: 20px;
     font-size: 3.5rem;
     transition: left 0.2s ease;
-    /* 🏎️ Rotate the car to face UP the road */
+    /* 🏎️ Point the car UP the road */
     transform: rotate(-90deg);
     display: inline-block;
-    /* Ensures rotation works correctly */
+    z-index: 10;
+}
+
+/* --- Red Flash / Damage State --- */
+.player-car.crashed {
+    animation: crash-flash 0.3s infinite;
+    filter: drop-shadow(0 0 10px red);
+}
+
+@keyframes crash-flash {
+    0% {
+        color: white;
+        transform: rotate(-90deg) scale(1);
+    }
+
+    50% {
+        color: red;
+        transform: rotate(-90deg) scale(1.2);
+    }
+
+    100% {
+        color: white;
+        transform: rotate(-90deg) scale(1);
+    }
+}
+
+/* --- Game Over Overlay --- */
+.game-over-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    border: 5px solid #ff4757;
+    text-align: center;
+    z-index: 100;
+    box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+}
+
+.loading-sign-red {
+    font-size: 3rem;
+    color: #ff4757;
+    margin-bottom: 10px;
+    animation: spin 1s linear infinite;
+    display: block;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Also check the enemy obstacle if you want it to face a certain way */

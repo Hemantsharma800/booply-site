@@ -33,20 +33,21 @@ function RacingGame({ onExit, onCorrectClick }) {
         }
     }, [enemyPos, lane]);
 
+    // ... inside your NitroDash component
     return (
         <div className="race-scene">
             <button className="back-btn" onClick={onExit}>🏠 Home</button>
             <div className="race-stats">Score: {score}</div>
 
             <div className="highway">
-                {/* Road Lanes */}
                 <div className="lane-line"></div>
                 <div className="lane-line"></div>
 
-                {/* Player Car */}
-                <div className={`player-car lane-${lane}`}>🏎️</div>
+                {/* Added dynamic "crashed" class */}
+                <div className={`player-car lane-${lane} ${gameOver ? 'crashed' : ''}`}>
+                    🏎️
+                </div>
 
-                {/* Enemy Obstacle */}
                 <div
                     className="enemy-obstacle"
                     style={{ left: `${enemyPos.lane * 33 + 5}%`, top: `${enemyPos.top}px` }}
@@ -55,17 +56,21 @@ function RacingGame({ onExit, onCorrectClick }) {
                 </div>
             </div>
 
-            {!gameOver ? (
-                <div className="race-controls">
-                    <button onClick={() => setLane(Math.max(0, lane - 1))}>⬅️ Left</button>
-                    <button onClick={() => setLane(Math.min(2, lane + 1))}>Right ➡️</button>
-                </div>
-            ) : (
+            {gameOver && (
                 <div className="game-over-overlay">
+                    {/* Added the Red Loading Sign */}
+                    <span className="loading-sign-red">⏳</span>
                     <h2>Oops! Crashed!</h2>
-                    <button onClick={() => { setGameOver(false); setScore(0); setEnemyPos({ lane: 1, top: -100 }) }}>
+                    <button className="try-again-btn" onClick={() => { setGameOver(false); setScore(0); setEnemyPos({ lane: 1, top: -100 }) }}>
                         Try Again! 🏁
                     </button>
+                </div>
+            )}
+
+            {!gameOver && (
+                <div className="race-controls">
+                    <button onClick={() => setLane(Math.max(0, lane - 1))}>⬅️</button>
+                    <button onClick={() => setLane(Math.min(2, lane + 1))}>➡️</button>
                 </div>
             )}
         </div>
