@@ -1,0 +1,67 @@
+.race-scene {
+    position: fixed;
+    inset: 0;
+    background: #4caf50;
+    /* Grass side */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.highway {
+    position: relative;
+    width: 300px;
+    height: 500px;
+    background: #333;
+    /* Asphalt */
+    border-left: 10px solid white;
+    border-right: 10px solid white;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.lane-line {
+    width: 5px;
+    height: 100%;
+    border-left: 5px dashed rgba(255, 255, 255, 0.3);
+}
+
+.player-car {
+    position: absolute;
+    bottom: 20px;
+    font-size: 3.5rem;
+    transition: left 0.2s ease;
+}
+
+.lane-0 {
+    left: 5%;
+}
+
+.lane-1 {
+    left: 38%;
+}
+
+.lane-2 {
+    left: 71%;
+}
+
+.enemy-obstacle {
+    position: absolute;
+    font-size: 3rem;
+}
+
+.race-controls {
+    display: flex;
+    gap: 50px;
+    margin-top: 20px;
+}
+
+.race-controls button {
+    padding: 20px 40px;
+    font-size: 1.5rem;
+    border-radius: 50px;
+    background: white;
+    border: none;
+    box-shadow: 0 5px 0 #ddd;
+}

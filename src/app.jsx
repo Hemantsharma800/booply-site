@@ -7,6 +7,7 @@ import './app.css'; // Strictly lowercase to match your renamed file
 import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
 import PuzzlePop from './games/puzzlepop.jsx';
+import NitroDash from './games/nitrodash.jsx';
 
 // =====================================================================
 // ⚙️ 2. REGISTRY - Maps game IDs to their components
@@ -14,6 +15,7 @@ const INTERNAL_GAMES = {
   'dino-dash-v1': DinoGame,
   'color-fun-v1': ColorGame,
   'puzzle-pop-v1': PuzzlePop,
+  'nitro-dash-v1': NitroDash,
 };
 
 // =====================================================================
@@ -44,6 +46,13 @@ const MASTER_GAME_LIST = [
     icon: '🧩',
     hint: 'Pop the pieces!'
   },
+  {
+    id: 'nitro-dash-v1',
+    type: 'internal',
+    name: 'Nitro Dash',
+    color: '#FFD700',
+    icon: '🏎️'
+  }
 ];
 
 function App() {
