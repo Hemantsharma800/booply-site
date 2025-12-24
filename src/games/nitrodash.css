@@ -23,8 +23,12 @@
 
 .lane-line {
     width: 5px;
-    height: 100%;
-    border-left: 5px dashed rgba(255, 255, 255, 0.3);
+    height: 200%;
+    /* Make it longer for the animation */
+    position: absolute;
+    top: -100%;
+    border-left: 5px dashed rgba(255, 255, 255, 0.4);
+    animation: road-move 1s linear infinite;
 }
 
 .player-car {
@@ -32,6 +36,18 @@
     bottom: 20px;
     font-size: 3.5rem;
     transition: left 0.2s ease;
+    /* 🏎️ Rotate the car to face UP the road */
+    transform: rotate(-90deg);
+    display: inline-block;
+    /* Ensures rotation works correctly */
+}
+
+/* Also check the enemy obstacle if you want it to face a certain way */
+.enemy-obstacle {
+    position: absolute;
+    font-size: 3rem;
+    /* Optional: subtle rotation for a 'crashed' look */
+    transform: rotate(10deg);
 }
 
 .lane-0 {
