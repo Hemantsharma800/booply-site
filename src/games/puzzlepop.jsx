@@ -1,57 +1,49 @@
 import React, { useState } from 'react';
 import './puzzlepop.css';
 
-const PUZZLE_DATA = [
-    { id: 'lion', icon: '🦁', color: '#FFD700' },
-    { id: 'rocket', icon: '🚀', color: '#E0E0E0' },
-    { id: 'apple', icon: '🍎', color: '#FF5252' }
+const BOX_DATA = [
+    { id: 1, icon: '🦁', color: '#FFD700', label: 'Yellow' },
+    { id: 2, icon: '🍎', color: '#FF5252', label: 'Red' },
+    { id: 3, icon: '🦋', color: '#1E90FF', label: 'Blue' },
+    { id: 4, icon: '🍀', color: '#4CAF50', label: 'Green' }
 ];
 
 function PuzzlePop({ onExit, onCorrectClick }) {
-    const [currentPuzzle, setCurrentPuzzle] = useState(PUZZLE_DATA[0]);
-    const [placed, setPlaced] = useState(false);
+    const [selectedBox, setSelectedBox] = useState(null);
+    const [solvedBoxes, setSolvedBoxes] = useState([]);
 
-    // This simple version uses a "Tap to Place" mechanic which is
-    // much easier for toddlers and more reliable on mobile phones.
-    const handlePieceClick = () => {
-        setPlaced(true);
-        onCorrectClick();
+    const handleMatch = (boxId) => {
+        if (solvedBoxes.includes(boxId)) return;
 
-        // Move to next puzzle after a celebration
-        setTimeout(() => {
-            const nextIndex = (PUZZLE_DATA.indexOf(currentPuzzle) + 1) % PUZZLE_DATA.length;
-            setCurrentPuzzle(PUZZLE_DATA[nextIndex]);
-            setPlaced(false);
-        }, 2000);
+        setSolvedBoxes([...solvedBoxes, boxId]);
+        onCorrectClick(); // Award star
+
+        if (solvedBoxes.length + 1 === BOX_DATA.length) {
+            setTimeout(() => {
+                alert("Amazing! All boxes matched! 🎉");
+                setSolvedBoxes([]);
+            }, 500);
+        }
     };
 
     return (
         <div className="puzzle-scene">
             <button className="back-btn" onClick={onExit}>🏠 Home</button>
+            <h1 className="puzzle-title">Match the Boxes!</h1>
 
-            <div className="puzzle-header">
-                <h1>Puzzle Pop!</h1>
-            </div>
-
-            <div className={`puzzle-board ${placed ? 'solved' : ''}`}>
-                <div className="target-slot">
-                    {placed ? currentPuzzle.icon : '?'}
-                </div>
-            </div>
-
-            {!placed && (
-                <div className="pieces-tray">
-                    <button
-                        className="puzzle-piece"
-                        style={{ backgroundColor: currentPuzzle.color }}
-                        onClick={handlePieceClick}
+            <div className="box-grid">
+                {BOX_DATA.map(box => (
+                    <div
+                        key={box.id}
+                        className={`puzzle-box ${solvedBoxes.includes(box.id) ? 'matched' : ''}`}
+                        style={{ backgroundColor: box.color }}
+                        onClick={() => handleMatch(box.id)}
                     >
-                        {currentPuzzle.icon}
-                    </button>
-                </div>
-            )}
-
-            {placed && <div className="celebration">Great Job! ✨</div>}
+                        <span className="box-icon">{box.icon}</span>
+                        <p className="box-label">{solvedBoxes.includes(box.id) ? 'MATCH!' : box.label}</p>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
