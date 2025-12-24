@@ -6,13 +6,17 @@ import './app.css'; // Strictly lowercase to match your renamed file
 // =====================================================================
 import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
+import PuzzlePop from './games/puzzlepop.jsx';
 
 // =====================================================================
 // ⚙️ 2. REGISTRY - Maps game IDs to their components
 // =====================================================================
 const INTERNAL_GAMES = {
-  'dino-dash-v1': DinoGame,
-  'color-fun-v1': ColorGame,
+  const INTERNAL_GAMES = {
+    'dino-dash-v1': DinoGame,
+    'color-fun-v1': ColorGame,
+    'puzzle-pop-v1': PuzzlePop, // Add this!
+  };
 };
 
 // =====================================================================
