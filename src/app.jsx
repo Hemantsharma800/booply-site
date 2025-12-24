@@ -36,6 +36,14 @@ const MASTER_GAME_LIST = [
     icon: '🎨',
     hint: 'Mix primary colors!'
   },
+  {
+    id: 'puzzle-pop-v1', // This ID must match the one in the registry above
+    type: 'internal',    // Change from 'external' to 'internal'
+    name: 'Puzzle Pop',
+    color: '#FFD700',
+    icon: '🧩',
+    hint: 'Pop the pieces!'
+  },
   { id: 'ext-puzzle', type: 'external', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', url: 'https://www.google.com/logos/2010/pacman10-i.html' },
   { id: 'ext-space', type: 'external', name: 'Space Trip', color: '#9370DB', icon: '🚀', url: 'https://playcanv.as/p/2OFE7j9V/' },
 ];
