@@ -1,312 +1,296 @@
-/* --- Main Scene Background --- */
+/* ==========================================================================
+   1. CORE LABORATORY ENVIRONMENT
+   ========================================================================== */
+
 .lab-scene {
     position: fixed;
     inset: 0;
-    background: linear-gradient(to bottom, #dceeff 0%, #dceeff 60%, #c0d6e4 60%, #a8c0d0 100%);
+    /* Soft sky-blue wall with a darker blue "desk" floor */
+    background: linear-gradient(to bottom,
+            #dceeff 0%,
+            #dceeff 65%,
+            #b1c9d8 65%,
+            #8fa9bb 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+    overflow: hidden;
+    user-select: none;
 }
 
-/* --- Status Banner --- */
+/* ==========================================================================
+   2. INTERACTIVE HEADER & STATUS BANNER
+   ========================================================================== */
+
 .status-banner {
-    margin-top: 60px;
-    padding: 15px 40px;
-    background: white;
-    border-radius: 30px;
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    margin-top: 40px;
+    padding: 20px 50px;
+    background: #ffffff;
+    border: 6px solid #f0f0f0;
+    border-radius: 40px;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #444;
+    box-shadow: 0 10px 0 #ddd;
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* State-based banner styling */
 .status-banner.mixing {
-    background: #FFD700;
-    color: #333;
-    animation: pulse 1s infinite;
+    background: #ffeb3b;
+    border-color: #fdd835;
+    transform: scale(1.05);
+    animation: banner-float 2s infinite ease-in-out;
 }
 
 .status-banner.result {
-    background: #4CAF50;
+    background: #4caf50;
     color: white;
+    border-color: #388e3c;
+    box-shadow: 0 10px 0 #2e7d32;
     transform: scale(1.1);
 }
 
-/* --- Desk Setup --- */
+/* ==========================================================================
+   3. THE HAND & TUBE INTERFACE (CENTRAL UI)
+   ========================================================================== */
+
 .desk-setup {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
     width: 100%;
+    perspective: 1000px;
 }
 
-/* --- The Hand & Tube Container --- */
 .hand-container {
     position: relative;
-    width: 300px;
-    height: 400px;
+    width: 320px;
+    height: 450px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
 }
 
-/* Shaking animation during mixing */
-.hand-container.shaking {
-    animation: subtle-shake 0.2s infinite alternate;
-}
-
-/* Simplified Cartoon Hand Overlay (CSS Art) */
+/* The Animated Cartoon Hand holding the tube */
 .cartoon-hand-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-65%, -30%);
-    /* Position hand around tube */
-    width: 180px;
-    height: 140px;
+    top: 55%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 150px;
     background: #ffdbac;
-    /* Skin tone */
-    border: 6px solid #eba879;
-    border-radius: 40px;
-    z-index: 10;
-    /* In front of tube holder */
+    /* Soft skin tone */
+    border: 8px solid #eba879;
+    border-radius: 50px;
+    z-index: 20;
+    /* Sits in front of the tube */
+    box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Fingers wrapping */
-.cartoon-hand-overlay::before,
+/* Finger wrapping detail */
 .cartoon-hand-overlay::after {
     content: '';
     position: absolute;
+    right: -35px;
+    top: 30px;
+    width: 60px;
+    height: 50px;
     background: #ffdbac;
-    border: 6px solid #eba879;
+    border: 8px solid #eba879;
     border-left: none;
+    border-radius: 0 25px 25px 0;
 }
 
-.cartoon-hand-overlay::before {
-    right: -30px;
-    top: 20px;
-    width: 50px;
-    height: 40px;
-    border-radius: 0 20px 20px 0;
-}
+/* ==========================================================================
+   4. GLASSWARE PHYSICS (THE TEST TUBE)
+   ========================================================================== */
 
-.cartoon-hand-overlay::after {
-    right: -30px;
-    top: 70px;
-    width: 50px;
-    height: 40px;
-    border-radius: 0 20px 20px 0;
-}
-
-/* --- Tube Holder & Test Tube --- */
 .tube-holder {
     position: relative;
-    z-index: 5;
-    /* Behind hand */
-    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+    z-index: 10;
 }
 
 .test-tube {
     position: relative;
-    width: 80px;
-    height: 260px;
-    background: rgba(230, 245, 255, 0.4);
-    border: 6px solid rgba(255, 255, 255, 0.9);
-    border-top: 8px solid rgba(255, 255, 255, 0.7);
-    /* Rim */
-    border-radius: 0 0 40px 40px;
+    width: 100px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 8px solid rgba(255, 255, 255, 0.8);
+    border-top: 10px solid #fff;
+    border-radius: 0 0 50px 50px;
     overflow: hidden;
-    /* Contains liquid */
 }
 
-/* Glass shine effect */
-.glass-effect::after {
+/* Glass highlight/shine */
+.test-tube::before {
     content: '';
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 15px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.5);
+    left: 15px;
+    top: 20px;
+    width: 12px;
+    height: 80%;
+    background: rgba(255, 255, 255, 0.4);
     border-radius: 10px;
+    z-index: 30;
 }
 
-/* --- Liquids --- */
-.liquid-layer {
-    position: absolute;
-    width: 100%;
-    height: 40%;
-    /* Each layer is less than half */
-    transition: all 0.5s ease;
-    bottom: 0;
-}
+/* ==========================================================================
+   5. LIQUID DYNAMICS
+   ========================================================================== */
 
-.bottom-layer {
-    z-index: 1;
-    border-radius: 0 0 35px 35px;
-}
-
-/* Pushes the top layer up when the bottom layer exists */
-.bottom-layer:not([style*="transparent"])~.top-layer {
-    bottom: 40%;
-    border-radius: 0;
-}
-
-/* The final mixed liquid */
-.mixed-liquid {
+/* The Base Liquid */
+.liquid-base {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 85%;
-    border-radius: 0 0 35px 35px;
-    transition: background-color 0.5s ease, height 0.5s ease-out;
-    z-index: 2;
+    height: 75%;
+    transition: background-color 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0 0 42px 42px;
 }
 
-/* Swirling animation during mix */
-.mixed-liquid.swirling {
-    animation: swirl-color 1s infinite linear;
-    /* Create a faux-gradient swirl effect */
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
-    background-size: 40px 40px;
-}
-
-/* --- Bubbles Animation --- */
-.bubbles-container {
+/* Pouring layer animation for new colors */
+.incoming-layer {
     position: absolute;
+    top: 0;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    height: 0;
+    background-color: var(--pour-color);
+    animation: liquid-pour 1s forwards cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    z-index: 5;
 }
 
+/* Bubbles during mixing phase */
 .bubbles-container span {
     position: absolute;
     bottom: -20px;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.5);
     border-radius: 50%;
-    animation: rise var(--speed) infinite ease-in;
+    animation: bubble-rise var(--duration) infinite ease-in;
 }
 
-.bubbles-container span:nth-child(1) {
-    left: 20%;
-    width: 15px;
-    height: 15px;
-    --speed: 1.5s;
-    animation-delay: 0s;
-}
+/* ==========================================================================
+   6. THE PAINT PALETTE (INTERACTIVE POTS)
+   ========================================================================== */
 
-.bubbles-container span:nth-child(2) {
-    left: 50%;
-    width: 10px;
-    height: 10px;
-    --speed: 2s;
-    animation-delay: 0.3s;
-}
-
-.bubbles-container span:nth-child(3) {
-    left: 70%;
-    width: 18px;
-    height: 18px;
-    --speed: 1.2s;
-    animation-delay: 0.6s;
-}
-
-.bubbles-container span:nth-child(4) {
-    left: 35%;
-    width: 12px;
-    height: 12px;
-    --speed: 1.8s;
-    animation-delay: 0.9s;
-}
-
-
-/* --- Palette Tray --- */
 .palette-tray {
     display: flex;
-    gap: 20px;
-    padding: 25px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: opacity 0.5s, transform 0.5s;
+    gap: 25px;
+    padding: 30px 45px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 8px solid #fff;
+    border-radius: 60px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
 }
 
-.palette-tray.hidden {
-    opacity: 0;
-    transform: translateY(100px);
-    pointer-events: none;
-}
-
-/* Paint Pots */
 .paint-pot {
-    width: 70px;
-    height: 70px;
+    width: 85px;
+    height: 85px;
     border-radius: 50%;
-    border: 5px solid white;
-    background-color: var(--pot-color);
-    box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.2);
+    border: 6px solid white;
+    background: radial-gradient(circle at 30% 30%, var(--pot-color), #000 180%);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.paint-pot:hover:not(:disabled) {
-    transform: scale(1.1);
+.paint-pot:hover {
+    transform: scale(1.15) rotate(5deg);
 }
 
-.paint-pot.selected {
+.paint-pot:active {
     transform: scale(0.9);
-    box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.5);
-    opacity: 0.7;
 }
 
-/* --- Animations --- */
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
+/* ==========================================================================
+   7. UTILITY BUTTONS (HOME & EMPTY)
+   ========================================================================== */
 
-    50% {
-        transform: scale(1.05);
+.back-btn,
+.reset-btn {
+    position: absolute;
+    top: 25px;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.back-btn {
+    left: 25px;
+    background: #fff;
+    color: #333;
+}
+
+.reset-btn {
+    right: 25px;
+    background: #ff5252;
+    color: #fff;
+}
+
+/* ==========================================================================
+   8. KEYFRAME ANIMATIONS
+   ========================================================================== */
+
+@keyframes liquid-pour {
+    0% {
+        height: 0;
+        border-radius: 0;
     }
 
     100% {
-        transform: scale(1);
+        height: 75%;
+        border-radius: 0 0 42px 42px;
     }
 }
 
-@keyframes subtle-shake {
+@keyframes bubble-rise {
     0% {
-        transform: rotate(1deg);
+        transform: translateY(0) scale(1);
+        opacity: 0;
     }
 
-    100% {
-        transform: rotate(-1deg);
-    }
-}
-
-@keyframes swirl-color {
-    0% {
-        background-position: 0 0;
-    }
-
-    100% {
-        background-position: 80px 0;
-    }
-}
-
-@keyframes rise {
-    0% {
-        transform: translateY(0);
+    20% {
         opacity: 1;
     }
 
     100% {
-        transform: translateY(-250px);
+        transform: translateY(-280px) scale(0.5);
         opacity: 0;
+    }
+}
+
+@keyframes banner-float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.shaking {
+    animation: hand-vibrate 0.1s infinite alternate;
+}
+
+@keyframes hand-vibrate {
+    from {
+        transform: translateX(-4px) rotate(-1deg);
+    }
+
+    to {
+        transform: translateX(4px) rotate(1deg);
     }
 }

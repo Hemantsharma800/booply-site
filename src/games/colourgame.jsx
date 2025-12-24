@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './colourgame.css';
 
+/**
+ * MIX_RECIPES: A map of how two colors combine.
+ * Because we use .sort(), 'Red+Yellow' and 'Yellow+Red' both work.
+ */
 const MIX_RECIPES = {
     'Red+Yellow': { name: 'Orange', hex: '#FF8C00' },
     'Blue+Red': { name: 'Purple', hex: '#A020F0' },
@@ -8,11 +12,10 @@ const MIX_RECIPES = {
     'Red+White': { name: 'Pink', hex: '#FFB6C1' },
     'Blue+White': { name: 'Sky Blue', hex: '#87CEEB' },
     'White+Yellow': { name: 'Cream', hex: '#FFFDD0' },
-    // Add same-color mixes for completeness
-    'Red+Red': { name: 'More Red!', hex: '#FF0000' },
-    'Blue+Blue': { name: 'More Blue!', hex: '#0000FF' },
-    'Yellow+Yellow': { name: 'More Yellow!', hex: '#FFFF00' },
-    'White+White': { name: 'More White!', hex: '#FFFFFF' },
+    'Orange+Blue': { name: 'Misty Brown', hex: '#8B4513' },
+    'Green+Red': { name: 'Earth Tone', hex: '#556B2F' },
+    'Purple+Yellow': { name: 'Deep Gold', hex: '#B8860B' },
+    'Pink+Blue': { name: 'Lavender', hex: '#E6E6FA' }
 };
 
 const INPUT_COLORS = [
@@ -20,103 +23,128 @@ const INPUT_COLORS = [
     { name: 'Yellow', hex: '#FFFF00' },
     { name: 'Blue', hex: '#0000FF' },
     { name: 'White', hex: '#FFFFFF' },
-    // Added a couple more for fun, though they might make "sludge" if mixed incorrectly
-    { name: 'Green', hex: '#32CD32' },
-    { name: 'Purple', hex: '#A020F0' }
+    { name: 'Green', hex: '#32CD32' }
 ];
 
 function ColourGame({ onExit, onCorrectClick }) {
-    const [selectedColors, setSelectedColors] = useState([]); // Stores full color objects
-    const [result, setResult] = useState(null);
-    const [gameState, setGameState] = useState('picking'); // 'picking', 'mixing', 'result'
+    // core state for the liquid currently in the tube
+    const [currentLiquid, setCurrentLiquid] = useState({ name: 'Empty', hex: 'transparent' });
 
+    // State for the color currently being "poured" in
+    const [nextColor, setNextColor] = useState(null);
+
+    // Game states: 'picking', 'mixing', 'result'
+    const [gameState, setGameState] = useState('picking');
+
+    /**
+     * handleSelect: Triggered when a child taps a paint pot.
+     * Logic: If tube is empty, it fills it. If full, it mixes with current.
+     */
     const handleSelect = (colorObj) => {
         if (gameState !== 'picking') return;
 
-        const newSelection = [...selectedColors, colorObj];
-        setSelectedColors(newSelection);
+        // 1. Show the pouring animation
+        setNextColor(colorObj);
+        setGameState('mixing');
 
-        if (newSelection.length === 2) {
-            setGameState('mixing');
+        // 2. Wait for the CSS "Pour" and "Shake" animations to complete (2 seconds)
+        setTimeout(() => {
+            let newResult;
 
-            // Determine result
-            const key = newSelection.map(c => c.name).sort().join('+');
-            // Default fallback if mix isn't in our recipe book
-            const mixResult = MIX_RECIPES[key] || { name: 'Magical Sludge!', hex: '#5D4037' };
+            if (currentLiquid.name === 'Empty') {
+                // Just fill the tube if it was empty
+                newResult = colorObj;
+            } else {
+                // Calculate the mix using the recipe book
+                const key = [currentLiquid.name, colorObj.name].sort().join('+');
+                newResult = MIX_RECIPES[key] || { name: 'Magical Sludge!', hex: '#4a3728' };
 
-            // Start mixing animation sequence
+                // Award a star for successfully mixing two colors
+                onCorrectClick();
+            }
+
+            // 3. Update the tube with the final result
+            setCurrentLiquid(newResult);
+            setNextColor(null);
+            setGameState('result');
+
+            // 4. After showing the result name for a moment, let them pick again
             setTimeout(() => {
-                setResult(mixResult);
-                setGameState('result');
-                if (MIX_RECIPES[key]) onCorrectClick(); // Only award star for known recipes
+                setGameState('picking');
+            }, 1500);
 
-                // Auto-reset after showing result for continuous play
-                setTimeout(() => {
-                    setSelectedColors([]);
-                    setResult(null);
-                    setGameState('picking');
-                }, 3000); // Show result for 3 seconds then reset
-
-            }, 2500); // Mix for 2.5 seconds
-        }
+        }, 2000);
     };
 
-    // Helper to get hex for layers, defaulting to transparent if not picked yet
-    const getLayerHex = (index) => selectedColors[index] ? selectedColors[index].hex : 'transparent';
+    /**
+     * handleEmpty: Resets the tube to transparent so the child can start over.
+     */
+    const handleEmpty = () => {
+        setCurrentLiquid({ name: 'Empty', hex: 'transparent' });
+        setGameState('picking');
+        setNextColor(null);
+    };
 
     return (
         <div className="lab-scene">
+            {/* Navigation Buttons */}
             <button className="back-btn" onClick={onExit}>🏠 Home</button>
+            <button className="reset-btn" onClick={handleEmpty}>🗑️ Empty Tube</button>
 
-            {/* Header Status */}
+            {/* Top Status Banner - Reacts to Game State */}
             <div className={`status-banner ${gameState}`}>
-                {gameState === 'picking' && (selectedColors.length === 0 ? "Pick 2 Colors to Mix!" : "Pick one more!")}
+                {gameState === 'picking' && (currentLiquid.name === 'Empty' ? "Pick a color to start!" : "Add another color!")}
                 {gameState === 'mixing' && "Mixing... Shake it up!"}
-                {gameState === 'result' && `You made ${result.name}! ✨`}
+                {gameState === 'result' && `Wow! You made ${currentLiquid.name}!`}
             </div>
 
-            {/* The Interaction Area */}
             <div className="desk-setup">
-
-                {/* The Cartoon Hand holding the tube */}
+                {/* Central Hand & Tube Container */}
                 <div className={`hand-container ${gameState === 'mixing' ? 'shaking' : ''}`}>
+
+                    {/* Cartoon Hand Overlay (Z-index high to hold the tube) */}
                     <div className="cartoon-hand-overlay"></div>
+
                     <div className="tube-holder">
                         <div className="test-tube glass-effect">
-                            {/* Distinct Layers (visible before mixing completes) */}
-                            {gameState !== 'result' && (
-                                <>
-                                    <div className="liquid-layer bottom-layer" style={{ backgroundColor: getLayerHex(0) }}></div>
-                                    <div className="liquid-layer top-layer" style={{ backgroundColor: getLayerHex(1) }}></div>
-                                </>
-                            )}
 
-                            {/* Mixed/Mixing Liquid (visible during mix and result) */}
-                            {(gameState === 'mixing' || gameState === 'result') && (
-                                <div
-                                    className={`mixed-liquid ${gameState === 'mixing' ? 'swirling' : ''}`}
-                                    style={{ backgroundColor: result ? result.hex : getLayerHex(0) }}
-                                >
+                            {/* The Liquid currently at the bottom of the tube */}
+                            <div
+                                className="liquid-base"
+                                style={{ backgroundColor: currentLiquid.hex }}
+                            >
+                                {/* Bubbles only appear when actually mixing */}
+                                {gameState === 'mixing' && (
                                     <div className="bubbles-container">
-                                        <span></span><span></span><span></span><span></span>
+                                        <span style={{ '--duration': '1.2s' }}></span>
+                                        <span style={{ '--duration': '1.8s' }}></span>
+                                        <span style={{ '--duration': '1.5s' }}></span>
                                     </div>
-                                </div>
+                                )}
+                            </div>
+
+                            {/* The Color being poured in from the top */}
+                            {nextColor && (
+                                <div
+                                    className="incoming-layer"
+                                    style={{ '--pour-color': nextColor.hex }}
+                                ></div>
                             )}
                         </div>
                     </div>
                 </div>
 
-                {/* Color Palette - Hidden only during the result reveal */}
-                <div className={`palette-tray ${gameState === 'result' ? 'hidden' : ''}`}>
+                {/* Interaction Palette (Paint Pots) */}
+                <div className="palette-tray">
                     {INPUT_COLORS.map(c => (
                         <button
                             key={c.name}
-                            className={`paint-pot ${selectedColors.includes(c) ? 'selected' : ''}`}
+                            className="paint-pot"
                             style={{ '--pot-color': c.hex }}
                             onClick={() => handleSelect(c)}
-                            disabled={selectedColors.includes(c) || selectedColors.length >= 2}
-                        >
-                        </button>
+                            disabled={gameState === 'mixing'}
+                            title={c.name}
+                        />
                     ))}
                 </div>
             </div>
