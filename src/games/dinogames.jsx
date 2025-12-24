@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './DinoGame.css';
+import './dinogame.css';
 
 // === THE MASSIVE ANIMAL DATABASE ORGANIZED BY LEVEL ===
 const ANIMAL_LEVELS = {

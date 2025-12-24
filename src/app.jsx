@@ -6,8 +6,8 @@ import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
 
 const INTERNAL_GAMES = {
-  'dino-jungle-v1': DinoGame,
-  'color-mix-lab-v1': ColorGame,
+  'dino-jungle-v1': dinogame,
+  'color-mix-lab-v1': colorgame,
 };
 
 const MASTER_GAME_LIST = [
