@@ -1,89 +1,131 @@
-.race-container {
+.nitro-game-container {
     position: fixed;
     inset: 0;
-    background: #2e7d32;
-    /* Grass */
+    background: #43a047;
+    /* Lush green grass */
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: 'Arial Black', sans-serif;
-}
-
-/* 🛣️ The Highway */
-.track {
-    position: relative;
-    width: 320px;
-    height: 550px;
-    background: #333;
-    /* Asphalt */
-    border-left: 8px solid white;
-    border-right: 8px solid white;
     overflow: hidden;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
-/* Animated Road Lines */
-.road-lines {
+/* 🚦 Scoreboard UI */
+.score-board {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    z-index: 10;
+}
+
+.score-card {
+    background: white;
+    padding: 10px 25px;
+    border-radius: 15px;
+    font-weight: 900;
+    box-shadow: 0 6px 0 #ddd;
+    color: #333;
+}
+
+.score-card.best {
+    color: #f39c12;
+    border: 2px solid #f39c12;
+}
+
+/* 🛣️ The Road Logic */
+.highway-track {
+    position: relative;
+    width: 340px;
+    height: 580px;
+    background: #444;
+    /* Dark Asphalt */
+    border-left: 10px solid #fff;
+    border-right: 10px solid #fff;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+/* Moving Road Lines - Moves DOWN to simulate forward driving */
+.road-stripes {
     position: absolute;
     width: 100%;
     height: 200%;
     top: -100%;
-    background-image: linear-gradient(to bottom, transparent 50%, #fff 50%);
-    background-size: 10px 80px;
+    background-image: linear-gradient(to bottom, #fff 50%, transparent 50%);
+    background-size: 8px 100px;
     background-position: center;
     background-repeat: repeat-y;
 }
 
-.road-lines.animating {
-    animation: drive 1s linear infinite;
+.road-stripes.moving {
+    animation: move-road 0.6s linear infinite;
 }
 
-@keyframes drive {
+@keyframes move-road {
     from {
         transform: translateY(0);
     }
 
     to {
-        transform: translateY(80px);
+        transform: translateY(100px);
     }
+
+    /* Moving DOWN creates "forward" feel */
 }
 
-/* 🏎️ Player Car Fix: Face Direction Up */
+/* 🏎️ Car Orientations */
 .player-car {
     position: absolute;
     bottom: 80px;
-    font-size: 4rem;
+    font-size: 4.5rem;
     transform: translateX(-50%) rotate(-90deg);
-    /* Faces UP the road */
-    transition: left 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 10;
+    /* Points UP the road */
+    transition: left 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 20;
 }
 
-.player-car.hit {
-    animation: explode 0.2s infinite;
-    filter: drop-shadow(0 0 15px red);
+.enemy-car {
+    position: absolute;
+    font-size: 4rem;
+    transform: translateX(-50%) rotate(90deg);
+    /* Points DOWN toward player */
+    z-index: 15;
+}
+
+/* 💥 Crash State */
+.explode {
+    animation: shake-crash 0.1s infinite alternate;
+    filter: drop-shadow(0 0 20px red);
+}
+
+@keyframes shake-crash {
+    from {
+        transform: translateX(-50%) rotate(-95deg);
+    }
+
+    to {
+        transform: translateX(-50%) rotate(-85deg);
+    }
 }
 
 /* 🛑 Game Over Overlay */
-.crash-overlay {
+.crash-popup {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.95);
+    background: white;
     padding: 40px;
     border-radius: 30px;
-    border: 6px solid #ff4757;
+    border: 8px solid #ff4757;
     text-align: center;
     z-index: 100;
-    box-shadow: 0 0 100px rgba(255, 71, 87, 0.4);
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
 }
 
-/* Red Loading Sign */
-.loading-red {
+.red-spinner {
     font-size: 4rem;
     color: #ff4757;
-    display: block;
     margin-bottom: 20px;
     animation: spin 1s linear infinite;
 }
@@ -94,51 +136,25 @@
     }
 }
 
-@keyframes explode {
-    0% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.5;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-/* 🎮 Score & Controls */
-.game-stats {
-    display: flex;
-    gap: 20px;
-    margin: 20px 0;
-}
-
-.stat-box {
-    background: white;
-    padding: 10px 20px;
-    border-radius: 15px;
-    font-weight: bold;
-    box-shadow: 0 4px 0 #ddd;
-}
-
-.stat-box.high {
-    color: #ff9800;
-}
-
-.controls {
+/* 🎮 Mobile Friendly Buttons */
+.touch-controls {
     display: flex;
     gap: 40px;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
-.controls button {
-    width: 80px;
-    height: 80px;
+.touch-controls button {
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    border: none;
     background: white;
-    font-size: 2rem;
-    box-shadow: 0 6px 0 #ddd;
+    border: none;
+    font-size: 2.5rem;
+    box-shadow: 0 8px 0 #ccc;
+    cursor: pointer;
+}
+
+.touch-controls button:active {
+    transform: translateY(4px);
+    box-shadow: 0 4px 0 #ccc;
 }
