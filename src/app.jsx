@@ -10,13 +10,10 @@ import PuzzlePop from './games/puzzlepop.jsx';
 
 // =====================================================================
 // ⚙️ 2. REGISTRY - Maps game IDs to their components
-// =====================================================================
 const INTERNAL_GAMES = {
-  const INTERNAL_GAMES = {
-    'dino-dash-v1': DinoGame,
-    'color-fun-v1': ColorGame,
-    'puzzle-pop-v1': PuzzlePop, // Add this!
-  };
+  'dino-dash-v1': DinoGame,
+  'color-fun-v1': ColorGame,
+  'puzzle-pop-v1': PuzzlePop,
 };
 
 // =====================================================================
