@@ -1,141 +1,113 @@
-/* ==========================================================================
-   1. GRID SCENE LAYOUT
-   ========================================================================== */
-
 .puzzle-scene {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle, #fdfbfb 0%, #ebedee 100%);
-    /* Clean lab look */
+    background: #f0f9ff;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+    font-family: 'Comic Sans MS', cursive;
 }
 
-.puzzle-title {
-    font-size: 2.2rem;
-    color: #333;
-    margin-top: 50px;
-    text-shadow: 2px 2px 0px #fff;
+/* Target Area at the Top */
+.target-container {
+    margin-top: 60px;
+    text-align: center;
+    width: 100%;
 }
 
-/* ==========================================================================
-   2. THE BOX GRID (2x2)
-   ========================================================================== */
-
-.box-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    /* Two columns */
-    grid-template-rows: repeat(2, 1fr);
-    /* Two rows */
-    gap: 25px;
-    width: 90%;
-    max-width: 400px;
-    margin-top: 40px;
-}
-
-/* ==========================================================================
-   3. PUZZLE BOX STYLING (THE "TOY" LOOK)
-   ========================================================================== */
-
-.puzzle-box {
-    aspect-ratio: 1 / 1;
-    /* Keeps them perfect squares */
-    border-radius: 25px;
-    border: 8px solid rgba(255, 255, 255, 0.5);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    /* 3D Button Effect */
-    box-shadow: 0 12px 0 rgba(0, 0, 0, 0.1), inset 0 -8px 0 rgba(0, 0, 0, 0.1);
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.puzzle-box:active {
-    transform: translateY(8px);
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1), inset 0 -4px 0 rgba(0, 0, 0, 0.1);
-}
-
-/* Matched State: Visual reward for the child */
-.puzzle-box.matched {
-    transform: scale(0.95);
-    opacity: 0.8;
-    border-color: #4caf50;
-    filter: grayscale(0.5);
-    cursor: default;
-    box-shadow: none;
-    animation: box-pop 0.4s ease-out;
-}
-
-/* ==========================================================================
-   4. ICONS & LABELS
-   ========================================================================== */
-
-.box-icon {
-    font-size: 4rem;
+.instruction-text {
+    font-size: 1.2rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     margin-bottom: 10px;
 }
 
-.box-label {
-    font-size: 1.2rem;
+.target-display {
+    background: white;
+    padding: 30px 60px;
+    border-radius: 30px;
+    font-size: 3rem;
     font-weight: bold;
-    color: rgba(0, 0, 0, 0.6);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: #ff4081;
+    border: 8px solid #ff4081;
+    display: inline-block;
+    box-shadow: 0 10px 0 #ffc1d5;
 }
 
-.matched .box-label {
-    color: #2e7d32;
+.target-display.celebrate {
+    animation: bounce 0.5s infinite alternate;
+    background: #4caf50;
+    color: white;
+    border-color: white;
 }
 
-/* ==========================================================================
-   5. ANIMATIONS & UI
-   ========================================================================== */
+/* 4 Choice Boxes at the Bottom */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 50px;
+    width: 100%;
+    max-width: 400px;
+}
 
-@keyframes box-pop {
-    0% {
+.option-box {
+    aspect-ratio: 1;
+    background: white;
+    border: 6px solid #e0e0e0;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 0 #ddd;
+    transition: transform 0.1s;
+}
+
+.option-box:active {
+    transform: translateY(8px);
+    box-shadow: none;
+}
+
+.option-box.is-correct {
+    border-color: #4caf50;
+    background: #e8f5e9;
+}
+
+.option-content {
+    font-size: 4rem;
+}
+
+/* Feedback message */
+.feedback-pop {
+    position: absolute;
+    bottom: 100px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4caf50;
+    animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bounce {
+    from {
         transform: scale(1);
     }
 
-    50% {
-        transform: scale(1.15);
+    to {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes pop-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
     }
 
     100% {
-        transform: scale(0.95);
-    }
-}
-
-.back-btn {
-    position: absolute;
-    top: 25px;
-    left: 25px;
-    padding: 12px 25px;
-    background: #fff;
-    border: none;
-    border-radius: 50px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 480px) {
-    .box-grid {
-        gap: 15px;
-    }
-
-    .box-icon {
-        font-size: 3rem;
-    }
-
-    .box-label {
-        font-size: 1rem;
+        opacity: 1;
+        transform: scale(1);
     }
 }
