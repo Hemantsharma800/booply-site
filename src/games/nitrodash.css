@@ -1,140 +1,144 @@
-.race-scene {
+.race-container {
     position: fixed;
     inset: 0;
-    background: #4caf50;
-    /* Grass side */
+    background: #2e7d32;
+    /* Grass */
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: hidden;
+    font-family: 'Arial Black', sans-serif;
 }
 
-.highway {
+/* 🛣️ The Highway */
+.track {
     position: relative;
-    width: 300px;
-    height: 500px;
+    width: 320px;
+    height: 550px;
     background: #333;
     /* Asphalt */
-    border-left: 10px solid white;
-    border-right: 10px solid white;
-    display: flex;
-    justify-content: space-evenly;
+    border-left: 8px solid white;
+    border-right: 8px solid white;
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
-.lane-line {
-    width: 5px;
-    height: 200%;
-    /* Make it longer for the animation */
+/* Animated Road Lines */
+.road-lines {
     position: absolute;
+    width: 100%;
+    height: 200%;
     top: -100%;
-    border-left: 5px dashed rgba(255, 255, 255, 0.4);
-    animation: road-move 1s linear infinite;
+    background-image: linear-gradient(to bottom, transparent 50%, #fff 50%);
+    background-size: 10px 80px;
+    background-position: center;
+    background-repeat: repeat-y;
 }
 
-/* --- Player Car Orientation Fix --- */
+.road-lines.animating {
+    animation: drive 1s linear infinite;
+}
+
+@keyframes drive {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(80px);
+    }
+}
+
+/* 🏎️ Player Car Fix: Face Direction Up */
 .player-car {
     position: absolute;
-    bottom: 20px;
-    font-size: 3.5rem;
-    transition: left 0.2s ease;
-    /* 🏎️ Point the car UP the road */
-    transform: rotate(-90deg);
-    display: inline-block;
+    bottom: 80px;
+    font-size: 4rem;
+    transform: translateX(-50%) rotate(-90deg);
+    /* Faces UP the road */
+    transition: left 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 10;
 }
 
-/* --- Red Flash / Damage State --- */
-.player-car.crashed {
-    animation: crash-flash 0.3s infinite;
-    filter: drop-shadow(0 0 10px red);
+.player-car.hit {
+    animation: explode 0.2s infinite;
+    filter: drop-shadow(0 0 15px red);
 }
 
-@keyframes crash-flash {
-    0% {
-        color: white;
-        transform: rotate(-90deg) scale(1);
-    }
-
-    50% {
-        color: red;
-        transform: rotate(-90deg) scale(1.2);
-    }
-
-    100% {
-        color: white;
-        transform: rotate(-90deg) scale(1);
-    }
-}
-
-/* --- Game Over Overlay --- */
-.game-over-overlay {
+/* 🛑 Game Over Overlay */
+.crash-overlay {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 20px;
-    border: 5px solid #ff4757;
+    padding: 40px;
+    border-radius: 30px;
+    border: 6px solid #ff4757;
     text-align: center;
     z-index: 100;
-    box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 100px rgba(255, 71, 87, 0.4);
 }
 
-.loading-sign-red {
-    font-size: 3rem;
+/* Red Loading Sign */
+.loading-red {
+    font-size: 4rem;
     color: #ff4757;
-    margin-bottom: 10px;
-    animation: spin 1s linear infinite;
     display: block;
+    margin-bottom: 20px;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
+    100% {
         transform: rotate(360deg);
     }
 }
 
-/* Also check the enemy obstacle if you want it to face a certain way */
-.enemy-obstacle {
-    position: absolute;
-    font-size: 3rem;
-    /* Optional: subtle rotation for a 'crashed' look */
-    transform: rotate(10deg);
+@keyframes explode {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
-.lane-0 {
-    left: 5%;
-}
-
-.lane-1 {
-    left: 38%;
-}
-
-.lane-2 {
-    left: 71%;
-}
-
-.enemy-obstacle {
-    position: absolute;
-    font-size: 3rem;
-}
-
-.race-controls {
+/* 🎮 Score & Controls */
+.game-stats {
     display: flex;
-    gap: 50px;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #ddd;
+}
+
+.stat-box.high {
+    color: #ff9800;
+}
+
+.controls {
+    display: flex;
+    gap: 40px;
     margin-top: 20px;
 }
 
-.race-controls button {
-    padding: 20px 40px;
-    font-size: 1.5rem;
-    border-radius: 50px;
-    background: white;
+.controls button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
     border: none;
-    box-shadow: 0 5px 0 #ddd;
+    background: white;
+    font-size: 2rem;
+    box-shadow: 0 6px 0 #ddd;
 }

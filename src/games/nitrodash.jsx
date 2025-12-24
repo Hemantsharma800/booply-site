@@ -1,80 +1,107 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './nitrodash.css';
 
-function RacingGame({ onExit, onCorrectClick }) {
-    const [lane, setLane] = useState(1); // Lanes: 0, 1, 2
+const LANES = [15, 50, 85]; // Percentage positions for lanes
+
+function NitroDash({ onExit, onCorrectClick }) {
+    const [lane, setLane] = useState(1);
     const [score, setScore] = useState(0);
-    const [gameOver, setGameOver] = useState(false);
-    const [enemyPos, setEnemyPos] = useState({ lane: 1, top: -100 });
+    const [highScore, setHighScore] = useState(localStorage.getItem('nitro-high') || 0);
+    const [gameState, setGameState] = useState('playing'); // 'playing' or 'crashed'
+    const [speed, setSpeed] = useState(8);
+    const [obstacle, setObstacle] = useState({ lane: 1, top: -100, icon: '🚧' });
 
-    // Game Loop for the Enemy Car/Obstacle
+    // 🏎️ Game Loop
     useEffect(() => {
-        if (gameOver) return;
+        if (gameState !== 'playing') return;
 
-        const interval = setInterval(() => {
-            setEnemyPos((prev) => {
-                if (prev.top > 500) {
-                    // Reset enemy to top in a random lane
-                    setScore(s => s + 1);
-                    if (score > 0 && score % 5 === 0) onCorrectClick(); // Award star every 5 points
-                    return { lane: Math.floor(Math.random() * 3), top: -100 };
+        const moveLoop = setInterval(() => {
+            setObstacle(prev => {
+                if (prev.top > 600) {
+                    // Score Point & Increase Difficulty
+                    setScore(s => {
+                        const newScore = s + 1;
+                        if (newScore % 5 === 0) {
+                            setSpeed(v => v + 1); // Get faster every 5 points
+                            onCorrectClick(); // Award star
+                        }
+                        return newScore;
+                    });
+                    return { lane: Math.floor(Math.random() * 3), top: -100, icon: Math.random() > 0.5 ? '🚧' : '🛑' };
                 }
-                return { ...prev, top: prev.top + 10 }; // Speed
+                return { ...prev, top: prev.top + speed };
             });
-        }, 50);
+        }, 30);
 
-        return () => clearInterval(interval);
-    }, [gameOver, score, onCorrectClick]);
+        return () => clearInterval(moveLoop);
+    }, [gameState, speed, onCorrectClick]);
 
-    // Collision Detection
+    // 💥 Collision Detection
     useEffect(() => {
-        if (enemyPos.lane === lane && enemyPos.top > 350 && enemyPos.top < 450) {
-            setGameOver(true);
+        const carTop = 420; // Player Y position
+        if (obstacle.lane === lane && obstacle.top > carTop - 40 && obstacle.top < carTop + 40) {
+            setGameState('crashed');
+            if (score > highScore) {
+                setHighScore(score);
+                localStorage.setItem('nitro-high', score);
+            }
         }
-    }, [enemyPos, lane]);
+    }, [obstacle, lane, score, highScore]);
 
-    // ... inside your NitroDash component
+    const resetGame = () => {
+        setScore(0);
+        setSpeed(8);
+        setGameState('playing');
+        setObstacle({ lane: 1, top: -100, icon: '🚧' });
+    };
+
     return (
-        <div className="race-scene">
+        <div className="race-container">
             <button className="back-btn" onClick={onExit}>🏠 Home</button>
-            <div className="race-stats">Score: {score}</div>
 
-            <div className="highway">
-                <div className="lane-line"></div>
-                <div className="lane-line"></div>
+            <div className="game-stats">
+                <div className="stat-box">Score: {score}</div>
+                <div className="stat-box high">Best: {highScore}</div>
+            </div>
 
-                {/* Added dynamic "crashed" class */}
-                <div className={`player-car lane-${lane} ${gameOver ? 'crashed' : ''}`}>
+            <div className="track">
+                {/* Moving Lane Markers */}
+                <div className={`road-lines ${gameState === 'playing' ? 'animating' : ''}`}></div>
+
+                {/* Player Car - Rotated Upwards */}
+                <div
+                    className={`player-car ${gameState === 'crashed' ? 'hit' : ''}`}
+                    style={{ left: `${LANES[lane]}%` }}
+                >
                     🏎️
                 </div>
 
+                {/* Moving Obstacle */}
                 <div
-                    className="enemy-obstacle"
-                    style={{ left: `${enemyPos.lane * 33 + 5}%`, top: `${enemyPos.top}px` }}
+                    className="obstacle"
+                    style={{ left: `${LANES[obstacle.lane]}%`, top: `${obstacle.top}px` }}
                 >
-                    🚧
+                    {obstacle.icon}
                 </div>
             </div>
 
-            {gameOver && (
-                <div className="game-over-overlay">
-                    {/* Added the Red Loading Sign */}
-                    <span className="loading-sign-red">⏳</span>
-                    <h2>Oops! Crashed!</h2>
-                    <button className="try-again-btn" onClick={() => { setGameOver(false); setScore(0); setEnemyPos({ lane: 1, top: -100 }) }}>
-                        Try Again! 🏁
-                    </button>
+            {/* Game Over Popup with Red Loading Icon */}
+            {gameState === 'crashed' && (
+                <div className="crash-overlay">
+                    <div className="loading-red">⭕</div>
+                    <h2>GAME OVER!</h2>
+                    <p>You scored {score} points!</p>
+                    <button className="restart-btn" onClick={resetGame}>Try Again 🏁</button>
                 </div>
             )}
 
-            {!gameOver && (
-                <div className="race-controls">
-                    <button onClick={() => setLane(Math.max(0, lane - 1))}>⬅️</button>
-                    <button onClick={() => setLane(Math.min(2, lane + 1))}>➡️</button>
-                </div>
-            )}
+            {/* Controls */}
+            <div className="controls">
+                <button onClick={() => setLane(l => Math.max(0, l - 1))}>⬅️</button>
+                <button onClick={() => setLane(l => Math.min(2, l + 1))}>➡️</button>
+            </div>
         </div>
     );
 }
 
-export default RacingGame;
+export default NitroDash;
