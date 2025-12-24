@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './racinggame.css';
+import './nitrodash.css';
 
 function RacingGame({ onExit, onCorrectClick }) {
     const [lane, setLane] = useState(1); // Lanes: 0, 1, 2
