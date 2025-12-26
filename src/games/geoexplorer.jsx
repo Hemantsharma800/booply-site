@@ -1,88 +1,107 @@
 import React, { useState, useRef, Suspense } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, Stars, Html } from '@react-three/drei';
+import { OrbitControls, Stars, Html, Float } from '@react-three/drei';
 import * as THREE from 'three';
 
-// 🚨 CRITICAL PATH FIX: Standardized lowercase path to new folder
-import { GEO_AI_DATA, mockAiLookup } from '../data/geoaidata.js';
+// 🚨 ZERO-MISTAKE PATHING
+import { mockAiLookup } from '../data/geoaidata.js';
 import './geoexplorer.css';
 
-const EARTH_TEX = 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg';
+// High-Resolution Earth Assets
+const EARTH_TEXTURE = 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg';
 
-function Earth({ onScan }) {
+function RotatingEarth({ onScan }) {
     const earthRef = useRef();
-    const texture = useLoader(THREE.TextureLoader, EARTH_TEX);
+    const texture = useLoader(THREE.TextureLoader, EARTH_TEXTURE);
 
-    // Realistic Axis Rotation for High-Class Visuals
-    useFrame(() => {
-        if (earthRef.current) earthRef.current.rotation.y += 0.001;
+    // Hardware-Accelerated Axis Rotation
+    useFrame((state, delta) => {
+        if (earthRef.current) earthRef.current.rotation.y += delta * 0.1;
     });
 
     return (
-        <mesh ref={earthRef} onClick={onScan} scale={2.5}>
-            <sphereGeometry args={[1, 64, 64]} />
-            <meshStandardMaterial map={texture} roughness={0.7} metalness={0.2} />
-        </mesh>
+        <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
+            <mesh ref={earthRef} onClick={onScan} scale={2.6}>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshStandardMaterial map={texture} roughness={0.7} metalness={0.2} />
+            </mesh>
+        </Float>
     );
 }
 
-function GeoExplorer({ onExit }) {
-    const [data, setData] = useState(null);
+export default function GeoExplorer({ onExit, onCorrectClick }) {
+    const [scanResult, setScanResult] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
 
-    const handleGlobeClick = () => {
+    const startAiScan = () => {
         setIsScanning(true);
-        setData(null);
+        setScanResult(null);
+
+        // Simulate Satellite Deep Scan
         setTimeout(() => {
-            const aiResult = mockAiLookup();
-            setData(aiResult);
+            const data = mockAiLookup();
+            setScanResult(data);
             setIsScanning(false);
-        }, 1800);
+            if (onCorrectClick) onCorrectClick(); // Reward player with stars
+        }, 2500);
     };
 
     return (
-        <div className="geo-ai-arena">
-            <Canvas camera={{ position: [0, 0, 7] }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1.5} />
-                <Suspense fallback={<Html center><div className="satellite-loader">🛰️ LINKING...</div></Html>}>
-                    <Earth onScan={handleGlobeClick} />
-                    <Stars radius={300} depth={60} count={5000} factor={7} />
-                </Suspense>
-                <OrbitControls enableZoom={true} enablePan={false} />
-            </Canvas>
+        <div className="geo-ai-stage">
+            {/* 🌌 THREE.JS VIEWPORT */}
+            <div className="canvas-wrapper">
+                <Canvas camera={{ position: [0, 0, 8] }}>
+                    <ambientLight intensity={0.6} />
+                    <pointLight position={[10, 10, 10]} intensity={2} />
+                    <Suspense fallback={<Html center className="loader">SATELLITE LINKING...</Html>}>
+                        <RotatingEarth onScan={startAiScan} />
+                        <Stars radius={300} depth={60} count={10000} factor={7} fade />
+                    </Suspense>
+                    <OrbitControls enableZoom={true} enablePan={false} minDistance={4} maxDistance={12} />
+                </Canvas>
+            </div>
 
-            <div className="geo-hud">
-                <div className="header-hud">
-                    <h1>TERRA COGNITA AI</h1>
-                    <button className="exit-btn" onClick={onExit}>EXIT ORBIT</button>
+            {/* 📟 HIGH-CLASS HUD */}
+            <div className="hud-overlay">
+                <div className="hud-header">
+                    <div className="title-block">
+                        <h1>TERRA COGNITA AI</h1>
+                        <p className="status">{isScanning ? '● SCANNING SURFACE' : '● ORBITAL STEADY'}</p>
+                    </div>
+                    <button className="exit-orbit" onClick={onExit}>EXIT ORBIT ⛩️</button>
                 </div>
 
-                {isScanning && <div className="scanning-bar">ANALYZING GEOGRAPHY...</div>}
+                {isScanning && (
+                    <div className="scan-line-container">
+                        <div className="scanning-pulse"></div>
+                        <p>IDENTIFYING COORDINATES...</p>
+                    </div>
+                )}
 
-                {data && !isScanning && (
-                    <div className="info-panel glass-panel">
-                        <h2>{data.country}</h2>
-                        <div className="panel-stats">
-                            <p>Capital: <b>{data.capital}</b></p>
-                            <p>Pop: <b>{data.population}</b></p>
+                {scanResult && !isScanning && (
+                    <div className="ai-data-card fade-in" style={{ '--accent': scanResult.theme }}>
+                        <div className="card-top">
+                            <span className="label">AI IDENTIFIED</span>
+                            <h2>{scanResult.country}</h2>
                         </div>
-                        <div className="landmark-grid">
-                            {data.landmarks.map(l => (
-                                <div key={l.name} className="landmark-card">
-                                    <img src={l.img} alt={l.name} className="real-img" />
-                                    <span>{l.name}</span>
-                                </div>
-                            ))}
+                        <div className="card-stats">
+                            <div className="stat">
+                                <small>CAPITAL</small>
+                                <strong>{scanResult.capital}</strong>
+                            </div>
+                            <div className="stat">
+                                <small>POPULATION</small>
+                                <strong>{scanResult.population}</strong>
+                            </div>
                         </div>
-                        <div className="ai-insight">
-                            <strong>AI Fact:</strong> <p>{data.fact}</p>
+                        <div className="ai-fact">
+                            <strong>AI INSIGHT:</strong>
+                            <p>{scanResult.fact}</p>
                         </div>
+                        <button className="clear-hud" onClick={() => setScanResult(null)}>CLEAR FEED</button>
                     </div>
                 )}
             </div>
         </div>
     );
 }
-
-export default GeoExplorer;

@@ -1,78 +1,136 @@
-.geo-ai-arena {
+.geo-ai-stage {
     position: fixed;
     inset: 0;
     background: #000;
-    color: white;
     font-family: 'Inter', sans-serif;
+    color: #fff;
+    overflow: hidden;
 }
 
-.geo-overlay {
+.canvas-wrapper {
     position: absolute;
     inset: 0;
-    pointer-events: none;
-    padding: 30px;
+    z-index: 1;
 }
 
-.header-hud {
+.hud-overlay {
+    position: relative;
+    z-index: 10;
+    pointer-events: none;
+    height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* 💎 HUD HEADER */
+.hud-header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     pointer-events: auto;
 }
 
-.header-hud h1 {
-    letter-spacing: 4px;
-    font-weight: 200;
-    font-size: 1.5rem;
-}
-
-/* 💎 Glassmorphism Panel */
-.info-panel {
-    position: absolute;
-    right: 30px;
-    top: 100px;
-    width: 400px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 24px;
-    padding: 30px;
-    pointer-events: auto;
-}
-
-.landmark-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.landmark-card img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.city-pill {
-    background: rgba(0, 242, 255, 0.2);
-    padding: 5px 12px;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    margin-right: 5px;
-    border: 1px solid #00f2ff;
-}
-
-.scanning-bar {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #00f2ff;
+.title-block h1 {
+    font-size: 1.8rem;
     font-weight: 900;
     letter-spacing: 2px;
-    animation: blink 1s infinite;
+    background: linear-gradient(to right, #00f2ff, #0066ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
+.status {
+    color: #00f2ff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    margin-top: 5px;
+    animation: blink 1.5s infinite;
+}
+
+.exit-orbit {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+/* 📋 AI DATA CARD */
+.ai-data-card {
+    pointer-events: auto;
+    background: rgba(10, 15, 25, 0.8);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--accent);
+    padding: 2rem;
+    border-radius: 2rem;
+    width: 380px;
+    align-self: flex-end;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.label {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.card-top h2 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0.5rem 0;
+}
+
+.card-stats {
+    display: flex;
+    gap: 2rem;
+    margin: 1.5rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat small {
+    display: block;
+    color: #64748b;
+    font-size: 0.6rem;
+    font-weight: 800;
+}
+
+.stat strong {
+    font-size: 1rem;
+    color: #f8fafc;
+}
+
+.ai-fact {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 1rem;
+    border-left: 4px solid var(--accent);
+}
+
+.ai-fact p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+    margin-top: 5px;
+}
+
+.clear-hud {
+    width: 100%;
+    margin-top: 1.5rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #94a3b8;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* 🎥 ANIMATIONS */
 @keyframes blink {
 
     0%,
@@ -82,5 +140,21 @@
 
     50% {
         opacity: 0.3;
+    }
+}
+
+.fade-in {
+    animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
