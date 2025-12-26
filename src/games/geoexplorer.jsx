@@ -2,8 +2,9 @@ import React, { useState, useRef, Suspense } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars, Html } from '@react-three/drei';
 import * as THREE from 'three';
-// 🔥 CTO FIX: Use strict lowercase for the filename in the import
-import { GEO_AI_DATA, mockAiLookup } from './geoaidata.js';
+
+// 🔥 CTO FIX: Corrected path to the new 'data' folder
+import { GEO_AI_DATA, mockAiLookup } from '../data/geoaidata.js';
 import './geoexplorer.css';
 
 const EARTH_TEX = 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg';
@@ -44,7 +45,7 @@ function GeoExplorer({ onExit }) {
             <Canvas camera={{ position: [0, 0, 7] }}>
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} intensity={1.5} />
-                <Suspense fallback={<Html center>Satellite Linking...</Html>}>
+                <Suspense fallback={<Html center><div className="satellite-loader">🛰️ LINKING...</div></Html>}>
                     <Earth onScan={handleGlobeClick} />
                     <Stars radius={300} depth={60} count={5000} factor={7} />
                 </Suspense>
@@ -57,7 +58,7 @@ function GeoExplorer({ onExit }) {
                     <button className="exit-btn" onClick={onExit}>EXIT ORBIT</button>
                 </div>
 
-                {isScanning && <div className="scanning-bar">ANALYZING COORDINATES...</div>}
+                {isScanning && <div className="scanning-bar">ANALYZING GEOGRAPHY...</div>}
 
                 {data && !isScanning && (
                     <div className="info-panel glass-panel">
@@ -69,7 +70,7 @@ function GeoExplorer({ onExit }) {
                         <div className="landmark-grid">
                             {data.landmarks.map(l => (
                                 <div key={l.name} className="landmark-card">
-                                    <img src={l.img} alt={l.name} />
+                                    <img src={l.img} alt={l.name} className="real-img" />
                                     <span>{l.name}</span>
                                 </div>
                             ))}

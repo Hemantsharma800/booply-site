@@ -23,7 +23,7 @@ const INTERNAL_GAMES = {
   'dino-dash-v1': DinoGame,
 };
 
-// 🎡 FULL GAME REPOSITORY (CTO Optimized for Sales)
+// 🎡 FULL GAME REPOSITORY (Optimized for $1M Roadmap)
 const MASTER_GAME_LIST = [
   { id: 'geo-ai-v1', name: 'Terra Cognita AI', color: '#00f2ff', icon: '🌍', category: 'Premium' },
   { id: 'fighter-v1', name: 'Shadow Duel', color: '#1a1a1a', icon: '🥷', category: 'Action' },
@@ -57,7 +57,7 @@ function App() {
           <header className="pro-header">
             <h1 className="brand-logo">Booply</h1>
             <div className="user-hub">
-              {user ? <div className="profile-pill">👤 {user.name}</div> : <div className="profile-pill">Guest</div>}
+              <div className="profile-pill">{user ? `👤 ${user.name}` : 'Guest'}</div>
               <div className="star-display-elite">⭐ {totalStars}</div>
             </div>
           </header>
@@ -95,7 +95,7 @@ function App() {
               <div className="level-track-outer">
                 <div className="level-track-fill" style={{ width: `${(totalStars % 10) * 10}%` }}></div>
               </div>
-              <span className="stars-needed">{10 - (totalStars % 10)} more to Level Up!</span>
+              <span className="stars-needed">{10 - (totalStars % 10)} stars to Level Up!</span>
             </div>
           </footer>
         </div>
