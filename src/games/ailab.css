@@ -1,9 +1,8 @@
-.ai-lab-container {
+.ai-lab {
     position: fixed;
     inset: 0;
-    background: #0f172a;
-    /* Dark Tech Background */
-    color: white;
+    background: #fdf2f8;
+    /* Soft pink background */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,59 +10,79 @@
     font-family: 'Quicksand', sans-serif;
 }
 
-.brain-meter {
-    width: 300px;
-    height: 30px;
-    background: #334155;
-    border-radius: 15px;
-    overflow: hidden;
-    position: relative;
-    margin: 20px auto;
-    border: 2px solid #38bdf8;
+.train-zone {
+    display: flex;
+    gap: 20px;
+    margin-top: 40px;
 }
 
-.brain-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #38bdf8, #818cf8);
-    transition: width 0.5s ease;
-}
-
-.data-bin {
-    width: 140px;
-    height: 140px;
-    background: #1e293b;
-    border: 4px dashed #38bdf8;
-    border-radius: 20px;
+.teach-box {
+    width: 150px;
+    height: 180px;
+    background: white;
+    border: 6px solid #FF7F50;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 10px 0 #FF7F50;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    transition: transform 0.2s;
+    transition: 0.1s;
 }
 
-.data-bin:active {
-    transform: scale(0.9);
+.teach-box.food {
+    border-color: #4CAF50;
+    box-shadow: 0 10px 0 #4CAF50;
 }
 
-.ai-spinner {
-    font-size: 5rem;
-    animation: spin 2s linear infinite;
+.teach-box:active {
+    transform: translateY(10px);
+    box-shadow: none;
 }
 
-.ai-bubble {
-    background: white;
-    color: #0f172a;
-    padding: 20px;
-    border-radius: 20px;
-    font-weight: 900;
-    margin: 20px;
-    font-size: 1.5rem;
-    box-shadow: 0 0 20px #38bdf8;
+.big-emoji {
+    font-size: 4rem;
 }
 
-@keyframes spin {
+.thinking-boop {
+    font-size: 6rem;
+    animation: bounce 1s infinite;
+}
+
+.loading-bar {
+    width: 200px;
+    height: 20px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.fill {
+    height: 100%;
+    background: #ff4081;
+    animation: load 2s linear forwards;
+}
+
+@keyframes load {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes bounce {
+
+    0%,
     100% {
-        transform: rotate(360deg);
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
     }
 }
