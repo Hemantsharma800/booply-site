@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import './app.css';
 
-// 🎮 GAME COMPONENT IMPORTS
-import DinoGame from './games/dinogame.jsx';
-import ColorGame from './games/colourgame.jsx';
-import PuzzlePop from './games/puzzlepop.jsx';
-import NitroDash from './games/nitrodash.jsx';
-import KitchenClass from './games/kitchenclass.jsx';
-import AILab from './games/ailab.jsx';
+// 🎮 DIRECT IMPORTS FOR CORE ENGINES
+import GeoExplorer from './games/geoexplorer.jsx';
 import FighterGame from './games/fightergame.jsx';
-import GeoExplorer from './games/geoexplorer.jsx'; // 🌍 Terra Cognita AI
+import NitroDash from './games/nitrodash.jsx';
+import AILab from './games/ailab.jsx';
+import KitchenClass from './games/kitchenclass.jsx';
+import PuzzlePop from './games/puzzlepop.jsx';
+import ColorGame from './games/colourgame.jsx';
+import DinoGame from './games/dinogame.jsx';
 
 // ⚙️ CTO'S INTERNAL GAME REGISTRY
 const INTERNAL_GAMES = {
@@ -23,7 +23,7 @@ const INTERNAL_GAMES = {
   'dino-dash-v1': DinoGame,
 };
 
-// 🎡 FULL GAME REPOSITORY (Optimized for $1M Roadmap)
+// 🎡 FULL GAME REPOSITORY (Optimized for Marketing & SEO)
 const MASTER_GAME_LIST = [
   { id: 'geo-ai-v1', name: 'Terra Cognita AI', color: '#00f2ff', icon: '🌍', category: 'Premium' },
   { id: 'fighter-v1', name: 'Shadow Duel', color: '#1a1a1a', icon: '🥷', category: 'Action' },
@@ -36,74 +36,88 @@ const MASTER_GAME_LIST = [
 ];
 
 function App() {
+  // Persistence Layer
   const [activeGame, setActiveGame] = useState(null);
   const [totalStars, setTotalStars] = useState(() => Number(localStorage.getItem('booply-stars')) || 0);
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('booply-user')) || null);
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('booply-user')) || { name: 'New Hero', level: 1 });
 
-  const heroGames = MASTER_GAME_LIST.slice(0, 3);
-
+  // Update Storage on change
   useEffect(() => {
     localStorage.setItem('booply-stars', totalStars);
+    const level = Math.floor(totalStars / 10) + 1;
+    setUser(prev => ({ ...prev, level }));
   }, [totalStars]);
 
-  const handleCorrect = useCallback(() => {
+  const handleCorrectAction = useCallback(() => {
     setTotalStars(s => s + 1);
   }, []);
 
   return (
-    <div className="booply-elite-container">
+    <div className="booply-root-viewport">
       {!activeGame ? (
-        <div className="main-lobby-ui">
-          <header className="pro-header">
-            <h1 className="brand-logo">Booply</h1>
-            <div className="user-hub">
-              <div className="profile-pill">{user ? `👤 ${user.name}` : 'Guest'}</div>
-              <div className="star-display-elite">⭐ {totalStars}</div>
+        <div className="lobby-experience fade-in">
+          {/* 💎 ELITE HEADER */}
+          <header className="main-nav-glass">
+            <div className="nav-left">
+              <h1 className="booply-logo">BOOPLY</h1>
+            </div>
+            <div className="nav-right">
+              <div className="stat-pill profile">👤 {user.name}</div>
+              <div className="stat-pill level">LVL {user.level}</div>
+              <div className="stat-pill stars">⭐ {totalStars}</div>
             </div>
           </header>
 
-          <section className="hero-carousel">
-            <div className="hero-slide" style={{ '--bg': heroGames[0].color }}>
-              <div className="hero-content">
-                <span className="hero-emoji-floating">{heroGames[0].icon}</span>
-                <div className="hero-details">
-                  <h2>Featured: {heroGames[0].name}</h2>
-                  <button className="play-hero-btn" onClick={() => setActiveGame(heroGames[0])}>PLAY NOW ▶</button>
-                </div>
+          {/* 🏟️ FEATURED HERO SECTION (PBS Kids Style) */}
+          <section className="hero-feature">
+            <div className="hero-card" style={{ '--accent': MASTER_GAME_LIST[0].color }}>
+              <div className="hero-visual">{MASTER_GAME_LIST[0].icon}</div>
+              <div className="hero-info">
+                <span className="badge">FEATURED GAME</span>
+                <h2>{MASTER_GAME_LIST[0].name}</h2>
+                <p>Explore the Earth with AI Intelligence.</p>
+                <button className="play-cta" onClick={() => setActiveGame(MASTER_GAME_LIST[0])}>LAUNCH MISSION</button>
               </div>
             </div>
           </section>
 
-          <main className="lobby-content">
-            <h3 className="shelf-title">Our World of Games 🎮</h3>
-            <div className="unlimited-grid">
+          {/* 🎮 UNLIMITED GRID (CrazyGames Style) */}
+          <main className="game-grid-container">
+            <h3 className="grid-label">All Games 🔥</h3>
+            <div className="unlimited-auto-grid">
               {MASTER_GAME_LIST.map(game => (
-                <button key={game.id} className="game-card-elite" style={{ '--theme': game.color }} onClick={() => setActiveGame(game)}>
-                  <div className="card-visual">{game.icon}</div>
-                  <div className="card-info">
-                    <span className="category-tag">{game.category}</span>
-                    <span className="game-label">{game.name}</span>
+                <button
+                  key={game.id}
+                  className="game-card-elite"
+                  style={{ '--game-c': game.color }}
+                  onClick={() => setActiveGame(game)}
+                >
+                  <div className="card-thumb">{game.icon}</div>
+                  <div className="card-meta">
+                    <span className="game-name">{game.name}</span>
+                    <span className="game-cat">{game.category}</span>
                   </div>
                 </button>
               ))}
             </div>
           </main>
 
-          <footer className="footer-progression">
-            <div className="footer-content">
-              <span className="level-badge">LVL {Math.floor(totalStars / 10) + 1}</span>
-              <div className="level-track-outer">
-                <div className="level-track-fill" style={{ width: `${(totalStars % 10) * 10}%` }}></div>
+          {/* 🏆 PROGRESSION FOOTER */}
+          <footer className="experience-bar-footer">
+            <div className="progress-wrapper">
+              <div className="progress-track">
+                <div className="progress-fill" style={{ width: `${(totalStars % 10) * 10}%` }}></div>
               </div>
-              <span className="stars-needed">{10 - (totalStars % 10)} stars to Level Up!</span>
+              <p>{10 - (totalStars % 10)} STARS UNTIL LEVEL {user.level + 1}</p>
             </div>
           </footer>
         </div>
       ) : (
-        <div className="active-game-stage">
+        /* 🕹️ PRODUCTION GAME STAGE */
+        <div className="game-stage-fullscreen">
           {React.createElement(INTERNAL_GAMES[activeGame.id], {
             onExit: () => setActiveGame(null),
-            onCorrectClick: handleCorrect
+            onCorrectClick: handleCorrectAction
           })}
         </div>
       )}
