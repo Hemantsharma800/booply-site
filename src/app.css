@@ -3,202 +3,203 @@
   --panel: rgba(255, 255, 255, 0.05);
   --text: #ffffff;
   --subtext: #b4b4c3;
-  /* Radiant Palette */
-  --neon-blue: #00f2ff;
+  --accent: #00f2ff;
   --neon-purple: #bc13fe;
   --neon-pink: #ff00de;
   --neon-green: #39ff14;
 }
 
+/* 🌍 GLOBAL RESET */
 body {
   margin: 0;
   background-color: var(--bg);
-  background-image:
-    radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.05) 0%, transparent 20%),
-    radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 20%);
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* 🏙️ RESPONSIVE CONTAINER */
+/* 🏙️ FLUID LAPTOP CONTAINER */
 .booply-root {
   min-height: 100vh;
-  max-width: 1300px;
+  /* Expands on Laptops, stays snug on Phones */
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 5vw;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 💎 COLORFUL LOGO HEADER */
+/* 💎 NEON GRADIENT HEADER */
 .elite-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3rem 0;
+  padding: clamp(2rem, 5vh, 4rem) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .logo {
-  font-size: 2.8rem;
+  font-size: clamp(2rem, 6vw, 3.2rem);
   font-weight: 900;
   letter-spacing: -3px;
-  /* Multi-color Gradient Logo */
-  background: linear-gradient(to right, #00f2ff, #bc13fe, #ff00de);
+  background: linear-gradient(to right, var(--accent), var(--neon-purple), var(--neon-pink));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 15px rgba(188, 19, 254, 0.4));
 }
 
 .star-counter {
-  background: linear-gradient(135deg, #222, #000);
+  background: #000;
   border: 1px solid #ffd700;
   padding: 10px 25px;
   border-radius: 50px;
   color: #ffd700;
   font-weight: 900;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
 }
 
-/* 🏟️ VIBRANT HERO CARD */
+/* 🏟️ RESPONSIVE HERO BOX */
 .hero-box {
-  padding-bottom: 5rem;
+  padding: 4rem 0;
 }
 
 .hero-card {
-  position: relative;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border: 2px solid var(--accent);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--accent);
   border-radius: 40px;
-  padding: 4rem;
+  padding: clamp(2rem, 6vw, 5rem);
   display: flex;
+  flex-direction: row;
+  /* Horizontal for Laptops */
   align-items: center;
   gap: 4rem;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 242, 255, 0.1);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
 }
 
-/* Animated background glow for Hero */
-.hero-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
-  opacity: 0.1;
-  animation: rotateGlow 10s linear infinite;
+.hero-icon {
+  font-size: clamp(4rem, 10vw, 8.5rem);
 }
 
-@keyframes rotateGlow {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+.hero-info h2 {
+  font-size: clamp(1.8rem, 4vw, 3.5rem);
+  margin: 10px 0;
 }
 
-.launch-btn {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  padding: 18px 45px;
-  border-radius: 15px;
-  font-weight: 900;
-  font-size: 1.3rem;
-  cursor: pointer;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  transition: 0.3s;
+/* 🎮 DYNAMIC MULTI-COLUMN GRID */
+.arcade-section {
+  padding-bottom: 150px;
 }
 
-.launch-btn:hover {
-  transform: scale(1.05) translateY(-5px);
-  box-shadow: 0 15px 30px var(--accent);
-}
-
-/* 🎮 ARCADE GRID: VIBRANT TILES */
 .arcade-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  /* This logic automatically adds more columns on Laptops */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2.5rem;
-  padding-bottom: 100px;
 }
 
 .game-tile {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.5));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2.5rem;
-  border-radius: 32px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3rem;
+  border-radius: 35px;
   text-align: center;
   cursor: pointer;
   transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
 }
 
-/* Dynamic color hover state using the game's theme */
 .game-tile:hover {
-  transform: translateY(-15px) scale(1.02);
+  transform: translateY(-20px) scale(1.03);
   border-color: var(--theme);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px var(--theme);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.8));
+  /* Uses game-specific variable */
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 30px var(--theme);
 }
 
 .tile-emoji {
-  font-size: 4.5rem;
-  margin-bottom: 1.5rem;
-  display: block;
+  font-size: 5rem;
+  margin-bottom: 1rem;
   filter: drop-shadow(0 0 10px var(--theme));
 }
 
 .tile-name {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 900;
-  color: #fff;
+  display: block;
 }
 
 .tile-cat {
   color: var(--theme);
-  font-size: 0.8rem;
   font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
 }
 
-/* 📱 MOBILE RESPONSIVENESS */
-@media (max-width: 768px) {
+/* 📱 SMART PHONE ADAPTATION */
+@media (max-width: 900px) {
   .hero-card {
     flex-direction: column;
     text-align: center;
-    padding: 3rem 2rem;
+    gap: 2rem;
   }
 
+  .arcade-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
   .arcade-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
 
-  .logo {
-    font-size: 2.2rem;
+  .game-tile {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .tile-emoji {
+    font-size: 3rem;
+  }
+
+  .tile-name {
+    font-size: 1rem;
   }
 }
 
-/* 🕹️ STAGE TRANSITION */
+/* 🕹️ FULLSCREEN OVERLAYS */
+.full-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-glass {
+  background: #000;
+  border: 1px solid var(--accent);
+  padding: 4rem;
+  border-radius: 40px;
+  width: 90%;
+  max-width: 700px;
+}
+
 .fade-in {
-  animation: vibrantFade 0.8s ease-out;
+  animation: vibrantFade 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes vibrantFade {
   from {
     opacity: 0;
-    filter: blur(10px);
-    transform: scale(0.95);
+    transform: scale(0.9) translateY(30px);
   }
 
   to {
     opacity: 1;
-    filter: blur(0);
-    transform: scale(1);
+    transform: scale(1) translateY(0);
   }
 }
