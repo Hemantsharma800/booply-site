@@ -3,26 +3,23 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <meta name="theme-color" content="#000000" />
-  <meta name="description"
-    content="Booply: The Elite Arcade for Next-Gen Learning. Math, Geography, and Action games in one high-performance platform." />
+  <meta name="description" content="Booply: Elite Math Arcade" />
 
-  <link rel="icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/logo192.png" />
   <link rel="manifest" href="/manifest.json" />
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Booply">
 
   <title>Booply | Elite Math Arcade</title>
 
   <style>
     body {
       margin: 0;
-      background-color: #000000;
+      background-color: #000;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -32,7 +29,7 @@
 
     #root:empty::before {
       content: 'BOOPLY';
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, sans-serif;
       font-weight: 900;
       font-size: 2rem;
       letter-spacing: -2px;
@@ -56,10 +53,8 @@
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-
   <div id="root"></div>
-
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>
