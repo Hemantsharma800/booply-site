@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import './app.css';
 
-// ALL IMPORTS (Verified paths)
+// 🎮 GAME REGISTRY
 import GeoExplorer from './games/geoexplorer.jsx';
 import SnakeGame from './games/snakegame.jsx';
 import FighterGame from './games/fightergame.jsx';
@@ -13,9 +13,15 @@ import ColourGame from './games/colourgame.jsx';
 import DinoGame from './games/dinogame.jsx';
 
 const INTERNAL_GAMES = {
-  'snake-v1': SnakeGame, 'geo-ai-v1': GeoExplorer, 'fighter-v1': FighterGame,
-  'nitro-dash-v1': NitroDash, 'ai-lab-v1': AILab, 'kitchen-class-v1': KitchenClass,
-  'puzzle-pop-v1': PuzzlePop, 'colour-fun-v1': ColourGame, 'dino-dash-v1': DinoGame,
+  'snake-v1': SnakeGame,
+  'geo-ai-v1': GeoExplorer,
+  'fighter-v1': FighterGame,
+  'nitro-dash-v1': NitroDash,
+  'ai-lab-v1': AILab,
+  'kitchen-class-v1': KitchenClass,
+  'puzzle-pop-v1': PuzzlePop,
+  'colour-fun-v1': ColourGame,
+  'dino-dash-v1': DinoGame,
 };
 
 const MASTER_GAME_LIST = [
@@ -43,58 +49,66 @@ export default function App() {
   return (
     <div className="booply-black-root">
       {!activeGame ? (
-        <>
+        <div className="lobby-fade-in">
+          {/* 💎 ELITE HUD */}
           <header className="main-header">
             <h1 className="logo-glow">BOOPLY</h1>
-            <div className="stat-group">
-              <span className="pill">⭐ {stars}</span>
-              <span className="pill">LVL {Math.floor(stars / 10) + 1}</span>
+            <div className="stat-pills">
+              <span className="pill-item">⭐ {stars}</span>
+              <span className="pill-item">LVL {Math.floor(stars / 10) + 1}</span>
             </div>
           </header>
 
-          <section className="hero-feature">
-            <div className="hero-card-black" style={{ '--accent': MASTER_GAME_LIST[0].color }}>
-              <span className="hero-icon-large">{MASTER_GAME_LIST[0].icon}</span>
-              <div className="hero-text">
-                <span className="premium-tag">NEW RELEASE</span>
+          {/* 🏟️ HERO SHOWCASE */}
+          <section className="hero-section">
+            <div className="hero-card-dark" style={{ '--hero-accent': MASTER_GAME_LIST[0].color }}>
+              <div className="hero-visual">{MASTER_GAME_LIST[0].icon}</div>
+              <div className="hero-content">
+                <span className="premium-tag">ELITE ACCESS</span>
                 <h2>{MASTER_GAME_LIST[0].name}</h2>
-                <button className="launch-btn" onClick={() => setActiveGame(MASTER_GAME_LIST[0])}>
-                  ENTER ARENA
+                <p>Classic Nokia 1100 mechanics. 4K Neon graphics.</p>
+                <button className="play-btn-neon" onClick={() => setActiveGame(MASTER_GAME_LIST[0])}>
+                  LAUNCH MISSION
                 </button>
               </div>
             </div>
           </section>
 
-          <main className="grid-section">
-            <div className="dynamic-arcade-grid">
+          {/* 🎮 UNLIMITED GRID */}
+          <main className="arcade-library">
+            <h3 className="grid-label">Arcade Vault</h3>
+            <div className="arcade-auto-grid">
               {MASTER_GAME_LIST.map(game => (
                 <button
                   key={game.id}
-                  className="arcade-tile"
+                  className="game-tile-elite"
                   style={{ '--tile-theme': game.color }}
                   onClick={() => setActiveGame(game)}
                 >
                   <span className="tile-icon">{game.icon}</span>
-                  <div className="tile-details">
-                    <span className="tile-name">{game.name}</span>
+                  <div className="tile-meta">
+                    <span className="tile-title">{game.name}</span>
+                    <span className="tile-category">{game.category}</span>
                   </div>
                 </button>
               ))}
             </div>
           </main>
 
+          {/* 🏆 PROGRESSION FOOTER */}
           <footer className="experience-footer">
-            <div className="xp-wrapper">
+            <div className="xp-bar-container">
               <div className="xp-track">
                 <div className="xp-fill" style={{ width: `${(stars % 10) * 10}%` }}></div>
               </div>
-              <p className="xp-label">{10 - (stars % 10)} STARS UNTIL NEXT LEVEL</p>
+              <p className="xp-count">{10 - (stars % 10)} STARS UNTIL LEVEL UP</p>
             </div>
           </footer>
-        </>
+        </div>
       ) : (
-        <div className="stage-fullscreen">
-          <Suspense fallback={<div className="loading">LOADING ENGINE...</div>}>
+        /* 🕹️ PRODUCTION GAME STAGE */
+        <div className="stage-fullscreen-black">
+          <Suspense fallback={<div className="black-loader">INITIALIZING...</div>}>
             {React.createElement(INTERNAL_GAMES[activeGame.id], {
               onExit: () => setActiveGame(null),
               onCorrectClick: awardStar

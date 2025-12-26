@@ -1,4 +1,4 @@
-/* GLOBAL THEME OVERRIDE */
+/* FORCE RESET - ELITE BLACK THEME */
 :root {
   background-color: #000000 !important;
   color-scheme: dark;
@@ -9,12 +9,13 @@ body {
   padding: 0;
   background-color: #000000 !important;
   color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 #root {
-  width: 100%;
   min-height: 100vh;
-  display: block;
+  display: flex;
+  flex-direction: column;
 }

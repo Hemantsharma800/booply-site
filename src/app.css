@@ -1,3 +1,4 @@
+/* ELITE BLACK THEME VISUALS */
 .booply-black-root {
   background-color: #000000;
   min-height: 100vh;
@@ -11,139 +12,142 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4rem;
+  padding-bottom: 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 1.5rem;
 }
 
 .logo-glow {
-  font-size: 3rem;
+  font-size: 3.2rem;
   font-weight: 900;
   letter-spacing: -3px;
   background: linear-gradient(to right, #00f2ff, #0066ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.6));
+  filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.5));
 }
 
-.pill {
+.stat-pills {
+  display: flex;
+  gap: 1rem;
+}
+
+.pill-item {
   background: #111;
-  padding: 0.8rem 1.5rem;
-  border-radius: 100px;
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-weight: 800;
-  color: #fff;
+  font-size: 1rem;
 }
 
-/* 🏟️ HERO SHOWCASE */
-.hero-feature {
-  margin-bottom: 5rem;
-}
-
-.hero-card-black {
-  background: linear-gradient(145deg, #111111, #000000);
-  border: 2px solid var(--accent);
+/* 🏟️ HERO SECTION */
+.hero-card-dark {
+  background: linear-gradient(145deg, #111, #000);
+  border: 2px solid var(--hero-accent);
   border-radius: 40px;
   padding: 4rem;
   display: flex;
   align-items: center;
-  gap: 4rem;
-  box-shadow: 0 0 60px rgba(0, 0, 0, 1);
+  gap: 5rem;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 1);
+  margin-bottom: 5rem;
 }
 
-.hero-icon-large {
-  font-size: 9rem;
-  filter: drop-shadow(0 0 30px var(--accent));
+.hero-visual {
+  font-size: 10rem;
+  filter: drop-shadow(0 0 30px var(--hero-accent));
 }
 
-.hero-text h2 {
-  font-size: 3.5rem;
-  margin: 1rem 0;
+.hero-content h2 {
+  font-size: 3.8rem;
+  margin: 0.5rem 0;
   font-weight: 900;
-  line-height: 1;
 }
 
-.launch-btn {
-  background: var(--accent);
+.play-btn-neon {
+  background: var(--hero-accent);
   color: #000;
   border: none;
-  padding: 1.5rem 3.5rem;
+  padding: 1.5rem 4rem;
   border-radius: 20px;
   font-weight: 900;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   cursor: pointer;
+  margin-top: 2rem;
   transition: 0.3s;
 }
 
-.launch-btn:hover {
-  transform: scale(1.05) translateY(-5px);
-  box-shadow: 0 0 30px var(--accent);
+.play-btn-neon:hover {
+  transform: scale(1.05) translateY(-8px);
+  box-shadow: 0 0 40px var(--hero-accent);
 }
 
 /* 🎮 ARCADE GRID */
-.dynamic-arcade-grid {
+.arcade-auto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
   padding-bottom: 150px;
 }
 
-.arcade-tile {
+.game-tile-elite {
   background: #111;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 30px;
   padding: 2.5rem;
-  text-align: center;
   cursor: pointer;
   transition: 0.4s;
+  text-align: center;
 }
 
-.arcade-tile:hover {
+.game-tile-elite:hover {
   border-color: var(--tile-theme);
   transform: translateY(-15px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .tile-icon {
   font-size: 4.5rem;
+  display: block;
   margin-bottom: 1.5rem;
-  display: block;
 }
 
-.tile-name {
-  display: block;
+.tile-title {
   font-weight: 800;
-  font-size: 1.4rem;
-  color: #fff;
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
-/* 🏆 FOOTER */
+/* 🏆 FOOTER XP */
 .experience-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(20px);
-  padding: 2rem 0;
+  padding: 2.5rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.xp-wrapper {
+.xp-bar-container {
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
 }
 
 .xp-track {
-  height: 12px;
-  background: #222;
+  height: 14px;
+  background: #1e293b;
   border-radius: 20px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .xp-fill {
   height: 100%;
   background: #00ff41;
   box-shadow: 0 0 20px #00ff41;
+  transition: width 0.8s ease-in-out;
 }
