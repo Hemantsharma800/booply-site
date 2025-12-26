@@ -8,6 +8,7 @@ import PuzzlePop from './games/puzzlepop.jsx';
 import NitroDash from './games/nitrodash.jsx';
 import KitchenClass from './games/kitchenclass.jsx';
 import AILab from './games/ailab.jsx';
+import MultiplayerHost from './games/MultiplayerHost.jsx';
 
 const INTERNAL_GAMES = {
   'dino-dash-v1': DinoGame,
@@ -16,6 +17,7 @@ const INTERNAL_GAMES = {
   'nitro-dash-v1': NitroDash,
   'kitchen-class-v1': KitchenClass,
   'ai-lab-v1': AILab,
+  'multiplayer-host-v1': MultiplayerHost,
 };
 
 const MASTER_GAME_LIST = [
@@ -25,6 +27,7 @@ const MASTER_GAME_LIST = [
   { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Featured' },
   { id: 'color-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', category: 'Featured' },
   { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖', category: 'Action' },
+  { id: 'multiplayer-host-v1', name: 'Multiplayer Hub', color: '#32CD32', icon: '🌐', category: 'Featured' },
 ];
 
 function App() {
