@@ -2,112 +2,119 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './fightergame.css';
 
 const MAX_HP = 100;
-const SPECIAL_COST = 40;
 
 function FighterGame({ onExit, onCorrectClick }) {
-    const [mode, setMode] = useState(null); // 'bot' or 'pvp'
     const [p1, setP1] = useState({ hp: MAX_HP, energy: 0, status: 'idle' });
-    const [p2, setP2] = useState({ hp: MAX_HP, energy: 0, status: 'idle' });
+    const [ai, setAi] = useState({ hp: MAX_HP, energy: 0, status: 'idle' });
     const [winner, setWinner] = useState(null);
+    const [combatLog, setCombatLog] = useState("Face your shadow...");
 
-    // 🤖 AI Bot Logic
+    // 🧠 Reactive AI Intelligence
     useEffect(() => {
-        if (mode === 'bot' && !winner && p2.hp > 0) {
-            const botBrain = setInterval(() => {
-                const move = Math.random();
-                if (move > 0.8) handleAttack(2, 1, 'heavy');
-                else if (move > 0.3) handleAttack(2, 1, 'light');
-            }, 1200);
-            return () => clearInterval(botBrain);
-        }
-    }, [mode, winner, p2.hp]);
+        if (winner || ai.hp <= 0) return;
 
-    const handleAttack = (attacker, target, type) => {
-        if (winner || (attacker === 1 ? p1.status : p2.status) !== 'idle') return;
+        const aiThinking = setInterval(() => {
+            // If player is attacking, AI has a 50% chance to block
+            if (p1.status === 'attacking') {
+                if (Math.random() > 0.5) {
+                    setAi(s => ({ ...s, status: 'blocking' }));
+                    setCombatLog("Shadow blocked! 🛡️");
+                }
+            } else if (ai.status === 'idle') {
+                // AI decides to strike based on player distance/state
+                if (Math.random() > 0.8) executeAiStrike();
+            }
+        }, 700);
 
-        const damage = type === 'special' ? 25 : type === 'heavy' ? 15 : 8;
-        const energyGain = type === 'special' ? -SPECIAL_COST : 15;
+        return () => clearInterval(aiThinking);
+    }, [p1.status, ai.status, winner]);
 
-        // Set Animation State
-        attacker === 1 ? setP1(s => ({ ...s, status: type })) : setP2(s => ({ ...s, status: type }));
+    const executeAiStrike = () => {
+        setAi(s => ({ ...s, status: 'attacking' }));
+        setTimeout(() => {
+            if (p1.status !== 'blocking') {
+                setP1(s => ({ ...s, hp: Math.max(0, s.hp - 12), status: 'hurt' }));
+                setCombatLog("The Shadow strikes! ⚔️");
+            } else {
+                setCombatLog("You parried the shadow! 🛡️");
+            }
+            resetPositions();
+        }, 400);
+    };
+
+    const playerStrike = (type) => {
+        if (winner || p1.status !== 'idle') return;
+        const damage = type === 'special' ? 25 : 12;
+
+        setP1(s => ({ ...s, status: 'attacking', energy: Math.min(100, s.energy + 10) }));
 
         setTimeout(() => {
-            if (target === 1) setP1(s => ({ ...s, hp: Math.max(0, s.hp - damage) }));
-            else setP2(s => ({ ...s, hp: Math.max(0, s.hp - damage) }));
+            if (ai.status !== 'blocking') {
+                setAi(s => ({ ...s, hp: Math.max(0, s.hp - damage), status: 'hurt' }));
+                setCombatLog(type === 'special' ? "ULTRA STRIKE! 🔥" : "Hit landed! ⚔️");
+            }
+            resetPositions();
+        }, 300);
+    };
 
-            attacker === 1
-                ? setP1(s => ({ ...s, status: 'idle', energy: Math.min(100, s.energy + energyGain) }))
-                : setP2(s => ({ ...s, status: 'idle', energy: Math.min(100, s.energy + energyGain) }));
+    const resetPositions = () => {
+        setTimeout(() => {
+            setP1(s => ({ ...s, status: 'idle' }));
+            setAi(s => ({ ...s, status: 'idle' }));
         }, 300);
     };
 
     useEffect(() => {
-        if (p1.hp <= 0) setWinner(mode === 'bot' ? 'THE BOT' : 'PLAYER 2');
-        if (p2.hp <= 0) { setWinner('PLAYER 1'); onCorrectClick(); }
-    }, [p1.hp, p2.hp, mode, onCorrectClick]);
-
-    if (!mode) return (
-        <div className="fight-menu fade-in">
-            <h1 className="arena-title">SUPER BRAWL</h1>
-            <div className="mode-cards">
-                <button className="mode-card bot" onClick={() => setMode('bot')}>
-                    <div className="mode-icon">🤖</div>
-                    <h3>VS COMPUTER</h3>
-                    <p>Practice your moves!</p>
-                </button>
-                <button className="mode-card pvp" onClick={() => setMode('pvp')}>
-                    <div className="mode-icon">⚔️</div>
-                    <h3>2 PLAYER PVP</h3>
-                    <p>Battle a friend!</p>
-                </button>
-            </div>
-            <button className="exit-arena" onClick={onExit}>⬅ BACK TO LOBBY</button>
-        </div>
-    );
+        if (p1.hp <= 0) setWinner('SHADOW BOT');
+        if (ai.hp <= 0) { setWinner('NINJA MASTER'); onCorrectClick(); }
+    }, [p1.hp, ai.hp, onCorrectClick]);
 
     return (
-        <div className="fight-arena-wrapper">
-            <div className="arena-hud">
-                <div className="fighter-stats left">
-                    <div className="name-tag">PLAYER 1</div>
-                    <div className="hp-outer"><div className="hp-fill" style={{ width: `${p1.hp}%` }}></div></div>
-                    <div className="energy-outer"><div className="energy-fill" style={{ width: `${p1.energy}%` }}></div></div>
+        <div className="shadow-arena">
+            <button className="exit-gate" onClick={onExit}>⛩️ Leave Dojo</button>
+
+            <div className="hud-top">
+                <div className="player-vitals">
+                    <div className="hp-bar"><div className="fill" style={{ width: `${p1.hp}%` }}></div></div>
+                    <div className="energy-bar"><div className="fill" style={{ width: `${p1.energy}%` }}></div></div>
+                    <p>NINJA (YOU)</p>
                 </div>
-                <div className="vs-badge">VS</div>
-                <div className="fighter-stats right">
-                    <div className="name-tag">{mode === 'bot' ? 'BOT' : 'PLAYER 2'}</div>
-                    <div className="hp-outer"><div className="hp-fill enemy" style={{ width: `${p2.hp}%` }}></div></div>
-                    <div className="energy-outer"><div className="energy-fill" style={{ width: `${p2.energy}%` }}></div></div>
+                <div className="log-scroll">{combatLog}</div>
+                <div className="player-vitals ai">
+                    <div className="hp-bar enemy"><div className="fill" style={{ width: `${ai.hp}%` }}></div></div>
+                    <div className="energy-bar"><div className="fill" style={{ width: `${ai.energy}%` }}></div></div>
+                    <p>SHADOW</p>
                 </div>
             </div>
 
-            <div className="stage">
-                <div className={`fighter p1 ${p1.status}`} data-emoji="🥋"></div>
-                <div className={`fighter p2 ${p2.status}`} data-emoji={mode === 'bot' ? '🤖' : '🥷'}></div>
+            <div className="duel-floor">
+                {/* Shadow Ninja Silhouettes */}
+                <div className={`shadow-ninja p1 ${p1.status}`}>
+                    <div className="n-head"></div>
+                    <div className="n-body"></div>
+                    <div className="n-sword"></div>
+                </div>
+
+                <div className={`shadow-ninja ai ${ai.status}`}>
+                    <div className="n-head"></div>
+                    <div className="n-body"></div>
+                    <div className="n-sword"></div>
+                </div>
             </div>
 
             {!winner ? (
-                <div className="combat-ui">
-                    <div className="control-group">
-                        <button className="btn-atk" onClick={() => handleAttack(1, 2, 'light')}>PUNCH</button>
-                        <button className="btn-atk heavy" onClick={() => handleAttack(1, 2, 'heavy')}>KICK</button>
-                        <button className={`btn-special ${p1.energy < SPECIAL_COST ? 'disabled' : ''}`}
-                            onClick={() => handleAttack(1, 2, 'special')}>ULTRA 🔥</button>
-                    </div>
-                    {mode === 'pvp' && (
-                        <div className="control-group p2">
-                            <button className="btn-atk" onClick={() => handleAttack(2, 1, 'light')}>PUNCH</button>
-                            <button className="btn-atk heavy" onClick={() => handleAttack(2, 1, 'heavy')}>KICK</button>
-                            <button className={`btn-special ${p2.energy < SPECIAL_COST ? 'disabled' : ''}`}
-                                onClick={() => handleAttack(2, 1, 'special')}>ULTRA 🔥</button>
-                        </div>
-                    )}
+                <div className="touch-input">
+                    <button className="btn strike" onClick={() => playerStrike('light')}>STRIKE</button>
+                    <button className="btn block"
+                        onMouseDown={() => setP1(s => ({ ...s, status: 'blocking' }))}
+                        onMouseUp={() => setP1(s => ({ ...s, status: 'idle' }))}>BLOCK</button>
+                    <button className={`btn ultra ${p1.energy < 100 ? 'locked' : ''}`}
+                        onClick={() => playerStrike('special')}>ULTRA</button>
                 </div>
             ) : (
-                <div className="win-screen scale-in">
-                    <h2>{winner} VICTORIOUS!</h2>
-                    <button className="rematch-btn" onClick={() => { setP1({ hp: 100, energy: 0, status: 'idle' }); setP2({ hp: 100, energy: 0, status: 'idle' }); setWinner(null); }}>REMATCH</button>
-                    <button className="exit-btn" onClick={onExit}>LOBBY</button>
+                <div className="end-screen">
+                    <h2>{winner} PREVAILS</h2>
+                    <button onClick={() => window.location.reload()}>REBORN</button>
                 </div>
             )}
         </div>
