@@ -1,19 +1,20 @@
+/* GLOBAL THEME OVERRIDE */
 :root {
-  font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  background-color: #000000 !important;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   padding: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  width: 100%;
+  background-color: #000000 !important;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
   width: 100%;
+  min-height: 100vh;
+  display: block;
 }
