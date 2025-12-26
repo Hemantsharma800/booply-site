@@ -3,7 +3,7 @@ import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
-// 🔥 CTO FIX: Corrected path to the new 'data' folder
+// 🚨 CRITICAL PATH FIX: Standardized lowercase path to new folder
 import { GEO_AI_DATA, mockAiLookup } from '../data/geoaidata.js';
 import './geoexplorer.css';
 
@@ -13,7 +13,7 @@ function Earth({ onScan }) {
     const earthRef = useRef();
     const texture = useLoader(THREE.TextureLoader, EARTH_TEX);
 
-    // Realistic Axis Rotation
+    // Realistic Axis Rotation for High-Class Visuals
     useFrame(() => {
         if (earthRef.current) earthRef.current.rotation.y += 0.001;
     });
