@@ -10,6 +10,7 @@ import KitchenClass from './games/kitchenclass.jsx';
 import PuzzlePop from './games/puzzlepop.jsx';
 import ColorGame from './games/colourgame.jsx';
 import DinoGame from './games/dinogame.jsx';
+import SnakeGame from './games/snakegame.jsx';
 
 // ⚙️ CTO'S INTERNAL GAME REGISTRY
 const INTERNAL_GAMES = {
@@ -21,6 +22,7 @@ const INTERNAL_GAMES = {
   'puzzle-pop-v1': PuzzlePop,
   'color-fun-v1': ColorGame,
   'dino-dash-v1': DinoGame,
+  'snake-game-v1': SnakeGame,
 };
 
 // 🎡 FULL GAME REPOSITORY (Optimized for Marketing & SEO)
@@ -33,6 +35,7 @@ const MASTER_GAME_LIST = [
   { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Featured' },
   { id: 'color-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', category: 'Featured' },
   { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖', category: 'Action' },
+  { id: 'snake-v1', name: 'Neon Cobra', color: '#22c55e', icon: '🐍', category: 'Classic' },
 ];
 
 function App() {
