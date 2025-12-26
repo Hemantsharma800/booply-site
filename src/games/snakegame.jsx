@@ -64,7 +64,7 @@ function App() {
                         </div>
                     </header>
 
-                    {/* 🏟️ HERO SECTION: FEATURING NEON COBRA */}
+                    {/* 🏟️ HERO SECTION */}
                     <section className="hero-showcase">
                         <div className="hero-card-dark" style={{ '--accent': MASTER_GAME_LIST[0].color }}>
                             <div className="hero-content">
