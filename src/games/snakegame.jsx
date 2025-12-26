@@ -1,129 +1,88 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import './app.css';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import './snakegame.css';
 
-// 🎮 GAME COMPONENT REGISTRY
-import GeoExplorer from './games/geoexplorer.jsx';
-import SnakeGame from './games/snakegame.jsx';
-import FighterGame from './games/fightergame.jsx';
-import NitroDash from './games/nitrodash.jsx';
-import AILab from './games/ailab.jsx';
-import KitchenClass from './games/kitchenclass.jsx';
-import PuzzlePop from './games/puzzlepop.jsx';
-import ColorGame from './games/colourgame.jsx';
-import DinoGame from './games/dinogame.jsx';
+const GRID_SIZE = 20;
+const INITIAL_SNAKE = [[10, 10], [10, 11], [10, 12]];
 
-// ⚙️ CTO'S INTERNAL MAPPING
-const INTERNAL_GAMES = {
-    'geo-ai-v1': GeoExplorer,
-    'snake-v1': SnakeGame,
-    'fighter-v1': FighterGame,
-    'nitro-dash-v1': NitroDash,
-    'ai-lab-v1': AILab,
-    'kitchen-class-v1': KitchenClass,
-    'puzzle-pop-v1': PuzzlePop,
-    'color-fun-v1': ColorGame,
-    'dino-dash-v1': DinoGame,
-};
+export default function SnakeGame({ onExit, onCorrectClick }) {
+    const [snake, setSnake] = useState(INITIAL_SNAKE);
+    const [food, setFood] = useState([5, 5]);
+    const [dir, setDir] = useState([0, -1]); // Up
+    const [gameOver, setGameOver] = useState(false);
+    const [score, setScore] = useState(0);
+    const gameLoopRef = useRef();
 
-// 🎡 MASTER REPOSITORY (Optimized for $1 Million Valuation)
-const MASTER_GAME_LIST = [
-    { id: 'snake-v1', name: 'Neon Cobra', color: '#22c55e', icon: '🐍', category: 'Classic' },
-    { id: 'geo-ai-v1', name: 'Terra Cognita AI', color: '#00f2ff', icon: '🌍', category: 'Premium' },
-    { id: 'fighter-v1', name: 'Shadow Duel', color: '#ffffff', icon: '🥷', category: 'Action' },
-    { id: 'nitro-dash-v1', name: 'Nitro Dash', color: '#FF4757', icon: '🏎️', category: 'Action' },
-    { id: 'ai-lab-v1', name: 'AI Scanner', color: '#7E57C2', icon: '🧠', category: 'Learning' },
-    { id: 'kitchen-class-v1', name: 'Kitchen Class', color: '#FF7043', icon: '🍳', category: 'Learning' },
-    { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Featured' },
-    { id: 'color-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', category: 'Featured' },
-    { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖', category: 'Action' },
-];
+    const moveSnake = useCallback(() => {
+        if (gameOver) return;
 
-function App() {
-    const [activeGame, setActiveGame] = useState(null);
-    const [totalStars, setTotalStars] = useState(() => Number(localStorage.getItem('booply-stars')) || 0);
+        const newSnake = [...snake];
+        const head = [newSnake[0][0] + dir[0], newSnake[0][1] + dir[1]];
 
-    // Persistence Engine
+        // 🛑 COLLISION PHYSICS (Wall & Self)
+        if (head[0] < 0 || head[0] >= GRID_SIZE || head[1] < 0 || head[1] >= GRID_SIZE ||
+            newSnake.some(s => s[0] === head[0] && s[1] === head[1])) {
+            setGameOver(true);
+            return;
+        }
+
+        newSnake.unshift(head);
+
+        // 🍎 FOOD COLLECTION
+        if (head[0] === food[0] && head[1] === food[1]) {
+            setScore(s => s + 10);
+            setFood([Math.floor(Math.random() * GRID_SIZE), Math.floor(Math.random() * GRID_SIZE)]);
+            if (onCorrectClick) onCorrectClick(); // Grant stars to App.jsx
+        } else {
+            newSnake.pop();
+        }
+        setSnake(newSnake);
+    }, [snake, dir, food, gameOver, onCorrectClick]);
+
     useEffect(() => {
-        localStorage.setItem('booply-stars', totalStars);
-    }, [totalStars]);
-
-    const handleCorrect = useCallback(() => {
-        setTotalStars(s => s + 1);
-    }, []);
+        const handleKeys = (e) => {
+            if (e.key === 'ArrowUp' && dir[1] !== 1) setDir([0, -1]);
+            if (e.key === 'ArrowDown' && dir[1] !== -1) setDir([0, 1]);
+            if (e.key === 'ArrowLeft' && dir[0] !== 1) setDir([-1, 0]);
+            if (e.key === 'ArrowRight' && dir[0] !== -1) setDir([1, 0]);
+        };
+        window.addEventListener('keydown', handleKeys);
+        gameLoopRef.current = setInterval(moveSnake, 120);
+        return () => {
+            window.removeEventListener('keydown', handleKeys);
+            clearInterval(gameLoopRef.current);
+        };
+    }, [moveSnake, dir]);
 
     return (
-        <div className="booply-black-theme-root">
-            {!activeGame ? (
-                <div className="lobby-experience fade-in">
-                    {/* 💎 ELITE HUD HEADER */}
-                    <header className="pro-header-glass">
-                        <h1 className="brand-logo-glow">BOOPLY</h1>
-                        <div className="star-counter-elite">
-                            <span className="star-icon">⭐</span>
-                            <span className="star-count">{totalStars}</span>
-                        </div>
-                    </header>
-
-                    {/* 🏟️ HERO SECTION */}
-                    <section className="hero-showcase">
-                        <div className="hero-card-dark" style={{ '--accent': MASTER_GAME_LIST[0].color }}>
-                            <div className="hero-content">
-                                <span className="hero-emoji">{MASTER_GAME_LIST[0].icon}</span>
-                                <div className="hero-text">
-                                    <span className="premium-tag">NEW RELEASE</span>
-                                    <h2>{MASTER_GAME_LIST[0].name}</h2>
-                                    <button className="play-now-btn" onClick={() => setActiveGame(MASTER_GAME_LIST[0])}>
-                                        ENTER ARENA
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* 🎮 UNLIMITED GRID: NO 4-GAME LIMIT */}
-                    <main className="grid-main">
-                        <h3 className="section-title">The Arcade</h3>
-                        <div className="unlimited-auto-grid">
-                            {MASTER_GAME_LIST.map(game => (
-                                <button
-                                    key={game.id}
-                                    className="elite-game-card"
-                                    style={{ '--g-color': game.color }}
-                                    onClick={() => setActiveGame(game)}
-                                >
-                                    <div className="card-inner">
-                                        <span className="card-icon">{game.icon}</span>
-                                        <div className="card-meta">
-                                            <span className="card-name">{game.name}</span>
-                                            <span className="card-cat">{game.category}</span>
-                                        </div>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </main>
-
-                    {/* 🏆 PROGRESSION FOOTER */}
-                    <footer className="experience-footer">
-                        <div className="xp-container">
-                            <div className="xp-bar-outer">
-                                <div className="xp-bar-fill" style={{ width: `${(totalStars % 10) * 10}%` }}></div>
-                            </div>
-                            <p className="xp-text">LEVEL {Math.floor(totalStars / 10) + 1} ARCHITECT</p>
-                        </div>
-                    </footer>
+        <div className="snake-master-container">
+            <div className="snake-ui-panel">
+                <div className="stat-group">
+                    <span className="label">SCORE</span>
+                    <span className="value">{score}</span>
                 </div>
-            ) : (
-                /* 🕹️ PRODUCTION GAME STAGE */
-                <div className="fullscreen-game-stage">
-                    {React.createElement(INTERNAL_GAMES[activeGame.id], {
-                        onExit: () => setActiveGame(null),
-                        onCorrectClick: handleCorrect
-                    })}
+                <button className="nokia-exit" onClick={onExit}>QUIT</button>
+            </div>
+
+            <div className="game-grid-retro">
+                {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => {
+                    const x = i % GRID_SIZE;
+                    const y = Math.floor(i / GRID_SIZE);
+                    const isSnake = snake.some(s => s[0] === x && s[1] === y);
+                    const isHead = snake[0][0] === x && snake[0][1] === y;
+                    const isFood = food[0] === x && food[1] === y;
+                    return (
+                        <div key={i} className={`tile ${isSnake ? 'snake' : ''} ${isHead ? 'head' : ''} ${isFood ? 'food' : ''}`} />
+                    );
+                })}
+            </div>
+
+            {gameOver && (
+                <div className="game-over-modal">
+                    <h1>SNAKE CRASHED</h1>
+                    <p>FINAL SCORE: {score}</p>
+                    <button onClick={() => window.location.reload()}>REBOOT SYSTEM</button>
                 </div>
             )}
         </div>
     );
 }
-
-export default App;
