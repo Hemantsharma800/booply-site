@@ -1,157 +1,152 @@
 /* ==========================================================================
-   PREMIUM THEME & GLASSMORPHISM
+   GAME-ENVIRONMENT STYLING
    ========================================================================== */
-:root {
-  --glass: rgba(255, 255, 255, 0.7);
-  --shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-}
-
-.booply-premium-app {
+.booply-world {
   min-height: 100vh;
-  background: radial-gradient(circle at top right, #e0f2fe, #f0f9ff);
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+  overflow: hidden;
   font-family: 'Quicksand', sans-serif;
+  position: relative;
 }
 
-/* 💎 Modern Glass Header */
-.glass-header {
+/* ☁️ Floating Background Decor */
+.bg-float {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  filter: blur(40px);
+  z-index: 1;
+}
+
+.float-1 {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  left: -50px;
+  animation: float-slow 10s infinite alternate;
+}
+
+.float-2 {
+  width: 400px;
+  height: 400px;
+  bottom: 5%;
+  right: -100px;
+  animation: float-slow 15s infinite alternate-reverse;
+}
+
+@keyframes float-slow {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(40px, 60px);
+  }
+}
+
+/* 🏷️ Logo & HUD */
+.world-logo {
+  font-size: 5rem;
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(45deg, #ff4757, #1e90ff, #2ed573);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+  margin: 40px 0 10px;
+}
+
+.star-bank-premium {
+  background: white;
+  padding: 10px 30px;
+  border-radius: 50px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
   display: flex;
-  justify-content: space-between;
-  padding: 30px 8%;
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid #fff;
-  position: sticky;
-  top: 0;
+  align-items: center;
+  gap: 15px;
+  border: 3px solid #ffd700;
+  width: fit-content;
+  margin: 0 auto 40px;
+}
+
+/* 🕹️ 3D Game Portals */
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 40px;
+  padding: 0 10%;
+  max-width: 1200px;
+  margin: 0 auto;
+  z-index: 10;
+  position: relative;
+}
+
+.game-portal {
+  background: white;
+  border: none;
+  border-radius: 40px;
+  aspect-ratio: 1;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.game-portal:hover {
+  transform: translateY(-20px) rotate(3deg);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+}
+
+.icon-wrap {
+  font-size: 5rem;
+  background: var(--portal-color);
+  padding: 20px;
+  border-radius: 30px;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+/* 🧸 Interactive Mascot with Cursor Eyes */
+.boop-container {
+  position: fixed;
+  bottom: 30px;
+  left: 40px;
   z-index: 100;
 }
 
-.logo-text {
-  font-size: 3rem;
-  background: linear-gradient(45deg, #ff4757, #1e90ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 900;
-}
-
-.star-display {
-  background: #fff;
-  padding: 10px 30px;
-  border-radius: 50px;
-  box-shadow: var(--shadow);
-  border: 3px solid #ffd700;
+.boop-body {
+  width: 100px;
+  height: 80px;
+  background: #ff4757;
+  border-radius: 40px 40px 10px 10px;
   display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* 🕹️ Competitive Game Grid */
-.game-shelf {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 40px;
-  padding: 60px 8%;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.game-cube {
-  aspect-ratio: 1;
-  background: #fff;
-  border: none;
-  border-radius: 45px;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: var(--shadow);
-  position: relative;
-}
-
-.game-cube:hover:not(.locked) {
-  transform: translateY(-20px) scale(1.05);
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
-}
-
-.cube-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100%;
+  gap: 10px;
+  padding-top: 15px;
+  box-shadow: 0 10px 25px rgba(255, 71, 87, 0.3);
 }
 
-.cube-icon {
-  font-size: 5rem;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
-}
-
-.cube-name {
-  font-weight: 800;
-  font-size: 1.6rem;
-  color: #333;
-}
-
-/* 🔒 Locked State */
-.game-cube.locked {
-  background: #f1f5f9;
-  cursor: not-allowed;
-  filter: grayscale(0.8);
-  opacity: 0.7;
-}
-
-.lock-hint {
-  margin-top: 10px;
-  background: #333;
-  color: #fff;
-  padding: 5px 15px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-}
-
-/* 🧸 Mascot (Retention Element) */
-.boop-character {
-  position: fixed;
-  bottom: 30px;
-  right: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.bubble {
-  background: #fff;
-  padding: 15px 25px;
-  border-radius: 25px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow);
-  font-weight: 700;
-  max-width: 220px;
+.eye-socket {
+  width: 30px;
+  height: 30px;
+  background: white;
+  border-radius: 50%;
   position: relative;
-  animation: float 3s infinite ease-in-out;
+  overflow: hidden;
 }
 
-.bubble::after {
-  content: '';
+.pupil {
+  width: 12px;
+  height: 12px;
+  background: #333;
+  border-radius: 50%;
   position: absolute;
-  bottom: -10px;
-  right: 20px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #fff;
-}
-
-.boop-face {
-  font-size: 4rem;
-  animation: bounce 4s infinite;
-}
-
-@keyframes bounce {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1) translateY(-5px);
-  }
+  top: 25%;
+  left: 25%;
+  transition: transform 0.1s ease-out;
 }
