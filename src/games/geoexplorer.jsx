@@ -2,7 +2,7 @@ import React, { useState, useRef, Suspense, useMemo } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars, Html, PerspectiveCamera, Float } from '@react-three/drei';
 import * as THREE from 'three';
-import { GEO_AI_DATA, getMockAiResponse } from './geoAiData.js';
+import { GEO_AI_DATA, getMockAiResponse } from './geoaidata.js';
 import './geoexplorer.css';
 
 // 🛰️ HIGH-RESOLUTION TEXTURE ASSETS
