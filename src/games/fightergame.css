@@ -1,104 +1,98 @@
-.shadow-arena-black {
+.ninja-arena-root {
     height: 100vh;
     background: #000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    overflow: hidden;
+    position: relative;
 }
 
-/* 💎 ELITE HUD */
-.battle-hud-elite {
-    width: 90%;
+/* 📊 GLASS HUD */
+.battle-hud-glass {
     display: flex;
     justify-content: space-between;
     padding: 40px;
-    z-index: 100;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
-.health-container {
-    width: 42%;
-}
-
-.bar {
-    height: 16px;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 8px;
+.hp-bar {
+    width: 300px;
+    height: 12px;
+    background: #222;
+    border-radius: 6px;
     overflow: hidden;
 }
 
-.p1 .fill {
+.player .fill {
     background: #00f2ff;
     box-shadow: 0 0 15px #00f2ff;
 }
 
-.p2 .fill {
+.ai-bar .fill {
     background: #ff4757;
     box-shadow: 0 0 15px #ff4757;
 }
 
-.tag {
-    font-size: 0.7rem;
-    font-weight: 900;
-    color: #666;
-    margin-top: 5px;
-    display: block;
-}
-
-/* 🥋 HUMAN NINJA SILHOUETTE */
-.combat-stage {
-    width: 800px;
-    height: 350px;
+/* 👤 NINJA SKELETON SILHOUETTE */
+.combat-zone {
     position: relative;
+    height: 400px;
     border-bottom: 2px solid #222;
-}
-
-.ninja {
-    position: absolute;
-    width: 70px;
-    height: 110px;
-    transition: left 0.1s linear, bottom 0.3s ease-out;
+    margin-top: 50px;
 }
 
 .ninja-body {
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    /* Human Head, Shoulders, and Legs clip */
-    clip-path: polygon(50% 0%, 65% 10%, 65% 25%, 90% 40%, 75% 45%, 85% 100%, 60% 100%,
-            50% 70%, 40% 100%, 15% 100%, 25% 45%, 10% 40%, 35% 25%, 35% 10%);
-}
-
-.teal-glow {
-    filter: drop-shadow(0 0 10px #00f2ff);
-}
-
-.orange-glow {
-    filter: brightness(0.3) drop-shadow(0 0 15px #ff4757);
-}
-
-/* ⚔️ COMBAT ANIMATIONS */
-.attack .ninja-body {
-    transform: scaleX(1.3) skewX(-15deg);
-}
-
-.blade-strike {
     position: absolute;
-    width: 120px;
-    height: 4px;
+    width: 60px;
+    height: 120px;
+    transition: left 0.2s ease-out;
+}
+
+.ninja-head {
+    width: 30px;
+    height: 30px;
     background: #fff;
-    top: 40%;
-    left: -25px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.ninja-torso {
+    width: 40px;
+    height: 50px;
+    background: #fff;
+    margin: 5px auto;
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+}
+
+.ninja-legs {
+    width: 40px;
+    height: 30px;
+    background: #fff;
+    margin: 0 auto;
+    clip-path: polygon(0 0, 100% 0, 80% 100%, 50% 80%, 20% 100%);
+}
+
+.shadow div {
+    background: #333 !important;
+    filter: drop-shadow(0 0 5px #ff4757);
+}
+
+/* ⚔️ KATANA STRIKE */
+.katana {
+    position: absolute;
+    width: 80px;
+    height: 4px;
+    background: #00f2ff;
+    top: 45px;
+    left: 40px;
     opacity: 0;
-    box-shadow: 0 0 10px #fff;
 }
 
-.attack .blade-strike {
+.attack .katana {
     opacity: 1;
-    animation: swing 0.15s ease-out;
+    animation: slash 0.3s ease-out;
 }
 
-@keyframes swing {
+@keyframes slash {
     from {
         transform: rotate(-45deg);
         opacity: 0;
@@ -110,34 +104,78 @@
     }
 }
 
-/* 🕹️ PRO DECK */
-.pro-control-deck {
-    position: fixed;
-    bottom: 50px;
+/* 🧩 MATH MODAL */
+.math-modal {
+    position: absolute;
+    inset: 0;
     display: flex;
-    gap: 40px;
-    background: rgba(20, 20, 20, 0.8);
-    padding: 25px 50px;
-    border-radius: 40px;
-    border: 1px solid #333;
-    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
 }
 
-.btn-round {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    background: #000;
+.glass-card {
+    background: rgba(10, 10, 10, 0.9);
+    border: 1px solid #00f2ff;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.options-grid button {
+    background: #111;
     color: #fff;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 10px;
     cursor: pointer;
-    border: 1px solid #444;
+    font-size: 1.2rem;
 }
 
-.btn-strike {
-    background: #fff;
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+/* 🕹️ CONTROL DECK */
+.controls-glass {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px 40px;
+    border-radius: 50px;
+}
+
+.strike-btn-main {
+    background: #00f2ff;
     color: #000;
-    padding: 0 45px;
+    padding: 0 40px;
     border-radius: 15px;
     font-weight: 900;
-    cursor: pointer;
 }
