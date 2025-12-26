@@ -6,12 +6,14 @@ import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
 import PuzzlePop from './games/puzzlepop.jsx';
 import NitroDash from './games/nitrodash.jsx';
+import AILab from './games/ailab.jsx';
 
 const INTERNAL_GAMES = {
   'dino-dash-v1': DinoGame,
   'color-fun-v1': ColorGame,
   'puzzle-pop-v1': PuzzlePop,
   'nitro-dash-v1': NitroDash,
+  'ai-lab-v1': AILab
 };
 
 const MASTER_GAME_LIST = [
@@ -19,6 +21,7 @@ const MASTER_GAME_LIST = [
   { id: 'color-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', minStars: 0 },
   { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', minStars: 3 },
   { id: 'nitro-dash-v1', name: 'Nitro Dash', color: '#FF4757', icon: '🏎️', minStars: 10 },
+  { id: 'ai-lab-v1', name: 'AI Lab', color: '#6E#818cf8', icon: '🧠', minStars: 5 },
 ];
 
 function App() {
