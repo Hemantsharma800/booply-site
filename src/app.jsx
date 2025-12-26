@@ -9,6 +9,7 @@ import NitroDash from './games/nitrodash.jsx';
 import KitchenClass from './games/kitchenclass.jsx';
 import AILab from './games/ailab.jsx';
 import FighterGame from './games/fightergame.jsx';
+import GeoExplorer from './games/geoexplorer.jsx';
 
 // ⚙️ INTERNAL GAME REGISTRY
 const INTERNAL_GAMES = {
@@ -19,6 +20,7 @@ const INTERNAL_GAMES = {
   'kitchen-class-v1': KitchenClass,
   'ai-lab-v1': AILab,
   'fighter-v1': FighterGame,
+  'geo-explorer-v1': GeoExplorer,
 };
 
 // 🎡 FULL GAME REPOSITORY
@@ -30,6 +32,7 @@ const MASTER_GAME_LIST = [
   { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Featured' },
   { id: 'color-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', category: 'Featured' },
   { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖', category: 'Action' },
+  { id: 'geo-explorer-v1', name: 'Geo Explorer', color: '#4CAF50', icon: '🗺️', category: 'Exploration' },
 ];
 
 function App() {
