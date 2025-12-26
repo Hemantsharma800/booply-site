@@ -1,230 +1,223 @@
 /* ==========================================================================
-   SHADOW DUEL - PROFESSIONAL ENVIRONMENT
+   SHADOW DUEL - SKELETON ARCHITECTURE
    ========================================================================== */
-.shadow-arena-pro {
+.shadow-world-arena {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+    background: radial-gradient(circle, #222 0%, #000 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: white;
-    font-family: 'Quicksand', sans-serif;
     overflow: hidden;
 }
 
-/* 📊 HUD Health Bars */
-.fight-hud {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 30px 5%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
-    z-index: 10;
-}
-
-.hp-tray {
-    width: 250px;
-    height: 14px;
-    background: #222;
-    border-radius: 7px;
-    border: 2px solid #444;
-    overflow: hidden;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-}
-
-.hp-fill {
-    height: 100%;
-    background: #e74c3c;
-    /* Red HP */
-    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.enemy .hp-fill {
-    background: #fff;
-}
-
-/* Shadow AI is white */
-
-.msg-bubble {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-weight: 800;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* 🥷 Humanoid HTML Structure */
-.combat-stage {
-    flex: 1;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    padding-bottom: 120px;
-    background: url('https://www.transparenttextures.com/patterns/dark-matter.png');
-}
-
-.humanoid {
+/* 🦴 Skeleton Part Styling */
+.human-skeleton {
     position: relative;
-    width: 80px;
+    width: 60px;
     height: 160px;
     transition: transform 0.2s;
 }
 
-.head {
-    width: 40px;
-    height: 40px;
+.skull {
+    width: 34px;
+    height: 34px;
     background: #000;
-    border: 2px solid #333;
+    border: 2px solid #555;
     border-radius: 50%;
     margin: 0 auto;
 }
 
-.torso {
-    width: 40px;
-    height: 75px;
+.ribcage {
+    width: 36px;
+    height: 65px;
     background: #000;
-    border: 2px solid #333;
-    border-radius: 8px;
+    border: 2px solid #555;
+    border-radius: 6px;
     margin: 2px auto;
     position: relative;
 }
 
-/* Articulated Limbs */
-.arm,
-.leg {
+.h-arm,
+.h-leg {
     position: absolute;
     background: #000;
-    border: 1.5px solid #222;
-    width: 12px;
-    height: 50px;
-    border-radius: 6px;
+    border: 1.5px solid #444;
+    width: 10px;
+    height: 40px;
+    border-radius: 5px;
 }
 
+.forearm,
+.shin {
+    position: absolute;
+    background: #000;
+    border: 1px solid #333;
+    width: 100%;
+    height: 100%;
+    top: 35px;
+    left: 0;
+    border-radius: 5px;
+}
+
+/* 🛡️ Joint Positioning */
 .arm-l {
     left: -12px;
     top: 5px;
     transform-origin: top;
-    transform: rotate(15deg);
+    transform: rotate(20deg);
 }
 
 .arm-r {
     right: -12px;
     top: 5px;
     transform-origin: top;
-    transform: rotate(-15deg);
+    transform: rotate(-20deg);
 }
 
 .leg-l {
-    bottom: -45px;
+    bottom: -40px;
     left: 2px;
     transform-origin: top;
 }
 
 .leg-r {
-    bottom: -45px;
+    bottom: -40px;
     right: 2px;
     transform-origin: top;
 }
 
-/* ⚔️ Real Attack Animations */
-.attacking {
-    transform: translateX(50px) scale(1.05);
+/* ⚔️ Frame-Based Fighting Animations */
+.p1.attacking {
+    transform: translateX(60px) scale(1.1);
 }
 
 .ai.attacking {
-    transform: translateX(-50px) scale(1.05);
+    transform: translateX(-60px) scale(1.1);
 }
 
 .attacking .arm-r {
-    animation: punch-move 0.35s forwards;
+    animation: skeletal-punch 0.3s forwards;
 }
 
-@keyframes punch-move {
+.attacking .arm-r .forearm {
+    animation: extension 0.3s forwards;
+}
+
+@keyframes skeletal-punch {
     0% {
-        transform: rotate(-15deg);
+        transform: rotate(-20deg);
     }
 
     50% {
-        transform: rotate(-110deg) scaleX(1.8);
-        width: 60px;
-        background: #444;
+        transform: rotate(-100deg);
     }
 
     100% {
-        transform: rotate(-15deg);
+        transform: rotate(-20deg);
+    }
+}
+
+@keyframes extension {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(20px) scaleY(1.5);
+        background: #666;
+    }
+
+    100% {
+        transform: translateY(0);
     }
 }
 
 .blocking {
     opacity: 0.6;
-    transform: scale(0.9) skewX(5deg);
+    transform: scale(0.9) skewX(10deg);
+    filter: blur(1px);
 }
 
 .hurt {
-    animation: hit-shake 0.3s;
-    filter: drop-shadow(0 0 10px red);
+    animation: impact-jolt 0.2s infinite;
+    filter: drop-shadow(0 0 15px #ff0000);
 }
 
-@keyframes hit-shake {
+@keyframes impact-jolt {
+    0% {
+        transform: translateX(5px);
+    }
 
-    0%,
     100% {
-        transform: rotate(0);
-    }
-
-    25% {
-        transform: rotate(5deg) translateX(5px);
-    }
-
-    75% {
-        transform: rotate(-5deg) translateX(-5px);
+        transform: translateX(-5px);
     }
 }
 
-/* 🎮 Elite Controls */
-.controls-pro {
+/* 📊 Elite HUD Styles */
+.hud-interface {
     display: flex;
-    gap: 20px;
-    padding-bottom: 50px;
-    z-index: 100;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 50px;
 }
 
-.ctrl-btn {
-    padding: 20px 40px;
+.health-track {
+    width: 260px;
+    height: 14px;
     background: #111;
-    color: white;
-    border: 2px solid #444;
-    border-radius: 12px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.health-bar {
+    height: 100%;
+    background: #ff4d4d;
+    transition: width 0.4s;
+}
+
+.enemy .health-bar {
+    background: #ffffff;
+}
+
+.combat-zone {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding-bottom: 120px;
+}
+
+.action-inputs {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.input-btn {
+    padding: 18px 45px;
+    border-radius: 10px;
+    border: none;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 5px 0 #000;
+    transition: 0.1s;
 }
 
-.ctrl-btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 2px 0 #000;
+.strike {
+    background: #ff4d4d;
+    color: white;
+    box-shadow: 0 6px 0 #990000;
 }
 
-.atk {
-    background: #e74c3c;
-    border-color: #c0392b;
+.block {
+    background: #4d94ff;
+    color: white;
+    box-shadow: 0 6px 0 #0047b3;
 }
 
-.blk {
-    background: #3498db;
-    border-color: #2980b9;
-}
-
-/* 🏆 Victory Screen */
-.result-screen {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+.input-btn:active {
+    transform: translateY(4px);
+    box-shadow: none;
 }
