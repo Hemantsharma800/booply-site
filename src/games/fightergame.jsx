@@ -1,123 +1,113 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './fightergame.css';
 
-const GROUND_Y = 0;
-const PLAYER_START_X = 100;
-const AI_START_X = 500;
-const ARENA_WIDTH = 700;
+const ARENA_WIDTH = 800;
+const GROUND_LEVEL = 0;
 
 export default function FighterGame({ onExit, onCorrectClick }) {
-    // Fighter States
-    const [player, setPlayer] = useState({ x: PLAYER_START_X, y: GROUND_Y, hp: 100, action: 'idle', dir: 1 });
-    const [ai, setAi] = useState({ x: AI_START_X, y: GROUND_Y, hp: 100, action: 'idle', dir: -1 });
-    const [isGameOver, setIsGameOver] = useState(false);
+    // ⚔️ ELITE FIGHTER STATE
+    const [player, setPlayer] = useState({ x: 100, y: GROUND_LEVEL, hp: 100, action: 'idle', dir: 1, jumping: false });
+    const [ai, setAi] = useState({ x: 600, y: GROUND_LEVEL, hp: 100, action: 'idle', dir: -1, jumping: false });
+    const [gameState, setGameState] = useState('BATTLE'); // BATTLE, OVER
 
-    const gameLoopRef = useRef();
-    const lastAiDecision = useRef(0);
+    const gameLoop = useRef();
+    const aiBrain = useRef(0);
 
-    // ⚔️ COMBAT LOGIC: Detection & Damage
-    const resolveHit = useCallback((attacker, defender, setDefender) => {
-        const distance = Math.abs(attacker.x - defender.x);
-        if (distance < 60 && attacker.action === 'kick') {
-            setDefender(prev => ({
-                ...prev,
-                hp: Math.max(0, prev.hp - 12),
-                action: 'hit',
-                x: prev.x + (attacker.dir * 20) // Knockback
-            }));
-            // Recover from hit animation
-            setTimeout(() => setDefender(p => ({ ...p, action: 'idle' })), 300);
-            if (defender.hp <= 12) setIsGameOver(true);
-        }
-    }, []);
-
-    // 🧠 AI NEURAL REFLEX: Accelerated Response
-    const runAiLogic = useCallback(() => {
-        const now = Date.now();
-        if (now - lastAiDecision.current < 150) return; // Ultra-fast 150ms reaction time
+    // 🧠 NEURAL AI: HIGH-SPEED RESPONSE
+    const runAI = useCallback(() => {
+        if (gameState !== 'BATTLE') return;
 
         setAi(prev => {
-            const dist = prev.x - player.x;
-            const newAction = { ...prev };
+            const distance = prev.x - player.x;
+            const newAi = { ...prev };
 
-            if (Math.abs(dist) > 55) {
-                newAction.x -= Math.sign(dist) * 8; // Pursuit speed
-                newAction.action = 'walk';
+            // AI Decision logic - reaction every 100ms
+            if (Math.abs(distance) > 70) {
+                newAi.x -= Math.sign(distance) * 9; // Pursuit speed
+                newAi.action = 'move';
             } else {
-                newAction.action = 'kick';
-                resolveHit(newAction, player, setPlayer);
+                newAi.action = 'strike'; // Dual Sword Attack
+                checkHit(newAi, player, setPlayer);
             }
-            return newAction;
+            return newAi;
         });
-        lastAiDecision.current = now;
-    }, [player, resolveHit]);
+    }, [player, gameState]);
 
-    // 🎮 PLAYER CONTROLS: Forward, Back, Jump, Kick
-    const handleAction = (type) => {
-        if (isGameOver) return;
+    // ⚔️ HIT DETECTION
+    const checkHit = (attacker, defender, setDef) => {
+        const dist = Math.abs(attacker.x - defender.x);
+        if (dist < 80 && attacker.action === 'strike') {
+            setDef(prev => ({
+                ...prev,
+                hp: Math.max(0, prev.hp - 5),
+                action: 'hurt'
+            }));
+            setTimeout(() => setDef(p => ({ ...p, action: 'idle' })), 200);
+        }
+    };
+
+    // 🕹️ CONTROLS
+    const handleMove = (type) => {
+        if (gameState !== 'BATTLE') return;
         setPlayer(prev => {
             let next = { ...prev };
-            if (type === 'forward') { next.x = Math.min(ARENA_WIDTH, prev.x + 15); next.action = 'walk'; }
-            if (type === 'back') { next.x = Math.max(0, prev.x - 15); next.action = 'walk'; }
-            if (type === 'kick') { next.action = 'kick'; resolveHit(next, ai, setAi); }
-            if (type === 'jump' && prev.y === GROUND_Y) {
-                next.y = 120; // Jump peak
-                setTimeout(() => setPlayer(p => ({ ...p, y: GROUND_Y })), 400);
+            if (type === 'FWD') { next.x = Math.min(ARENA_WIDTH, prev.x + 20); next.action = 'move'; }
+            if (type === 'BCK') { next.x = Math.max(0, prev.x - 20); next.action = 'move'; }
+            if (type === 'STRIKE') {
+                next.action = 'strike';
+                checkHit(next, ai, setAi);
+                if (ai.hp <= 5) setGameState('VICTORY');
+            }
+            if (type === 'JUMP' && !prev.jumping) {
+                next.jumping = true;
+                next.y = 150;
+                setTimeout(() => setPlayer(p => ({ ...p, y: GROUND_LEVEL, jumping: false })), 500);
             }
             return next;
         });
-        // Reset to idle
-        if (type !== 'jump') setTimeout(() => setPlayer(p => ({ ...p, action: 'idle' })), 200);
+        if (type !== 'JUMP') setTimeout(() => setPlayer(p => ({ ...p, action: 'idle' })), 200);
     };
 
     useEffect(() => {
-        if (!isGameOver) {
-            gameLoopRef.current = setInterval(runAiLogic, 50); // High-frequency loop
-        }
-        return () => clearInterval(gameLoopRef.current);
-    }, [runAiLogic, isGameOver]);
+        gameLoop.current = setInterval(runAI, 100);
+        return () => clearInterval(gameLoop.current);
+    }, [runAI]);
 
     return (
-        <div className="shadow-duel-arena fade-in">
-            {/* 🏥 HEALTH HUD */}
-            <div className="fight-hud">
-                <div className="hp-bar-container player">
-                    <div className="hp-fill" style={{ width: `${player.hp}%` }}></div>
-                    <span className="name-tag">PLAYER 1</span>
+        <div className="duel-arena">
+            <div className="battle-hud">
+                <div className="hp-bar player"><div className="fill" style={{ width: `${player.hp}%` }}></div></div>
+                <div className="vs-logo">VS</div>
+                <div className="hp-bar ai"><div className="fill" style={{ width: `${ai.hp}%` }}></div></div>
+            </div>
+
+            <div className="fighting-stage">
+                {/* PLAYER SHINOBI */}
+                <div className={`shinobi player ${player.action}`} style={{ left: player.x, bottom: player.y }}>
+                    <div className="glow-aura teal"></div>
+                    <div className="swords"></div>
                 </div>
-                <div className="timer">VS</div>
-                <div className="hp-bar-container ai">
-                    <div className="hp-fill" style={{ width: `${ai.hp}%` }}></div>
-                    <span className="name-tag">SHADOW AI</span>
+
+                {/* AI SHINOBI */}
+                <div className={`shinobi ai ${ai.action}`} style={{ left: ai.x, bottom: ai.y }}>
+                    <div className="glow-aura orange"></div>
+                    <div className="swords"></div>
                 </div>
             </div>
 
-            {/* 🏟️ BATTLEGROUND */}
-            <div className="stage">
-                <div className={`fighter shadow-p ${player.action}`} style={{ left: player.x, bottom: player.y }}>
-                    <div className="skeleton"></div>
-                    {player.action === 'kick' && <div className="kick-vfx"></div>}
+            <div className="control-deck">
+                <div className="d-pad">
+                    <button onMouseDown={() => handleMove('BCK')}>◀</button>
+                    <button onMouseDown={() => handleMove('JUMP')}>▲</button>
+                    <button onMouseDown={() => handleMove('FWD')}>▶</button>
                 </div>
-                <div className={`fighter shadow-ai ${ai.action}`} style={{ left: ai.x, bottom: ai.y }}>
-                    <div className="skeleton"></div>
-                    {ai.action === 'kick' && <div className="kick-vfx"></div>}
-                </div>
+                <button className="strike-btn" onClick={() => handleMove('STRIKE')}>SWORD STRIKE</button>
+                <button className="quit-btn" onClick={onExit}>EXIT</button>
             </div>
 
-            {/* 🕹️ ELITE CONTROLS HUD */}
-            <div className="controls-hud">
-                <div className="move-btns">
-                    <button className="ctrl-btn" onMouseDown={() => handleAction('back')}>◀</button>
-                    <button className="ctrl-btn" onMouseDown={() => handleAction('jump')}>▲</button>
-                    <button className="ctrl-btn" onMouseDown={() => handleAction('forward')}>▶</button>
-                </div>
-                <button className="kick-btn" onClick={() => handleAction('kick')}>STRIKE</button>
-                <button className="exit-duel" onClick={onExit}>EXIT</button>
-            </div>
-
-            {isGameOver && (
-                <div className="duel-overlay">
-                    <h1>{player.hp > 0 ? "VICTORY" : "DEFEATED"}</h1>
+            {gameState !== 'BATTLE' && (
+                <div className="win-screen">
+                    <h1>{gameState}</h1>
                     <button onClick={() => window.location.reload()}>REMATCH</button>
                 </div>
             )}
