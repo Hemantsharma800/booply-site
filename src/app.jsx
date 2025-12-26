@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './app.css';
 
-// 🎮 Game Imports (Ensure these match your actual files)
+// 🎮 Game Imports
 import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
 import PuzzlePop from './games/puzzlepop.jsx';
@@ -19,81 +19,107 @@ const INTERNAL_GAMES = {
 };
 
 const MASTER_GAME_LIST = [
-  { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖' },
-  { id: 'color-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨' },
-  { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩' },
-  { id: 'nitro-dash-v1', name: 'Nitro Dash', color: '#FF4757', icon: '🏎️' },
-  { id: 'kitchen-class-v1', name: 'Kitchen Class', color: '#FF7043', icon: '🍳' },
-  { id: 'ai-lab-v1', name: 'AI Class', color: '#7E57C2', icon: '🧠' },
+  { id: 'nitro-dash-v1', name: 'Nitro Dash', color: '#FF4757', icon: '🏎️', category: 'Action' },
+  { id: 'ai-lab-v1', name: 'AI Scanner', color: '#7E57C2', icon: '🧠', category: 'Learning' },
+  { id: 'kitchen-class-v1', name: 'Kitchen Class', color: '#FF7043', icon: '🍳', category: 'Learning' },
+  { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Featured' },
+  { id: 'color-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', category: 'Featured' },
+  { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖', category: 'Action' },
 ];
 
 function App() {
   const [activeGame, setActiveGame] = useState(null);
   const [totalStars, setTotalStars] = useState(() => Number(localStorage.getItem('booply-stars')) || 0);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [carouselIdx, setCarouselIdx] = useState(0);
 
-  // 👁️ Track Mouse for Interactive Mascot
-  const handleMouseMove = (e) => {
-    setMousePos({ x: (e.clientX / window.innerWidth) * 20, y: (e.clientY / window.innerHeight) * 20 });
-  };
-
+  // Auto-slide Hero Carousel
   useEffect(() => {
-    localStorage.setItem('booply-stars', totalStars);
-  }, [totalStars]);
-
-  const handleCorrect = useCallback(() => {
-    setTotalStars(prev => prev + 1);
+    const timer = setInterval(() => {
+      setCarouselIdx((prev) => (prev + 1) % 3);
+    }, 5000);
+    return () => clearInterval(timer);
   }, []);
 
-  return (
-    <div className="booply-world" onMouseMove={handleMouseMove}>
-      {!activeGame ? (
-        <div className="immersive-lobby">
-          {/* ☁️ Layered Background Elements */}
-          <div className="bg-float float-1"></div>
-          <div className="bg-float float-2"></div>
+  const featuredGames = MASTER_GAME_LIST.slice(0, 3);
 
-          <header className="game-header">
-            <h1 className="world-logo">Booply</h1>
-            <div className="star-bank-premium">
-              <span className="star-bounce">⭐</span>
-              <span className="count">{totalStars}</span>
+  return (
+    <div className="booply-pro-container">
+      {!activeGame ? (
+        <div className="main-lobby-ui">
+          {/* 🏔️ 1. Professional Header */}
+          <header className="pro-header">
+            <div className="logo-section">
+              <h1 className="brand-logo">Booply</h1>
+              <div className="nav-pills">
+                <button className="pill active">🎮 GAMES</button>
+                <button className="pill">📺 VIDEOS</button>
+              </div>
+            </div>
+            <div className="profile-badge">
+              <span className="star-burst">⭐</span>
+              <span className="star-text">{totalStars}</span>
             </div>
           </header>
 
-          <main className="portal-grid">
-            {MASTER_GAME_LIST.map(game => (
-              <button
-                key={game.id}
-                className="game-portal"
-                style={{ '--portal-color': game.color }}
-                onClick={() => setActiveGame(game)}
-              >
-                <div className="icon-wrap">{game.icon}</div>
-                <span className="portal-name">{game.name}</span>
-                <div className="glow-effect"></div>
-              </button>
-            ))}
-          </main>
-
-          {/* 🧸 Interactive Boop Mascot */}
-          <div className="boop-container">
-            <div className="speech-bubble-world">Play with me! ✨</div>
-            <div className="boop-body">
-              <div className="eye-socket">
-                <div className="pupil" style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}></div>
-              </div>
-              <div className="eye-socket">
-                <div className="pupil" style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}></div>
-              </div>
+          {/* 🎪 2. Hero Carousel (Inspired by PBS Kids) */}
+          <section className="hero-carousel">
+            <div className="carousel-track" style={{ transform: `translateX(-${carouselIdx * 100}%)` }}>
+              {featuredGames.map(game => (
+                <div key={game.id} className="hero-slide" style={{ '--bg': game.color }}>
+                  <div className="hero-content">
+                    <span className="hero-emoji">{game.icon}</span>
+                    <div className="hero-text">
+                      <h2>{game.name}</h2>
+                      <button className="play-btn-large" onClick={() => setActiveGame(game)}>PLAY NOW</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+            <div className="carousel-dots">
+              {featuredGames.map((_, i) => <div key={i} className={`dot ${i === carouselIdx ? 'active' : ''}`} />)}
+            </div>
+          </section>
+
+          {/* 📚 3. Category Shelves (Inspired by CrazyGames) */}
+          <section className="shelf-container">
+            <h3 className="shelf-title">Featured Games 🔥</h3>
+            <div className="game-shelf">
+              {MASTER_GAME_LIST.filter(g => g.category === 'Featured').map(game => (
+                <button key={game.id} className="shelf-card" onClick={() => setActiveGame(game)}>
+                  <div className="card-thumb" style={{ background: game.color }}>{game.icon}</div>
+                  <p>{game.name}</p>
+                </button>
+              ))}
+            </div>
+
+            <h3 className="shelf-title">AI & Learning 🧠</h3>
+            <div className="game-shelf">
+              {MASTER_GAME_LIST.filter(g => g.category === 'Learning').map(game => (
+                <button key={game.id} className="shelf-card" onClick={() => setActiveGame(game)}>
+                  <div className="card-thumb" style={{ background: game.color }}>{game.icon}</div>
+                  <p>{game.name}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* 🏆 4. Progression Footer */}
+          <footer className="progression-footer">
+            <div className="level-bar-container">
+              <span className="trophy">🏆</span>
+              <div className="progress-track">
+                <div className="progress-fill" style={{ width: `${(totalStars % 10) * 10}%` }}></div>
+              </div>
+              <span className="level-text">Level Up!</span>
+            </div>
+          </footer>
         </div>
       ) : (
-        <div className="fullscreen-game">
+        <div className="game-wrapper-fullscreen">
           {React.createElement(INTERNAL_GAMES[activeGame.id], {
             onExit: () => setActiveGame(null),
-            onCorrectClick: handleCorrect
+            onCorrectClick: () => setTotalStars(s => s + 1)
           })}
         </div>
       )}

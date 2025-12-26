@@ -1,152 +1,164 @@
 /* ==========================================================================
-   GAME-ENVIRONMENT STYLING
+   BOOPLY PRO THEME
    ========================================================================== */
-.booply-world {
+.booply-pro-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-  overflow: hidden;
+  background: #f0f4f8;
   font-family: 'Quicksand', sans-serif;
+  color: #333;
+}
+
+/* 💎 Pro Header */
+.pro-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  background: #0084ff;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.nav-pills {
+  display: flex;
+  gap: 10px;
+  margin-left: 30px;
+}
+
+.pill {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.pill.active {
+  background: #2ed573;
+}
+
+/* 🎪 Hero Carousel (Inspired by PBS Kids) */
+.hero-carousel {
+  height: 350px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background: #0084ff;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.hero-slide {
+  min-width: 100%;
+  height: 350px;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
 }
 
-/* ☁️ Floating Background Decor */
-.bg-float {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  filter: blur(40px);
-  z-index: 1;
-}
-
-.float-1 {
-  width: 300px;
-  height: 300px;
-  top: 10%;
-  left: -50px;
-  animation: float-slow 10s infinite alternate;
-}
-
-.float-2 {
-  width: 400px;
-  height: 400px;
-  bottom: 5%;
-  right: -100px;
-  animation: float-slow 15s infinite alternate-reverse;
-}
-
-@keyframes float-slow {
-  from {
-    transform: translate(0, 0);
-  }
-
-  to {
-    transform: translate(40px, 60px);
-  }
-}
-
-/* 🏷️ Logo & HUD */
-.world-logo {
-  font-size: 5rem;
-  font-weight: 900;
-  text-align: center;
-  background: linear-gradient(45deg, #ff4757, #1e90ff, #2ed573);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
-  margin: 40px 0 10px;
-}
-
-.star-bank-premium {
-  background: white;
-  padding: 10px 30px;
-  border-radius: 50px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+.hero-content {
   display: flex;
   align-items: center;
-  gap: 15px;
-  border: 3px solid #ffd700;
-  width: fit-content;
-  margin: 0 auto 40px;
-}
-
-/* 🕹️ 3D Game Portals */
-.portal-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 40px;
-  padding: 0 10%;
-  max-width: 1200px;
-  margin: 0 auto;
-  z-index: 10;
-  position: relative;
+  color: white;
 }
 
-.game-portal {
+.hero-emoji {
+  font-size: 8rem;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+}
+
+.play-btn-large {
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  background: #2ed573;
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-weight: 900;
+  box-shadow: 0 8px 0 #26af5e;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 📚 Category Shelves (Inspired by CrazyGames) */
+.shelf-container {
+  padding: 40px 5%;
+}
+
+.shelf-title {
+  font-size: 1.8rem;
+  margin: 30px 0 15px;
+  display: flex;
+  align-items: center;
+}
+
+.game-shelf {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+.shelf-card {
+  min-width: 160px;
   background: white;
   border: none;
-  border-radius: 40px;
-  aspect-ratio: 1;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.2s;
+}
+
+.shelf-card:hover {
+  transform: scale(1.05);
+}
+
+.card-thumb {
+  height: 120px;
+  border-radius: 15px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-  position: relative;
+  font-size: 3.5rem;
+  margin-bottom: 10px;
 }
 
-.game-portal:hover {
-  transform: translateY(-20px) rotate(3deg);
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
-}
-
-.icon-wrap {
-  font-size: 5rem;
-  background: var(--portal-color);
-  padding: 20px;
-  border-radius: 30px;
-  color: white;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
-}
-
-/* 🧸 Interactive Mascot with Cursor Eyes */
-.boop-container {
+/* 🏆 Level Up Footer */
+.progression-footer {
   position: fixed;
-  bottom: 30px;
-  left: 40px;
-  z-index: 100;
+  bottom: 0;
+  width: 100%;
+  background: #7E57C2;
+  padding: 12px 0;
+  color: white;
 }
 
-.boop-body {
-  width: 100px;
-  height: 80px;
-  background: #ff4757;
-  border-radius: 40px 40px 10px 10px;
+.level-bar-container {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding-top: 15px;
-  box-shadow: 0 10px 25px rgba(255, 71, 87, 0.3);
+  gap: 20px;
 }
 
-.eye-socket {
-  width: 30px;
-  height: 30px;
-  background: white;
-  border-radius: 50%;
-  position: relative;
+.progress-track {
+  width: 300px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
   overflow: hidden;
 }
 
-.pupil {
-  width: 12px;
-  height: 12px;
-  background: #333;
-  border-radius: 50%;
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  transition: transform 0.1s ease-out;
+.progress-fill {
+  height: 100%;
+  background: #ffeb3b;
+  transition: width 0.5s ease-out;
 }
