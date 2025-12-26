@@ -1,127 +1,157 @@
-/* --- Global Resets --- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ==========================================================================
+   PREMIUM THEME & GLASSMORPHISM
+   ========================================================================== */
+:root {
+  --glass: rgba(255, 255, 255, 0.7);
+  --shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
 }
 
-body {
-  font-family: 'Comic Sans MS', sans-serif;
-  overflow-x: hidden;
-}
-
-/* --- Main Layout --- */
-.booply-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.booply-premium-app {
   min-height: 100vh;
-  width: 100%;
-  background: radial-gradient(circle at center, #ffffff 0%, #dcf2ff 100%);
-  padding: 20px;
-  text-align: center;
+  background: radial-gradient(circle at top right, #e0f2fe, #f0f9ff);
+  font-family: 'Quicksand', sans-serif;
 }
 
-/* --- Header & Lobby --- */
-.header-section {
-  margin-bottom: 30px;
+/* 💎 Modern Glass Header */
+.glass-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 8%;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.logo {
-  font-size: clamp(3rem, 10vw, 5rem);
-  font-weight: 900;
-  background: linear-gradient(to right, #ff477e, #fbb13c, #20bbfe);
+.logo-text {
+  font-size: 3rem;
+  background: linear-gradient(45deg, #ff4757, #1e90ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 900;
 }
 
-.score-board {
-  font-size: 1.5rem;
-  color: #2d6a4f;
-  font-weight: bold;
-}
-
-.lobby-grid {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  flex-wrap: wrap;
-  max-width: 1000px;
-}
-
-.game-bubble {
-  width: 160px;
-  height: 160px;
-  border-radius: 40% 60% 70% 30% / 40% 50% 60% 40%;
-  border: 6px solid white;
-  cursor: pointer;
-  color: white;
-  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.game-bubble:hover {
-  transform: scale(1.05) rotate(-3deg);
-  border-radius: 50%;
-}
-
-.game-icon {
-  font-size: 4rem;
-}
-
-.game-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-/* Shared Game Elements (used by App.jsx and games) */
-.back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 3000;
-  padding: 12px 24px;
+.star-display {
+  background: #fff;
+  padding: 10px 30px;
   border-radius: 50px;
+  box-shadow: var(--shadow);
+  border: 3px solid #ffd700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 🕹️ Competitive Game Grid */
+.game-shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 40px;
+  padding: 60px 8%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.game-cube {
+  aspect-ratio: 1;
+  background: #fff;
   border: none;
-  background: #ff477e;
-  color: white;
-  font-weight: bold;
+  border-radius: 45px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--shadow);
+  position: relative;
 }
 
-.game-frame {
-  width: 100%;
+.game-cube:hover:not(.locked) {
+  transform: translateY(-20px) scale(1.05);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+}
+
+.cube-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100%;
-  border: none;
 }
 
-/* Mascot */
-.mascot-area {
+.cube-icon {
+  font-size: 5rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+}
+
+.cube-name {
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+/* 🔒 Locked State */
+.game-cube.locked {
+  background: #f1f5f9;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+  opacity: 0.7;
+}
+
+.lock-hint {
+  margin-top: 10px;
+  background: #333;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+/* 🧸 Mascot (Retention Element) */
+.boop-character {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
+  bottom: 30px;
+  right: 5%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.speech-bubble {
-  background: white;
-  border: 4px solid #ff477e;
-  border-radius: 20px;
-  padding: 12px;
+.bubble {
+  background: #fff;
+  padding: 15px 25px;
+  border-radius: 25px;
   margin-bottom: 10px;
-  font-weight: bold;
-  max-width: 200px;
+  box-shadow: var(--shadow);
+  font-weight: 700;
+  max-width: 220px;
+  position: relative;
+  animation: float 3s infinite ease-in-out;
 }
 
-.boop-avatar {
+.bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  right: 20px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #fff;
+}
+
+.boop-face {
   font-size: 4rem;
-  cursor: pointer;
+  animation: bounce 4s infinite;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1) translateY(-5px);
+  }
 }
