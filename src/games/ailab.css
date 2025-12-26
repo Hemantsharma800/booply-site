@@ -1,88 +1,157 @@
-.ai-lab {
+/* ==========================================================================
+   1. AI LAB SCENE BASE
+   ========================================================================== */
+.ai-lab-scene {
     position: fixed;
     inset: 0;
-    background: #fdf2f8;
-    /* Soft pink background */
+    background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1b 100%);
+    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     font-family: 'Quicksand', sans-serif;
+    user-select: none;
 }
 
-.train-zone {
+.lab-interface {
+    margin-top: 60px;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    animation: fade-in 0.5s ease-out;
+}
+
+/* ==========================================================================
+   2. DATA LABELING BOXES
+   ========================================================================== */
+.data-collection-row {
     display: flex;
-    gap: 20px;
+    justify-content: center;
+    gap: 30px;
     margin-top: 40px;
 }
 
-.teach-box {
-    width: 150px;
-    height: 180px;
-    background: white;
-    border: 6px solid #FF7F50;
+.label-box {
+    width: 180px;
+    height: 220px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 3px solid rgba(255, 255, 255, 0.2);
     border-radius: 30px;
     cursor: pointer;
-    box-shadow: 0 10px 0 #FF7F50;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: 0.1s;
 }
 
-.teach-box.food {
-    border-color: #4CAF50;
-    box-shadow: 0 10px 0 #4CAF50;
+.label-box:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
 }
 
-.teach-box:active {
-    transform: translateY(10px);
-    box-shadow: none;
+.label-box.star-theme {
+    border-color: #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
 }
 
-.big-emoji {
-    font-size: 4rem;
+.label-box.planet-theme {
+    border-color: #9370db;
+    box-shadow: 0 0 20px rgba(147, 112, 219, 0.1);
 }
 
-.thinking-boop {
+.box-visual {
+    font-size: 5rem;
+    margin-bottom: 15px;
+}
+
+.box-text {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+/* ==========================================================================
+   3. SCANNING ANIMATIONS
+   ========================================================================== */
+.scanner-eye {
     font-size: 6rem;
-    animation: bounce 1s infinite;
+    margin-bottom: 30px;
+    animation: pulse 1.5s infinite ease-in-out;
 }
 
-.loading-bar {
-    width: 200px;
-    height: 20px;
-    background: #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 20px;
+.scan-bar {
+    width: 250px;
+    height: 4px;
+    background: #00f2ff;
+    margin: 20px auto;
+    box-shadow: 0 0 15px #00f2ff;
+    animation: scanning 2s linear infinite;
 }
 
-.fill {
-    height: 100%;
-    background: #ff4081;
-    animation: load 2s linear forwards;
+@keyframes scanning {
+
+    0%,
+    100% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translateY(50px);
+        opacity: 1;
+    }
 }
 
-@keyframes load {
+/* ==========================================================================
+   4. RESULT DISPLAY
+   ========================================================================== */
+.mystery-blob {
+    font-size: 8rem;
+    margin: 30px 0;
+    filter: drop-shadow(0 0 30px #00f2ff);
+    animation: reveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ai-report {
+    background: rgba(0, 242, 255, 0.1);
+    padding: 20px;
+    border-radius: 20px;
+    border-left: 5px solid #00f2ff;
+    font-size: 1.2rem;
+    margin: 20px 0;
+}
+
+.reset-ai-btn {
+    padding: 15px 40px;
+    background: #00f2ff;
+    color: #0f0f1b;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+}
+
+@keyframes fade-in {
     from {
-        width: 0;
-    }
-
-    to {
-        width: 100%;
+        opacity: 0;
+        transform: translateY(10px);
     }
 }
 
-@keyframes bounce {
+@keyframes pulse {
 
     0%,
     100% {
         transform: scale(1);
+        opacity: 0.8;
     }
 
     50% {
         transform: scale(1.1);
+        opacity: 1;
     }
 }

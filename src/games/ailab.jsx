@@ -1,68 +1,79 @@
 import React, { useState } from 'react';
 import './ailab.css';
 
-const CATEGORIES = {
-    ANIMALS: { name: 'Animals', items: ['🦁', '🐘', '🦒', '🐶'], color: '#FF7F50' },
-    FOOD: { name: 'Yummy Food', items: ['🍎', '🍕', '🍦', '🍔'], color: '#4CAF50' }
+const DATA_TYPES = {
+    STARS: { label: 'Stars', icon: '⭐', items: ['⭐', '✨', '🌟'], color: '#FFD700' },
+    PLANETS: { label: 'Planets', icon: '🪐', items: ['🪐', '🌍', '🌑'], color: '#9370DB' }
 };
 
-function SmartSort({ onExit, onCorrectClick }) {
-    const [step, setStep] = useState(1); // 1: Teach, 2: Thinking, 3: Guessing
-    const [dataCount, setDataCount] = useState({ ANIMALS: 0, FOOD: 0 });
-    const [testItem, setTestItem] = useState('');
+function AILab({ onExit, onCorrectClick }) {
+    const [mode, setMode] = useState('labeling'); // 'labeling', 'scanning', 'result'
+    const [counts, setCounts] = useState({ STARS: 0, PLANETS: 0 });
+    const [mysteryItem, setMysteryItem] = useState('');
 
-    // Step 1: Child "Teaches" by clicking icons
-    const teachBoop = (cat) => {
-        setDataCount(prev => ({ ...prev, [cat]: prev[cat] + 1 }));
-        if (dataCount.ANIMALS + dataCount.FOOD >= 4) {
-            // After 5 clicks, Boop is "Smart" enough to try
-            setStep(2);
+    // Child "labels" data to teach the computer
+    const addData = (type) => {
+        const newCounts = { ...counts, [type]: counts[type] + 1 };
+        setCounts(newCounts);
+
+        // Once enough data is collected, move to the training/scanning phase
+        if (newCounts.STARS + newCounts.PLANETS >= 6) {
+            setMode('scanning');
             setTimeout(() => {
-                const isAnimal = Math.random() > 0.5;
-                setTestItem(isAnimal ? CATEGORIES.ANIMALS.items[0] : CATEGORIES.FOOD.items[0]);
-                setStep(3);
-            }, 2000);
+                // AI chooses an item based on the data provided
+                const isStar = Math.random() > 0.5;
+                setMysteryItem(isStar ? '🌟' : '🌍');
+                setMode('result');
+            }, 3000);
         }
     };
 
     return (
-        <div className="ai-lab">
+        <div className="ai-lab-scene">
             <button className="back-btn" onClick={onExit}>🏠 Home</button>
 
-            {step === 1 && (
-                <div className="game-view">
-                    <h2 className="ai-title">Help Boop Learn! 🧠</h2>
-                    <p className="ai-hint">Tap the items to teach Boop what they are!</p>
-                    <div className="train-zone">
-                        <button className="teach-box" onClick={() => teachBoop('ANIMALS')}>
-                            <span className="big-emoji">🦁</span>
-                            <p>Animals ({dataCount.ANIMALS})</p>
+            {mode === 'labeling' && (
+                <div className="lab-interface">
+                    <h1 className="ai-header">Boop's Magic Scanner 🔍</h1>
+                    <p className="ai-instruction">Help the AI learn! Tap the boxes to label the data.</p>
+
+                    <div className="data-collection-row">
+                        <button className="label-box star-theme" onClick={() => addData('STARS')}>
+                            <div className="box-visual">⭐</div>
+                            <div className="box-text">Labled Stars: {counts.STARS}</div>
                         </button>
-                        <button className="teach-box food" onClick={() => teachBoop('FOOD')}>
-                            <span className="big-emoji">🍕</span>
-                            <p>Food ({dataCount.FOOD})</p>
+
+                        <button className="label-box planet-theme" onClick={() => addData('PLANETS')}>
+                            <div className="box-visual">🪐</div>
+                            <div className="box-text">Labled Planets: {counts.PLANETS}</div>
                         </button>
                     </div>
                 </div>
             )}
 
-            {step === 2 && (
-                <div className="game-view">
-                    <div className="thinking-boop">🤔</div>
-                    <h2>Boop is thinking...</h2>
-                    <div className="loading-bar"><div className="fill"></div></div>
+            {mode === 'scanning' && (
+                <div className="lab-interface training-animation">
+                    <div className="scanner-eye">👁️‍🗨️</div>
+                    <div className="scan-bar"></div>
+                    <h2>AI is Analyzing Patterns...</h2>
+                    <p>Training the model with your data!</p>
                 </div>
             )}
 
-            {step === 3 && (
-                <div className="game-view">
-                    <h2>Boop's Turn!</h2>
-                    <div className="test-item">{testItem}</div>
-                    <div className="ai-speech">
-                        "I think this is {(testItem === '🦁') ? 'an ANIMAL' : 'FOOD'}!"
+            {mode === 'result' && (
+                <div className="lab-interface result-view">
+                    <h2 className="result-status">Identity Confirmed! ✅</h2>
+                    <div className="mystery-blob">{mysteryItem}</div>
+                    <div className="ai-report">
+                        "Based on your <b>{counts.STARS + counts.PLANETS}</b> data points,
+                        I am 100% sure this is a <b>{mysteryItem === '🌟' ? 'STAR' : 'PLANET'}</b>!"
                     </div>
-                    <button className="restart-btn" onClick={() => { setStep(1); setDataCount({ ANIMALS: 0, FOOD: 0 }); onCorrectClick(); }}>
-                        You're Right! ⭐
+                    <button className="reset-ai-btn" onClick={() => {
+                        setMode('labeling');
+                        setCounts({ STARS: 0, PLANETS: 0 });
+                        onCorrectClick(); // Award a star for finishing the AI workflow
+                    }}>
+                        Teach More! ⭐
                     </button>
                 </div>
             )}
@@ -70,4 +81,4 @@ function SmartSort({ onExit, onCorrectClick }) {
     );
 }
 
-export default SmartSort;
+export default AILab;
