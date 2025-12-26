@@ -1,123 +1,126 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './fightergame.css';
 
-const MAX_HP = 100;
+const GROUND_Y = 0;
+const PLAYER_START_X = 100;
+const AI_START_X = 500;
+const ARENA_WIDTH = 700;
 
-function FighterGame({ onExit, onCorrectClick }) {
-    const [p1, setP1] = useState({ hp: MAX_HP, status: 'idle', energy: 0 });
-    const [ai, setAi] = useState({ hp: MAX_HP, status: 'idle', energy: 0 });
-    const [winner, setWinner] = useState(null);
-    const [battleLog, setBattleLog] = useState("The duel begins...");
+export default function FighterGame({ onExit, onCorrectClick }) {
+    // Fighter States
+    const [player, setPlayer] = useState({ x: PLAYER_START_X, y: GROUND_Y, hp: 100, action: 'idle', dir: 1 });
+    const [ai, setAi] = useState({ x: AI_START_X, y: GROUND_Y, hp: 100, action: 'idle', dir: -1 });
+    const [isGameOver, setIsGameOver] = useState(false);
 
-    // Sound Refs
-    const swingSfx = useRef(new Audio('/sounds/swing.mp3'));
-    const hitSfx = useRef(new Audio('/sounds/impact.mp3'));
+    const gameLoopRef = useRef();
+    const lastAiDecision = useRef(0);
 
-    // 🧠 Reactive AI "Shadow" Engine
-    useEffect(() => {
-        if (winner || ai.hp <= 0) return;
+    // ⚔️ COMBAT LOGIC: Detection & Damage
+    const resolveHit = useCallback((attacker, defender, setDefender) => {
+        const distance = Math.abs(attacker.x - defender.x);
+        if (distance < 60 && attacker.action === 'kick') {
+            setDefender(prev => ({
+                ...prev,
+                hp: Math.max(0, prev.hp - 12),
+                action: 'hit',
+                x: prev.x + (attacker.dir * 20) // Knockback
+            }));
+            // Recover from hit animation
+            setTimeout(() => setDefender(p => ({ ...p, action: 'idle' })), 300);
+            if (defender.hp <= 12) setIsGameOver(true);
+        }
+    }, []);
 
-        const aiThinking = setInterval(() => {
-            // If player is attacking, AI has a 60% chance to block
-            if (p1.status === 'attacking') {
-                if (Math.random() > 0.4) {
-                    setAi(s => ({ ...s, status: 'blocking' }));
-                    setBattleLog("Shadow Parried! 🛡️");
-                }
-            } else if (ai.status === 'idle') {
-                // AI attacks if player is open
-                if (Math.random() > 0.8) executeMove('ai');
+    // 🧠 AI NEURAL REFLEX: Accelerated Response
+    const runAiLogic = useCallback(() => {
+        const now = Date.now();
+        if (now - lastAiDecision.current < 150) return; // Ultra-fast 150ms reaction time
+
+        setAi(prev => {
+            const dist = prev.x - player.x;
+            const newAction = { ...prev };
+
+            if (Math.abs(dist) > 55) {
+                newAction.x -= Math.sign(dist) * 8; // Pursuit speed
+                newAction.action = 'walk';
+            } else {
+                newAction.action = 'kick';
+                resolveHit(newAction, player, setPlayer);
             }
-        }, 800);
+            return newAction;
+        });
+        lastAiDecision.current = now;
+    }, [player, resolveHit]);
 
-        return () => clearInterval(aiThinking);
-    }, [p1.status, ai.status, winner]);
-
-    const executeMove = (who) => {
-        if (winner) return;
-        const isP1 = who === 'p1';
-
-        // Set Attacker State
-        isP1 ? setP1(s => ({ ...s, status: 'attacking' })) : setAi(s => ({ ...s, status: 'attacking' }));
-        swingSfx.current.play().catch(() => { });
-
-        // Hit-Stop Logic (Realistic Timing)
-        setTimeout(() => {
-            const targetBlocked = isP1 ? ai.status === 'blocking' : p1.status === 'blocking';
-
-            if (!targetBlocked) {
-                hitSfx.current.play().catch(() => { });
-                if (isP1) {
-                    setAi(s => ({ ...s, hp: Math.max(0, s.hp - 15), status: 'hurt' }));
-                    setBattleLog("Direct Strike! 🔥");
-                } else {
-                    setP1(s => ({ ...s, hp: Math.max(0, s.hp - 12), status: 'hurt' }));
-                    setBattleLog("You were hit! ⚔️");
-                }
+    // 🎮 PLAYER CONTROLS: Forward, Back, Jump, Kick
+    const handleAction = (type) => {
+        if (isGameOver) return;
+        setPlayer(prev => {
+            let next = { ...prev };
+            if (type === 'forward') { next.x = Math.min(ARENA_WIDTH, prev.x + 15); next.action = 'walk'; }
+            if (type === 'back') { next.x = Math.max(0, prev.x - 15); next.action = 'walk'; }
+            if (type === 'kick') { next.action = 'kick'; resolveHit(next, ai, setAi); }
+            if (type === 'jump' && prev.y === GROUND_Y) {
+                next.y = 120; // Jump peak
+                setTimeout(() => setPlayer(p => ({ ...p, y: GROUND_Y })), 400);
             }
-
-            // Recovery Phase
-            setTimeout(() => {
-                setP1(s => ({ ...s, status: 'idle' }));
-                setAi(s => ({ ...s, status: 'idle' }));
-            }, 300);
-        }, 350);
+            return next;
+        });
+        // Reset to idle
+        if (type !== 'jump') setTimeout(() => setPlayer(p => ({ ...p, action: 'idle' })), 200);
     };
 
     useEffect(() => {
-        if (p1.hp <= 0) setWinner('THE SHADOW');
-        if (ai.hp <= 0) { setWinner('NINJA MASTER'); onCorrectClick(); }
-    }, [p1.hp, ai.hp, onCorrectClick]);
-
-    // Articulated Human Skeleton Component
-    const Humanoid = ({ side, status }) => (
-        <div className={`shadow-ninja ${side} ${status}`}>
-            <div className="n-head"></div>
-            <div className="n-torso">
-                <div className="n-arm arm-l"><div className="forearm"></div></div>
-                <div className="n-arm arm-r"><div className="forearm"></div></div>
-                <div className="n-leg leg-l"><div className="shin"></div></div>
-                <div className="n-leg leg-r"><div className="shin"></div></div>
-            </div>
-            <div className="n-shadow-blob"></div>
-        </div>
-    );
+        if (!isGameOver) {
+            gameLoopRef.current = setInterval(runAiLogic, 50); // High-frequency loop
+        }
+        return () => clearInterval(gameLoopRef.current);
+    }, [runAiLogic, isGameOver]);
 
     return (
-        <div className="elite-shadow-arena">
-            <header className="combat-hud">
-                <div className="hud-vitals p1">
-                    <div className="health-box"><div className="fill" style={{ width: `${p1.hp}%` }}></div></div>
-                    <p>PLAYER</p>
+        <div className="shadow-duel-arena fade-in">
+            {/* 🏥 HEALTH HUD */}
+            <div className="fight-hud">
+                <div className="hp-bar-container player">
+                    <div className="hp-fill" style={{ width: `${player.hp}%` }}></div>
+                    <span className="name-tag">PLAYER 1</span>
                 </div>
-                <div className="battle-announcer">{battleLog}</div>
-                <div className="hud-vitals ai">
-                    <div className="health-box enemy"><div className="fill" style={{ width: `${ai.hp}%` }}></div></div>
-                    <p>SHADOW</p>
+                <div className="timer">VS</div>
+                <div className="hp-bar-container ai">
+                    <div className="hp-fill" style={{ width: `${ai.hp}%` }}></div>
+                    <span className="name-tag">SHADOW AI</span>
                 </div>
-            </header>
-
-            <div className="fighting-stage">
-                <Humanoid side="p1" status={p1.status} />
-                <Humanoid side="ai" status={ai.status} />
             </div>
 
-            {!winner ? (
-                <div className="combat-inputs">
-                    <button className="atk-btn-pro" onClick={() => executeMove('p1')}>STRIKE ⚔️</button>
-                    <button className="blk-btn-pro"
-                        onMouseDown={() => setP1(s => ({ ...s, status: 'blocking' }))}
-                        onMouseUp={() => setP1(s => ({ ...s, status: 'idle' }))}>BLOCK 🛡️</button>
-                    <button className="exit-arena-btn" onClick={onExit}>⛩️ EXIT</button>
+            {/* 🏟️ BATTLEGROUND */}
+            <div className="stage">
+                <div className={`fighter shadow-p ${player.action}`} style={{ left: player.x, bottom: player.y }}>
+                    <div className="skeleton"></div>
+                    {player.action === 'kick' && <div className="kick-vfx"></div>}
                 </div>
-            ) : (
-                <div className="victory-ui-pro">
-                    <h1>{winner} PREVAILS</h1>
-                    <button className="rematch-btn" onClick={() => window.location.reload()}>REMATCH</button>
+                <div className={`fighter shadow-ai ${ai.action}`} style={{ left: ai.x, bottom: ai.y }}>
+                    <div className="skeleton"></div>
+                    {ai.action === 'kick' && <div className="kick-vfx"></div>}
+                </div>
+            </div>
+
+            {/* 🕹️ ELITE CONTROLS HUD */}
+            <div className="controls-hud">
+                <div className="move-btns">
+                    <button className="ctrl-btn" onMouseDown={() => handleAction('back')}>◀</button>
+                    <button className="ctrl-btn" onMouseDown={() => handleAction('jump')}>▲</button>
+                    <button className="ctrl-btn" onMouseDown={() => handleAction('forward')}>▶</button>
+                </div>
+                <button className="kick-btn" onClick={() => handleAction('kick')}>STRIKE</button>
+                <button className="exit-duel" onClick={onExit}>EXIT</button>
+            </div>
+
+            {isGameOver && (
+                <div className="duel-overlay">
+                    <h1>{player.hp > 0 ? "VICTORY" : "DEFEATED"}</h1>
+                    <button onClick={() => window.location.reload()}>REMATCH</button>
                 </div>
             )}
         </div>
     );
 }
-
-export default FighterGame;

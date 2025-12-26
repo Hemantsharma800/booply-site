@@ -1,273 +1,136 @@
-/* ==========================================================================
-   1. ARENA & ENVIRONMENT
-   ========================================================================== */
-.elite-shadow-arena {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
-    /* Deep space shadow */
+.shadow-duel-arena {
+    height: 100vh;
+    background: radial-gradient(circle at center, #111 0%, #000 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: white;
-    font-family: 'Quicksand', sans-serif;
+    position: relative;
     overflow: hidden;
-    user-select: none;
 }
 
-/* ==========================================================================
-   2. ARTICULATED HUMAN SKELETON (FIXES VISIBILITY)
-   ========================================================================== */
-.shadow-ninja {
-    position: relative;
-    width: 80px;
-    height: 200px;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 5;
-}
-
-/* Head & Torso */
-.n-head {
-    width: 44px;
-    height: 44px;
-    background: #000;
-    border: 2px solid #334155;
-    border-radius: 50%;
-    margin: 0 auto;
-}
-
-.n-torso {
-    width: 46px;
-    height: 85px;
-    background: #000;
-    border: 2px solid #334155;
-    border-radius: 10px;
-    margin: 4px auto;
-    position: relative;
-}
-
-/* Limb Segments */
-.n-arm,
-.n-leg {
-    position: absolute;
-    background: #000;
-    width: 14px;
-    height: 55px;
-    border: 1.5px solid #1e293b;
-    border-radius: 8px;
-}
-
-.forearm,
-.shin {
-    position: absolute;
-    background: #000;
-    width: 100%;
-    height: 100%;
-    top: 45px;
-    left: 0;
-    border-radius: 8px;
-    border: 1px solid #0f172a;
-}
-
-/* Joint Positioning */
-.arm-l {
-    left: -16px;
-    top: 10px;
-    transform-origin: top;
-    transform: rotate(20deg);
-}
-
-.arm-r {
-    right: -16px;
-    top: 10px;
-    transform-origin: top;
-    transform: rotate(-20deg);
-}
-
-.leg-l {
-    bottom: -55px;
-    left: 4px;
-    transform-origin: top;
-}
-
-.leg-r {
-    bottom: -55px;
-    right: 4px;
-    transform-origin: top;
-}
-
-/* ==========================================================================
-   3. COMBAT ANIMATIONS (STATE-DRIVEN)
-   ========================================================================== */
-/* Attack Logic */
-.p1.attacking {
-    transform: translateX(70px) scale(1.1);
-}
-
-.ai.attacking {
-    transform: translateX(-70px) scale(1.1);
-}
-
-.attacking .arm-r {
-    animation: pro-punch 0.35s forwards;
-}
-
-.attacking .arm-r .forearm {
-    animation: pro-extension 0.35s forwards;
-}
-
-@keyframes pro-punch {
-    0% {
-        transform: rotate(-20deg);
-    }
-
-    50% {
-        transform: rotate(-110deg);
-        filter: brightness(1.5);
-    }
-
-    100% {
-        transform: rotate(-20deg);
-    }
-}
-
-@keyframes pro-extension {
-    0% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(25px) scaleY(1.4);
-        background: #334155;
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
-
-/* Hit Reactions */
-.hurt {
-    animation: hit-shake 0.2s infinite;
-    filter: drop-shadow(0 0 15px #ef4444);
-}
-
-@keyframes hit-shake {
-    0% {
-        transform: rotate(0deg) translateX(5px);
-    }
-
-    50% {
-        transform: rotate(3deg) translateX(-5px);
-    }
-
-    100% {
-        transform: rotate(0deg) translateX(5px);
-    }
-}
-
-.blocking {
-    opacity: 0.7;
-    transform: scale(0.9) skewX(10deg);
-    filter: blur(0.5px);
-}
-
-/* ==========================================================================
-   4. HUD & ELITE UI
-   ========================================================================== */
-.combat-hud {
+/* 💎 ELITE HUD */
+.fight-hud {
+    width: 90%;
+    max-width: 800px;
     display: flex;
-    justify-content: space-around;
-    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    z-index: 10;
+}
+
+.hp-bar-container {
+    width: 40%;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    border-radius: 4px;
+}
+
+.hp-fill {
+    height: 100%;
+    transition: width 0.3s ease-out;
+}
+
+.player .hp-fill {
+    background: #00f2ff;
+    box-shadow: 0 0 15px #00f2ff;
+}
+
+.ai .hp-fill {
+    background: #ff4757;
+    box-shadow: 0 0 15px #ff4757;
+}
+
+/* 🥋 SHADOW FIGHTERS */
+.stage {
+    width: 700px;
+    height: 300px;
+    position: relative;
+    border-bottom: 4px solid #1e293b;
     margin-top: 50px;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-    border-bottom: 2px solid #1e293b;
 }
 
-.health-box {
-    width: 280px;
-    height: 18px;
-    background: #0f172a;
-    border: 2px solid #334155;
-    border-radius: 10px;
-    overflow: hidden;
+.fighter {
+    position: absolute;
+    width: 50px;
+    height: 80px;
+    transition: left 0.1s linear, bottom 0.2s ease-out;
 }
 
-.fill {
-    height: 100%;
-    background: linear-gradient(90deg, #ef4444, #b91c1c);
-    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.enemy .fill {
-    background: linear-gradient(90deg, #f8fafc, #94a3b8);
-}
-
-.battle-announcer {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: #38bdf8;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-/* ==========================================================================
-   5. CONTROLS & STAGE
-   ========================================================================== */
-.fighting-stage {
-    flex: 1;
+.skeleton {
     width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    padding-bottom: 140px;
-    background: url('https://www.transparenttextures.com/patterns/dark-wood.png');
+    height: 100%;
+    background: #fff;
+    /* Shadow Silhouette */
+    clip-path: polygon(50% 0%, 80% 20%, 60% 40%, 90% 100%, 10% 100%, 40% 40%, 20% 20%);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-.combat-inputs {
+.shadow-ai .skeleton {
+    background: #555;
+    filter: grayscale(1);
+}
+
+/* 🎞️ ANIMATIONS */
+.kick.fighter {
+    transform: scaleX(1.4) skewX(-10deg);
+}
+
+.kick-vfx {
+    position: absolute;
+    top: 20px;
+    right: -30px;
+    width: 40px;
+    height: 10px;
+    background: cyan;
+    filter: blur(5px);
+    animation: flash 0.2s;
+}
+
+@keyframes flash {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* 🕹️ CONTROLS HUD */
+.controls-hud {
+    position: absolute;
+    bottom: 50px;
     display: flex;
     gap: 40px;
-    padding-bottom: 60px;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px 40px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: auto;
 }
 
-.atk-btn-pro,
-.blk-btn-pro {
-    padding: 20px 60px;
-    border-radius: 12px;
+.ctrl-btn {
+    width: 60px;
+    height: 60px;
+    background: #111;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.kick-btn {
+    background: #00f2ff;
+    color: #000;
+    padding: 15px 40px;
+    border-radius: 15px;
     font-weight: 900;
-    font-size: 1.4rem;
+    cursor: pointer;
     border: none;
-    cursor: pointer;
-    transition: 0.1s;
-}
-
-.atk-btn-pro {
-    background: #ef4444;
-    color: white;
-    box-shadow: 0 8px 0 #991b1b;
-}
-
-.blk-btn-pro {
-    background: #3b82f6;
-    color: white;
-    box-shadow: 0 8px 0 #1e40af;
-}
-
-.atk-btn-pro:active,
-.blk-btn-pro:active {
-    transform: translateY(4px);
-    box-shadow: none;
-}
-
-.exit-arena-btn {
-    padding: 15px 30px;
-    background: transparent;
-    border: 2px solid #334155;
-    color: #94a3b8;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 20px;
 }
