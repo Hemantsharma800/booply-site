@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './app.css';
 
-// 🎮 CORE GAME IMPORTS
+// 🎮 GAME COMPONENT IMPORTS
 import DinoGame from './games/dinogame.jsx';
 import ColorGame from './games/colourgame.jsx';
 import PuzzlePop from './games/puzzlepop.jsx';
 import NitroDash from './games/nitrodash.jsx';
 import KitchenClass from './games/kitchenclass.jsx';
 import AILab from './games/ailab.jsx';
-import FighterGame from './games/fightergame.jsx'; // 🥷 Shadow Duel
+import FighterGame from './games/fightergame.jsx';
 import GeoExplorer from './games/geoexplorer.jsx'; // 🌍 Terra Cognita AI
 
 // ⚙️ CTO'S INTERNAL GAME REGISTRY
 const INTERNAL_GAMES = {
-  'dino-dash-v1': DinoGame,
-  'color-fun-v1': ColorGame,
-  'puzzle-pop-v1': PuzzlePop,
-  'nitro-dash-v1': NitroDash,
-  'kitchen-class-v1': KitchenClass,
-  'ai-lab-v1': AILab,
-  'fighter-v1': FighterGame,
   'geo-ai-v1': GeoExplorer,
+  'fighter-v1': FighterGame,
+  'nitro-dash-v1': NitroDash,
+  'ai-lab-v1': AILab,
+  'kitchen-class-v1': KitchenClass,
+  'puzzle-pop-v1': PuzzlePop,
+  'color-fun-v1': ColorGame,
+  'dino-dash-v1': DinoGame,
 };
 
-// 🎡 FULL GAME REPOSITORY (CTO Optimized for Sales & SEO)
+// 🎡 FULL GAME REPOSITORY (CTO Optimized for Sales)
 const MASTER_GAME_LIST = [
   { id: 'geo-ai-v1', name: 'Terra Cognita AI', color: '#00f2ff', icon: '🌍', category: 'Premium' },
   { id: 'fighter-v1', name: 'Shadow Duel', color: '#1a1a1a', icon: '🥷', category: 'Action' },
@@ -40,24 +40,11 @@ function App() {
   const [totalStars, setTotalStars] = useState(() => Number(localStorage.getItem('booply-stars')) || 0);
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('booply-user')) || null);
 
-  // Carousel Navigation Logic
-  const [heroIndex, setHeroIndex] = useState(0);
-  const heroGames = MASTER_GAME_LIST.slice(0, 3); // Top 3 games in Hero Section
+  const heroGames = MASTER_GAME_LIST.slice(0, 3);
 
-  // Persistence Engine
   useEffect(() => {
     localStorage.setItem('booply-stars', totalStars);
   }, [totalStars]);
-
-  // Optional Login for Revenue Tracking
-  const handleLogin = () => {
-    const name = prompt("Enter your Hero Name to save progress!");
-    if (name) {
-      const newUser = { name, joined: new Date().toLocaleDateString() };
-      setUser(newUser);
-      localStorage.setItem('booply-user', JSON.stringify(newUser));
-    }
-  };
 
   const handleCorrect = useCallback(() => {
     setTotalStars(s => s + 1);
@@ -66,51 +53,32 @@ function App() {
   return (
     <div className="booply-elite-container">
       {!activeGame ? (
-        <div className="main-lobby-ui fade-in">
-          {/* 💎 ELITE HEADER WITH STAR COUNTER */}
+        <div className="main-lobby-ui">
           <header className="pro-header">
             <h1 className="brand-logo">Booply</h1>
             <div className="user-hub">
-              {user ? (
-                <div className="profile-pill">👤 {user.name}</div>
-              ) : (
-                <button className="login-btn pulse" onClick={handleLogin}>🔑 Sign Up</button>
-              )}
+              {user ? <div className="profile-pill">👤 {user.name}</div> : <div className="profile-pill">Guest</div>}
               <div className="star-display-elite">⭐ {totalStars}</div>
             </div>
           </header>
 
-          {/* 🏟️ HERO CAROUSEL (PBS KIDS STYLE) */}
           <section className="hero-carousel">
-            <div className="carousel-track" style={{ transform: `translateX(-${heroIndex * 100}%)` }}>
-              {heroGames.map((game, idx) => (
-                <div key={game.id} className="hero-slide" style={{ '--bg': game.color }}>
-                  <div className="hero-content">
-                    <span className="hero-emoji-floating">{game.icon}</span>
-                    <div className="hero-details">
-                      <h2>{game.name}</h2>
-                      <button className="play-hero-btn" onClick={() => setActiveGame(game)}>PLAY NOW ▶</button>
-                    </div>
-                  </div>
+            <div className="hero-slide" style={{ '--bg': heroGames[0].color }}>
+              <div className="hero-content">
+                <span className="hero-emoji-floating">{heroGames[0].icon}</span>
+                <div className="hero-details">
+                  <h2>Featured: {heroGames[0].name}</h2>
+                  <button className="play-hero-btn" onClick={() => setActiveGame(heroGames[0])}>PLAY NOW ▶</button>
                 </div>
-              ))}
-            </div>
-            <div className="carousel-dots">
-              {heroGames.map((_, i) => <div key={i} className={`dot ${i === heroIndex ? 'active' : ''}`} onClick={() => setHeroIndex(i)}></div>)}
+              </div>
             </div>
           </section>
 
-          {/* 🎮 UNLIMITED GAME SHELVES (CRAZY GAMES STYLE) */}
           <main className="lobby-content">
-            <h3 className="shelf-title">Our World of Games 🌎</h3>
+            <h3 className="shelf-title">Our World of Games 🎮</h3>
             <div className="unlimited-grid">
               {MASTER_GAME_LIST.map(game => (
-                <button
-                  key={game.id}
-                  className="game-card-elite"
-                  style={{ '--theme': game.color }}
-                  onClick={() => setActiveGame(game)}
-                >
+                <button key={game.id} className="game-card-elite" style={{ '--theme': game.color }} onClick={() => setActiveGame(game)}>
                   <div className="card-visual">{game.icon}</div>
                   <div className="card-info">
                     <span className="category-tag">{game.category}</span>
@@ -121,7 +89,6 @@ function App() {
             </div>
           </main>
 
-          {/* 🏆 LEVEL-UP PROGRESSION FOOTER */}
           <footer className="footer-progression">
             <div className="footer-content">
               <span className="level-badge">LVL {Math.floor(totalStars / 10) + 1}</span>
@@ -133,7 +100,6 @@ function App() {
           </footer>
         </div>
       ) : (
-        /* 🕹️ GAME EXECUTION STAGE */
         <div className="active-game-stage">
           {React.createElement(INTERNAL_GAMES[activeGame.id], {
             onExit: () => setActiveGame(null),
