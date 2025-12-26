@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './app.css';
 
 // 🎮 Game Component Imports
@@ -8,7 +8,7 @@ import PuzzlePop from './games/puzzlepop.jsx';
 import NitroDash from './games/nitrodash.jsx';
 import KitchenClass from './games/kitchenclass.jsx';
 import AILab from './games/ailab.jsx';
-import FighterGame from './games/fightergame.jsx'; // 🥊 New Fighter Game
+import FighterGame from './games/fightergame.jsx';
 
 // ⚙️ INTERNAL GAME REGISTRY
 const INTERNAL_GAMES = {
@@ -18,13 +18,13 @@ const INTERNAL_GAMES = {
   'nitro-dash-v1': NitroDash,
   'kitchen-class-v1': KitchenClass,
   'ai-lab-v1': AILab,
-  'fighter-v1': FighterGame, //
+  'fighter-v1': FighterGame,
 };
 
-// 🎡 FULL GAME REPOSITORY - Categories for organized shelf layout
+// 🎡 FULL GAME REPOSITORY
 const MASTER_GAME_LIST = [
+  { id: 'fighter-v1', name: 'Shadow Duel', color: '#2c3e50', icon: '🥷', category: 'Action' },
   { id: 'nitro-dash-v1', name: 'Nitro Dash', color: '#FF4757', icon: '🏎️', category: 'Action' },
-  { id: 'fighter-v1', name: 'Super Brawl', color: '#FF8C00', icon: '🥊', category: 'Action' },
   { id: 'ai-lab-v1', name: 'AI Scanner', color: '#7E57C2', icon: '🧠', category: 'Learning' },
   { id: 'kitchen-class-v1', name: 'Kitchen Class', color: '#FF7043', icon: '🍳', category: 'Learning' },
   { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Featured' },
@@ -35,19 +35,33 @@ const MASTER_GAME_LIST = [
 function App() {
   const [activeGame, setActiveGame] = useState(null);
   const [totalStars, setTotalStars] = useState(() => Number(localStorage.getItem('booply-stars')) || 0);
-
-  // 🔑 Optional Account State
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('booply-user')) || null);
 
-  // Persistence for stars
+  // Carousel State
+  const [heroIndex, setHeroIndex] = useState(0);
+  const heroTimeoutRef = useRef(null);
+  const heroGames = MASTER_GAME_LIST.slice(0, 3); // Use top 3 for hero
+
+  // Persistence & Hero Timer
   useEffect(() => {
     localStorage.setItem('booply-stars', totalStars);
-  }, [totalStars]);
+    resetHeroTimer();
+    return () => {
+      if (heroTimeoutRef.current) clearTimeout(heroTimeoutRef.current);
+    };
+  }, [totalStars, heroIndex]);
+
+  const resetHeroTimer = () => {
+    if (heroTimeoutRef.current) clearTimeout(heroTimeoutRef.current);
+    heroTimeoutRef.current = setTimeout(() => {
+      setHeroIndex((prev) => (prev === heroGames.length - 1 ? 0 : prev + 1));
+    }, 5000); // Change slide every 5 seconds
+  };
 
   const handleLogin = () => {
-    const name = prompt("Enter your Hero Name to save your progress!");
+    const name = prompt("Enter your Hero Name to save progress!");
     if (name) {
-      const newUser = { name, level: 1, joined: new Date().toLocaleDateString() };
+      const newUser = { name, level: 1 };
       setUser(newUser);
       localStorage.setItem('booply-user', JSON.stringify(newUser));
     }
@@ -58,10 +72,10 @@ function App() {
   }, []);
 
   return (
-    <div className="booply-pro-container">
+    <div className="booply-elite-container">
       {!activeGame ? (
         <div className="main-lobby-ui">
-          {/* 💎 PREMIUM HEADER WITH OPTIONAL LOGIN */}
+          {/* 💎 1. ELITE GLASS HEADER */}
           <header className="pro-header">
             <div className="logo-section">
               <h1 className="brand-logo">Booply</h1>
@@ -70,38 +84,76 @@ function App() {
               {user ? (
                 <div className="profile-pill">👤 {user.name}</div>
               ) : (
-                <button className="login-btn" onClick={handleLogin}>🔑 Login / Sign Up</button>
+                <button className="login-btn pulse-btn" onClick={handleLogin}>🔑 Login / Sign Up</button>
               )}
-              <div className="star-bank">⭐ {totalStars}</div>
+              <div className="star-bank-elite">
+                <span className="star-icon">⭐</span>
+                <span className="star-count">{totalStars}</span>
+              </div>
             </div>
           </header>
 
-          {/* 🎪 UNLIMITED GAME GRID - Fixes the "4 games only" issue */}
+          {/* 🏟️ 2. DYNAMIC HERO CAROUSEL */}
+          <section className="hero-carousel-container">
+            <div className="carousel-track" style={{ transform: `translateX(${-heroIndex * 100}%)` }}>
+              {heroGames.map((game) => (
+                <div key={game.id} className="hero-slide" style={{ '--hero-bg': game.color }}>
+                  <div className="hero-content glass-panel">
+                    <span className="hero-icon floating">{game.icon}</span>
+                    <div className="hero-details">
+                      <h1>Featured: {game.name}</h1>
+                      <button className="play-hero-btn" onClick={() => setActiveGame(game)}>PLAY NOW ▶</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="carousel-indicators">
+              {heroGames.map((_, idx) => (
+                <div key={idx} className={`indicator ${idx === heroIndex ? 'active' : ''}`}></div>
+              ))}
+            </div>
+          </section>
+
+          {/* 🎮 3. UNLIMITED GAME GRID (The Fix) */}
           <main className="lobby-content">
-            <h3 className="shelf-title">Your Game World 🌎</h3>
+            <div className="shelf-header">
+              <h3 className="shelf-title">All Games Collection</h3>
+              <span className="game-count-badge">{MASTER_GAME_LIST.length} Games ready!</span>
+            </div>
+
             <div className="unlimited-grid">
               {MASTER_GAME_LIST.map(game => (
                 <button
                   key={game.id}
-                  className="game-card-premium"
+                  className="game-card-elite"
                   style={{ '--theme-color': game.color }}
                   onClick={() => setActiveGame(game)}
                 >
-                  <div className="card-visual">{game.icon}</div>
-                  <span className="card-label">{game.name}</span>
-                  <div className="card-hover-glow"></div>
+                  <div className="card-visual-elite">{game.icon}</div>
+                  <div className="card-info">
+                    <span className="card-category">{game.category}</span>
+                    <span className="card-label">{game.name}</span>
+                  </div>
+                  <div className="card-shine"></div>
                 </button>
               ))}
             </div>
           </main>
 
-          {/* 🏆 PROGRESSION FOOTER */}
-          <footer className="footer-status">
-            <div className="level-track">
-              <span>Level {Math.floor(totalStars / 10) + 1}</span>
-              <div className="progress-bg">
-                <div className="progress-fill" style={{ width: `${(totalStars % 10) * 10}%` }}></div>
+          {/* 🏆 4. PERSISTENT LEVEL FOOTER */}
+          <footer className="footer-status glass-footer">
+            <div className="level-track-elite">
+              <div className="level-info">
+                <span className="trophy-icon">🏆</span>
+                <span>Level {Math.floor(totalStars / 10) + 1}</span>
               </div>
+              <div className="progress-bg-elite">
+                <div className="progress-fill-elite" style={{ width: `${(totalStars % 10) * 10}%` }}>
+                  <div className="progress-glare"></div>
+                </div>
+              </div>
+              <span className="next-level-hint">{10 - (totalStars % 10)} stars to next level!</span>
             </div>
           </footer>
         </div>
