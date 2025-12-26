@@ -1,84 +1,137 @@
 /* ==========================================================================
-   BOOPLY PRO THEME
+   BOOPLY PREMIUM GLOBAL STYLES
    ========================================================================== */
-.booply-pro-container {
-  min-height: 100vh;
-  background: #f0f4f8;
+:root {
+  --primary-blue: #0084ff;
+  --success-green: #2ed573;
+  --star-gold: #ffd700;
+  --glass: rgba(255, 255, 255, 0.2);
+  --shadow-pro: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
   font-family: 'Quicksand', sans-serif;
+  background-color: #f0f4f8;
   color: #333;
 }
 
-/* 💎 Pro Header */
+/* ==========================================================================
+   1. NAVIGATION & ACCOUNT HEADER
+   ========================================================================== */
 .pro-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 5%;
-  background: #0084ff;
+  background: var(--primary-blue);
   color: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.nav-pills {
+.brand-logo {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.user-hub {
   display: flex;
-  gap: 10px;
-  margin-left: 30px;
+  align-items: center;
+  gap: 15px;
 }
 
-.pill {
-  background: rgba(255, 255, 255, 0.2);
+.login-btn {
+  background: #ffeb3b;
   border: none;
-  color: white;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 900;
+  color: #333;
   cursor: pointer;
+  box-shadow: 0 4px 0 #fbc02d;
+  transition: 0.1s;
 }
 
-.pill.active {
-  background: #2ed573;
+.login-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #fbc02d;
 }
 
-/* 🎪 Hero Carousel (Inspired by PBS Kids) */
+.profile-pill {
+  background: var(--glass);
+  padding: 8px 18px;
+  border-radius: 50px;
+  border: 2px solid white;
+  font-weight: bold;
+}
+
+.star-bank {
+  font-weight: 900;
+  font-size: 1.2rem;
+  background: white;
+  color: #333;
+  padding: 5px 15px;
+  border-radius: 20px;
+}
+
+/* ==========================================================================
+   2. HERO CAROUSEL (PBS Kids Style)
+   ========================================================================== */
 .hero-carousel {
-  height: 350px;
+  height: 380px;
   width: 100%;
   overflow: hidden;
   position: relative;
-  background: #0084ff;
+  background: var(--primary-blue);
 }
 
 .carousel-track {
   display: flex;
+  height: 100%;
   transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .hero-slide {
   min-width: 100%;
-  height: 350px;
-  background: var(--bg);
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  background: var(--bg);
+  /* Injected from App.jsx */
 }
 
 .hero-content {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 50px;
   color: white;
+  animation: slideUp 0.8s ease;
 }
 
 .hero-emoji {
-  font-size: 8rem;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+  font-size: 10rem;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.2));
+}
+
+.hero-text h2 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
 }
 
 .play-btn-large {
-  padding: 15px 40px;
-  font-size: 1.5rem;
-  background: #2ed573;
+  padding: 18px 45px;
+  font-size: 1.6rem;
+  background: var(--success-green);
   border: none;
   border-radius: 50px;
   color: white;
@@ -88,77 +141,119 @@
   transition: 0.2s;
 }
 
-/* 📚 Category Shelves (Inspired by CrazyGames) */
-.shelf-container {
-  padding: 40px 5%;
+.play-btn-large:hover {
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   3. UNLIMITED GAME GRID (CrazyGames Style)
+   ========================================================================== */
+.lobby-content {
+  padding: 40px 5% 120px;
+  /* Space for footer */
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .shelf-title {
   font-size: 1.8rem;
-  margin: 30px 0 15px;
-  display: flex;
-  align-items: center;
+  margin-bottom: 25px;
+  color: #444;
+  border-left: 6px solid var(--primary-blue);
+  padding-left: 15px;
 }
 
-.game-shelf {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  padding-bottom: 20px;
+.unlimited-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px;
 }
 
-.shelf-card {
-  min-width: 160px;
+.game-card-premium {
   background: white;
   border: none;
-  border-radius: 20px;
-  padding: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border-radius: 35px;
+  padding: 15px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--shadow-pro);
+  position: relative;
+  overflow: hidden;
 }
 
-.shelf-card:hover {
-  transform: scale(1.05);
+.game-card-premium:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
 }
 
-.card-thumb {
-  height: 120px;
-  border-radius: 15px;
+.card-visual {
+  height: 150px;
+  background: var(--theme-color);
+  border-radius: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3.5rem;
-  margin-bottom: 10px;
+  font-size: 4.5rem;
+  margin-bottom: 15px;
+  transition: 0.3s;
 }
 
-/* 🏆 Level Up Footer */
-.progression-footer {
+.game-card-premium:hover .card-visual {
+  transform: rotate(-5deg) scale(1.1);
+}
+
+.card-label {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #333;
+}
+
+/* ==========================================================================
+   4. PROGRESSION FOOTER (Sticky Banner)
+   ========================================================================== */
+.footer-status {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
-  background: #7E57C2;
-  padding: 12px 0;
+  background: #7e57c2;
+  padding: 15px 0;
   color: white;
+  z-index: 100;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
 }
 
-.level-bar-container {
+.level-track {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
+  font-weight: 900;
 }
 
-.progress-track {
-  width: 300px;
-  height: 18px;
+.progress-bg {
+  width: 350px;
+  height: 20px;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
+  border-radius: 50px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   background: #ffeb3b;
-  transition: width 0.5s ease-out;
+  transition: width 0.6s ease-out;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
