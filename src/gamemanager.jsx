@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import './gamemanager.css';
 
-// 📂 DYNAMIC IMPORTS FROM YOUR FOLDER
+// 📂 DYNAMIC IMPORTS SYNCED TO YOUR ACTUAL FILENAMES
 const games = {
     'g1': lazy(() => import('./games/booplyblast')),
-    'g2': lazy(() => import('./games/dinogame')),
+    'g2': lazy(() => import('./games/dinogame')),   // 🛠️ FIXED: Points to dinogame.jsx
     'g3': lazy(() => import('./games/ailab')),
     'g4': lazy(() => import('./games/fightergame')),
     'g5': lazy(() => import('./games/colourgame')),
