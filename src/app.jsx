@@ -1,41 +1,56 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import './App.css';
 
-// 🎮 GAME REGISTRY
+// 🎮 GAME REGISTRY (Placeholders for remaining games to avoid errors)
 import BooplyBlast from './games/booplyblast.jsx';
-import JungleGame from './games/junglegame.jsx'; // Static ID version
-import SafariDash from './games/dinogame.jsx';   // Runner version
+import SafariStudy from './games/junglegame.jsx';
+import SafariDash from './games/dinogame.jsx';
+// Placeholder for other 7 games to maintain 10-game structure
+const Placeholder = ({ onExit }) => (
+  <div className="placeholder-stage">
+    <h2>Game Under Construction</h2>
+    <button onClick={onExit}>BACK TO LOBBY</button>
+  </div>
+);
 
 const INTERNAL_GAMES = {
-  'blast': BooplyBlast,
-  'jungle': JungleGame,
-  'dash': SafariDash
+  'g1': BooplyBlast, 'g2': SafariStudy, 'g3': SafariDash,
+  'g4': Placeholder, 'g5': Placeholder, 'g6': Placeholder,
+  'g7': Placeholder, 'g8': Placeholder, 'g9': Placeholder, 'g10': Placeholder
 };
 
 const MASTER_GAME_LIST = [
-  { id: 'blast', name: 'Booply Blast', color: '#ff00de', icon: '🍭', cat: 'Puzzle' },
-  { id: 'jungle', name: 'Safari Study', color: '#39ff14', icon: '🦁', cat: 'Identification' },
-  { id: 'dash', name: 'Safari Dash', color: '#00f2ff', icon: '🦖', cat: 'Runner' },
+  { id: 'g1', name: 'Booply Blast', icon: '🍭', color: '#ff00de', cat: 'Puzzle' },
+  { id: 'g2', name: 'Safari Study', icon: '🦁', color: '#39ff14', cat: 'Identification' },
+  { id: 'g3', name: 'Safari Dash', icon: '🦖', color: '#00f2ff', cat: 'Runner' },
+  { id: 'g4', name: 'Shadow Duel', icon: '🥷', color: '#bc13fe', cat: 'Action' },
+  { id: 'g5', name: 'Math Matrix', icon: '🔢', color: '#ffd700', cat: 'Logic' },
+  { id: 'g6', name: 'Aqua Match', icon: '🐟', color: '#00d4ff', cat: 'Puzzle' },
+  { id: 'g7', name: 'Sky Racer', icon: '🚀', color: '#ff4757', cat: 'Action' },
+  { id: 'g8', name: 'Geo Explorer', icon: '🌍', color: '#4cd137', cat: 'Study' },
+  { id: 'g9', name: 'Word Woods', icon: '📚', color: '#fbc531', cat: 'English' },
+  { id: 'g10', name: 'Star Sort', icon: '✨', color: '#9c88ff', cat: 'Logic' },
 ];
 
 export default function App() {
   const [view, setView] = useState('lobby');
-  const [activeGameId, setActiveGameId] = useState(null);
+  const [activeGame, setActiveGame] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
-  // 🍪 PERSISTENCE & DAILY RESET
-  const [stars, setStars] = useState(() => Number(localStorage.getItem('booply-stars')) || 278);
+  // 🍪 DATA PERSISTENCE
+  const [stars, setStars] = useState(() => Number(localStorage.getItem('stars')) || 278);
   const [dailyScore, setDailyScore] = useState(() => {
-    const saved = JSON.parse(localStorage.getItem('booply-daily-stats'));
+    const saved = JSON.parse(localStorage.getItem('daily-stats'));
     const today = new Date().toDateString();
+    // Auto-reset daily score if day has changed
     if (saved && saved.date === today) return saved.score;
-    return 0; // Auto-reset for new day
+    return 0;
   });
 
   useEffect(() => {
-    localStorage.setItem('booply-stars', stars);
-    localStorage.setItem('booply-daily-stats', JSON.stringify({ score: dailyScore, date: new Date().toDateString() }));
+    localStorage.setItem('stars', stars);
+    localStorage.setItem('daily-stats', JSON.stringify({ score: dailyScore, date: new Date().toDateString() }));
 
     // 🔔 NOTIFICATION REQUEST
     if (Notification.permission === 'default') {
@@ -43,83 +58,82 @@ export default function App() {
     }
   }, [stars, dailyScore]);
 
-  const updateGlobalStats = (s, d) => {
+  const updateStats = (s, d) => {
     setStars(prev => prev + s);
     setDailyScore(prev => prev + d);
   };
 
   return (
-    <div className="booply-platform-root">
+    <div className="booply-main-container">
       {view === 'lobby' ? (
-        <div className="lobby-content fade-in">
-          <header className="elite-header">
-            <h1 className="logo">BOOPLY</h1>
-            <div className="hud-controls">
-              <div className="pill daily">DAILY: <span>{dailyScore}</span></div>
-              <div className="pill star">⭐ {stars}</div>
-              <button className="feedback-trigger" onClick={() => setShowFeedback(true)}>FEEDBACK</button>
+        <div className="lobby-layout fade-in">
+          <header className="elite-navbar">
+            <h1 className="logo-brand">BOOPLY</h1>
+            <div className="hud-right">
+              <div className="hud-stat-pill daily">DAILY: <span>{dailyScore}</span></div>
+              <div className="hud-stat-pill stars">⭐ {stars}</div>
+              <button className="btn-feedback-trigger" onClick={() => setShowFeedback(true)}>FEEDBACK</button>
             </div>
           </header>
 
-          <section className="hero-arena">
-            <div className="featured-card">
-              <div className="featured-info">
-                <small className="badge">🔥 FEATURED GAME</small>
+          <section className="hero-billboard">
+            <div className="hero-card-vibrant">
+              <div className="hero-info-side">
+                <small className="hero-tag">🎯 DAILY MISSION</small>
                 <h2>BOOPLY BLAST</h2>
-                <p>Match the candies to fuel your brain power.</p>
-                <button className="cta-play" onClick={() => { setActiveGameId('blast'); setView('game'); }}>PLAY NOW</button>
+                <p>The ultimate puzzle for your brain. Match and solve!</p>
+                <button className="btn-hero-play" onClick={() => { setActiveGame('g1'); setView('game'); }}>PLAY NOW</button>
               </div>
-              <div className="featured-visual">🍭</div>
+              <div className="hero-visual-side">🍭</div>
             </div>
           </section>
 
-          <div className="arcade-grid-system">
+          {/* 🎮 10 GAME GRID */}
+          <div className="arcade-master-grid">
             {MASTER_GAME_LIST.map(game => (
-              <button key={game.id} className="premium-tile" onClick={() => { setActiveGameId(game.id); setView('game'); }} style={{ '--theme': game.color }}>
-                <span className="tile-emoji">{game.icon}</span>
-                <div className="tile-details">
-                  <span className="tile-title">{game.name}</span>
-                  <span className="tile-subtitle">{game.cat}</span>
+              <button key={game.id} className="game-card-elite" onClick={() => { setActiveGame(game.id); setView('game'); }} style={{ '--theme': game.color }}>
+                <span className="card-emoji">{game.icon}</span>
+                <div className="card-labels">
+                  <span className="card-name">{game.name}</span>
+                  <span className="card-cat">{game.cat}</span>
                 </div>
               </button>
             ))}
           </div>
 
-          <section className="rating-strip">
-            <div className="review-item">⭐⭐⭐⭐⭐ "The best way to learn animal names!" - Parent</div>
-            <div className="review-item">⭐⭐⭐⭐ "Graphics are amazing on my laptop." - User 44</div>
-            <div className="review-item">⭐⭐⭐⭐⭐ "Daily goals keep my kids engaged." - Teacher</div>
+          <section className="social-proof-strip">
+            <div className="review-item">⭐⭐⭐⭐⭐ "Addictive and educational!" - Sarah K.</div>
+            <div className="review-item">⭐⭐⭐⭐ "My son learned all animal names in a day." - David L.</div>
+            <div className="review-item">⭐⭐⭐⭐⭐ "The neon theme is incredible." - User 99</div>
           </section>
 
-          <footer className="compact-footer">
-            <button className="policy-toggle" onClick={() => setPrivacyOpen(!privacyOpen)}>PRIVACY & SAFETY POLICY</button>
+          <footer className="footer-area">
+            <button className="btn-privacy-link" onClick={() => setPrivacyOpen(!privacyOpen)}>PRIVACY & SAFETY POLICY</button>
             {privacyOpen && (
-              <div className="policy-text fade-in">
-                <p>Booply uses local browser cookies to store your progress. Notifications are only used for daily reminders. No identity data is shared.</p>
+              <div className="privacy-drawer fade-in">
+                <p>Booply uses local browser storage (cookies) to save your daily scores and stars locally. No personal ID is tracked. Notifications are used only for play reminders.</p>
               </div>
             )}
           </footer>
         </div>
       ) : (
-        <div className="game-stage-fullscreen">
-          <Suspense fallback={<div className="booply-loader">ARCADE LOADING...</div>}>
-            {React.createElement(INTERNAL_GAMES[activeGameId], {
-              onExit: () => setView('lobby'),
-              onCorrectClick: () => updateGlobalStats(5, 100)
-            })}
-          </Suspense>
+        <div className="game-fullscreen-stage">
+          {activeGame && React.createElement(INTERNAL_GAMES[activeGame], {
+            onExit: () => setView('lobby'),
+            onCorrectClick: () => updateStats(5, 100)
+          })}
         </div>
       )}
 
       {showFeedback && (
-        <div className="overlay-blur">
+        <div className="modal-overlay">
           <div className="feedback-modal-card">
             <h2>GAMES FEEDBACK</h2>
-            <div className="stars-row">⭐⭐⭐⭐⭐</div>
-            <textarea placeholder="Tell us your favorite game or animal!" className="modal-input" />
-            <div className="modal-actions">
-              <button className="btn-close" onClick={() => setShowFeedback(false)}>CANCEL</button>
-              <button className="btn-send" onClick={() => setShowFeedback(false)}>SEND FEEDBACK</button>
+            <div className="stars-row-big">⭐⭐⭐⭐⭐</div>
+            <textarea placeholder="Suggestions or favorite animals?" className="modal-textarea" />
+            <div className="modal-buttons-row">
+              <button className="btn-modal-cancel" onClick={() => setShowFeedback(false)}>CANCEL</button>
+              <button className="btn-modal-send" onClick={() => setShowFeedback(false)}>SUBMIT FEEDBACK</button>
             </div>
           </div>
         </div>
