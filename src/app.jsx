@@ -11,6 +11,7 @@ import KitchenClass from './games/kitchenclass.jsx';
 import PuzzlePop from './games/puzzlepop.jsx';
 import ColourGame from './games/colourgame.jsx';
 import DinoGame from './games/dinogame.jsx';
+import BooplyBlast from './games/booplyblast.jsx';
 
 const INTERNAL_GAMES = {
   'snake-v1': SnakeGame,
@@ -22,6 +23,7 @@ const INTERNAL_GAMES = {
   'puzzle-pop-v1': PuzzlePop,
   'colour-fun-v1': ColourGame,
   'dino-dash-v1': DinoGame,
+  'booply-blast-v1': BooplyBlast,
 };
 
 const MASTER_GAME_LIST = [
@@ -34,6 +36,7 @@ const MASTER_GAME_LIST = [
   { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Puzzle' },
   { id: 'colour-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', category: 'Art' },
   { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖', category: 'Action' },
+  { id: 'booply-blast-v1', name: 'Booply Blast', color: '#FF00DE', icon: '🍭', category: 'Match-3' }
 ];
 
 export default function App() {
