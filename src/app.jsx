@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import home from './home.jsx'; // 🛠️ Added .jsx to fix red line
-import gamemanager from './gamemanager.jsx'; // 🛠️ Added .jsx to fix red line
+// 🛠️ FIX: Adding .jsx extension clears the red lines
+import home from './home.jsx';
+import gamemanager from './gamemanager.jsx';
 
 const booply_games = [
   { id: 'g1', name: 'booply blast', icon: '🍭', color: '#ff00de', cat: 'puzzle' },
-  { id: 'g2', name: 'safari study', icon: '🦁', color: '#39ff14', cat: 'identification' },
+  { id: 'g2', name: 'safari study', icon: '🦁', color: '#39ff14', cat: 'identification' }, // Maps to g2
   { id: 'g3', name: 'ai lab', icon: '🤖', color: '#00f2ff', cat: 'study' },
   { id: 'g4', name: 'fighter game', icon: '🥷', color: '#ff4757', cat: 'action' },
   { id: 'g5', name: 'colour game', icon: '🎨', color: '#ffd700', cat: 'logic' },
@@ -21,6 +22,7 @@ export default function app() {
   const [showfeedback, setshowfeedback] = useState(false);
   const [privacyopen, setprivacyopen] = useState(false);
 
+  // 🍪 Persistence for your 278 stars
   const [stars, setstars] = useState(() => Number(localStorage.getItem('stars')) || 278);
   const [dailyscore, setdailyscore] = useState(() => {
     const saved = JSON.parse(localStorage.getItem('daily-stats'));
@@ -35,7 +37,7 @@ export default function app() {
   }, [stars, dailyscore]);
 
   return (
-    <div className="booply-app-root">
+    <div className="booply-root">
       {view === 'lobby' ? (
         <home
           stars={stars}

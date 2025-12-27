@@ -1,11 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import './gamemanager.css';
 
-// 📂 DYNAMIC IMPORTS: Every path below is verified from your disk
 const games = {
     'g1': lazy(() => import('./games/booplyblast.jsx')),
-    'g2': lazy(() => import('./games/dinogame.jsx')), // 🛠️ Replaces the non-existent junglegame
-    'g3': lazy(() => import('./games/ailab.jsx')),
+    'g2': lazy(() => import('./games/dinogame.jsx')), // 🦖 Verified file
+    'g3': lazy(() => import('./games/ailab.jsx')),   // 🤖 Verified file
     'g4': lazy(() => import('./games/fightergame.jsx')),
     'g5': lazy(() => import('./games/colourgame.jsx')),
     'g6': lazy(() => import('./games/geoexplorer.jsx')),
@@ -17,21 +16,10 @@ const games = {
 
 const gamemanager = ({ activegameid, onexit, onscoreupdate }) => {
     const ActiveGame = games[activegameid];
-
     return (
         <div className="game-stage-fullscreen">
-            <Suspense fallback={<div className="booply-loader">loading arcade engine...</div>}>
-                {ActiveGame ? (
-                    <ActiveGame
-                        onExit={onexit}
-                        onCorrectClick={() => onscoreupdate(5, 100)}
-                    />
-                ) : (
-                    <div className="error-stage">
-                        <h2>game module missing</h2>
-                        <button onClick={onexit}>back home</button>
-                    </div>
-                )}
+            <Suspense fallback={<div className="booply-loader">loading arcade...</div>}>
+                {ActiveGame ? <ActiveGame onExit={onexit} onCorrectClick={() => onscoreupdate(5, 100)} /> : <h2>Error</h2>}
             </Suspense>
         </div>
     );
