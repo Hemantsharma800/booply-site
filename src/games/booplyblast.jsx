@@ -1,110 +1,106 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './booplyblast.css';
 
 const BOARD_SIZE = 8;
-const LEVEL_CONFIG = [
-    { level: 1, target: 100, moves: 20, theme: '#00f2ff', difficulty: 'Easy Addition' },
-    { level: 2, target: 250, moves: 18, theme: '#bc13fe', difficulty: 'Fast Addition' },
-    { level: 3, target: 500, moves: 15, theme: '#ffd700', difficulty: 'Subtraction' },
-];
+const CANDIES = ['🍭', '🍬', '🍩', '🧁', '🍪', '🍫'];
+const NEON_PALETTE = ['#00f2ff', '#bc13fe', '#ff00de', '#39ff14', '#ffd700', '#ff4757'];
 
 export default function BooplyBlast({ onExit, onCorrectClick }) {
+    const [level, setLevel] = useState(1);
+    const [score, setScore] = useState(0);
+    const [moves, setMoves] = useState(20);
     const [board, setBoard] = useState([]);
-    const [stats, setStats] = useState({ level: 0, score: 0, moves: LEVEL_CONFIG[0].moves });
     const [selected, setSelected] = useState(null);
-    const [showLevelUp, setShowLevelUp] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
 
-    // Initialize/Reset Board
-    const initBoard = useCallback(() => {
-        const types = ['🍭', '🍬', '🍩', '🧁', '🍪', '🍫'];
-        const colors = ['#ff00de', '#00f2ff', '#bc13fe', '#39ff14', '#ffd700', '#ff4757'];
-        let newBoard = Array.from({ length: 64 }, (_, i) => {
-            const r = Math.floor(Math.random() * types.length);
-            return { id: i, type: types[r], color: colors[r] };
+    // 📈 PROCEDURAL TARGET: Grows 40% every level
+    const targetScore = Math.floor(200 * Math.pow(1.4, level - 1));
+
+    // 🏗️ BOARD GENERATOR: Procedural and vibrant
+    const createBoard = useCallback(() => {
+        const newBoard = Array.from({ length: 64 }, (_, i) => {
+            const idx = Math.floor(Math.random() * CANDIES.length);
+            return { id: i, type: CANDIES[idx], color: NEON_PALETTE[idx], isMatched: false };
         });
         setBoard(newBoard);
     }, []);
 
-    useEffect(() => initBoard(), [initBoard]);
+    useEffect(() => createBoard(), [createBoard]);
 
-    // Level Progression Logic
-    const checkProgress = useCallback(() => {
-        const currentCfg = LEVEL_CONFIG[stats.level];
-        if (stats.score >= currentCfg.target && stats.level < LEVEL_CONFIG.length - 1) {
-            setShowLevelUp(true);
-            setTimeout(() => {
-                setStats(prev => ({
-                    ...prev,
-                    level: prev.level + 1,
-                    moves: LEVEL_CONFIG[prev.level + 1].moves
-                }));
-                setShowLevelUp(false);
-                initBoard();
-            }, 2000);
-        }
-    }, [stats.score, stats.level, initBoard]);
-
-    // Match Engine
-    const handleMatch = useCallback((matches) => {
-        setStats(prev => ({ ...prev, score: prev.score + matches.length * 10, moves: prev.moves - 1 }));
-        if (onCorrectClick) onCorrectClick(); // Reward Star
-        checkProgress();
-    }, [onCorrectClick, checkProgress]);
-
-    // Simplified Match Check
+    // 🏆 AUTOMATIC LEVEL ADVANCEMENT
     useEffect(() => {
-        const timer = setTimeout(() => {
-            let matches = [];
-            // Horizontal check
-            for (let i = 0; i < 64; i++) {
-                if (i % 8 < 6 && board[i]?.type === board[i + 1]?.type && board[i]?.type === board[i + 2]?.type) {
-                    matches.push(i, i + 1, i + 2);
-                }
-            }
-            if (matches.length > 0) {
-                handleMatch([...new Set(matches)]);
-                // Refill logic would go here
-            }
-        }, 400);
-        return () => clearTimeout(timer);
-    }, [board, handleMatch]);
+        if (score >= targetScore && !showPopup) {
+            setShowPopup(true);
+            if (onCorrectClick) onCorrectClick(); // Reward Bonus Stars
 
-    const activeTheme = LEVEL_CONFIG[stats.level].theme;
+            setTimeout(() => {
+                setLevel(prev => prev + 1);
+                setScore(0);
+                setMoves(Math.max(10, 20 - Math.floor(level / 2))); // Scaling Difficulty
+                setShowPopup(false);
+                createBoard();
+            }, 3000);
+        }
+    }, [score, targetScore, showPopup, level, createBoard, onCorrectClick]);
+
+    const handleCellClick = (index) => {
+        if (showPopup) return;
+        if (selected === null) {
+            setSelected(index);
+        } else {
+            // ⚔️ SWAP LOGIC
+            const newBoard = [...board];
+            const temp = newBoard[selected];
+            newBoard[selected] = newBoard[index];
+            newBoard[index] = temp;
+
+            setBoard(newBoard);
+            setSelected(null);
+            setMoves(m => m - 1);
+            setScore(s => s + 25); // Simulated scoring for match
+        }
+    };
 
     return (
-        <div className="blast-pro-root" style={{ '--level-color': activeTheme }}>
-            <div className="vibrant-bg-glow"></div>
-
-            <div className="blast-header-elite">
-                <button className="back-btn-glass" onClick={onExit}>EXIT ARCADE</button>
-                <div className="stats-center">
-                    <div className="stat-pill">LEVEL <span>{stats.level + 1}</span></div>
-                    <div className="stat-pill">SCORE <span>{stats.score}</span></div>
-                    <div className="stat-pill highlight">MOVES <span>{stats.moves}</span></div>
+        <div className="blast-engine-root" style={{ '--level-hue': `${level * 45}deg` }}>
+            {/* 📊 ELITE HUD */}
+            <div className="blast-hud-pro">
+                <button className="exit-arcade" onClick={onExit}>EXIT ARCADE</button>
+                <div className="hud-stats-group">
+                    <div className="hud-pill">LEVEL <span>{level}</span></div>
+                    <div className="hud-pill progress">GOAL <span>{score}/{targetScore}</span></div>
+                    <div className="hud-pill highlight">MOVES <span>{moves}</span></div>
                 </div>
-                <div className="target-pill">GOAL: {LEVEL_CONFIG[stats.level].target}</div>
             </div>
 
-            <div className={`puzzle-stage ${showLevelUp ? 'level-up-blur' : ''}`}>
-                <div className="grid-container-elite">
+            <div className="board-zone">
+                <div className="board-frame-glass">
                     {board.map((cell, i) => (
-                        <button
+                        <div
                             key={i}
-                            className={`candy-unit ${selected === i ? 'pulse-select' : ''}`}
-                            style={{ '--unit-color': cell.color }}
-                            onClick={() => setSelected(i)}
+                            className={`candy-unit ${selected === i ? 'unit-active' : ''}`}
+                            style={{ '--neon': cell.color }}
+                            onClick={() => handleCellClick(i)}
                         >
-                            <span className="emoji-layer">{cell.type}</span>
-                            <div className="inner-glow"></div>
-                        </button>
+                            <span className="candy-icon">{cell.type}</span>
+                            <div className="glow-effect"></div>
+                        </div>
                     ))}
                 </div>
             </div>
 
-            {showLevelUp && (
-                <div className="level-up-overlay fade-in">
-                    <h1 className="shimmer-text">LEVEL COMPLETE!</h1>
-                    <p>UNLOCKING {LEVEL_CONFIG[stats.level + 1].difficulty} MODE...</p>
+            {/* 🎊 CONGRATS POPUP */}
+            {showPopup && (
+                <div className="congrats-modal fade-in">
+                    <div className="modal-content">
+                        <h1 className="rainbow-text">ELITE WORK!</h1>
+                        <p>LEVEL {level} COMPLETED</p>
+                        <div className="next-level-ring">
+                            <span>NEXT</span>
+                            <strong>{level + 1}</strong>
+                        </div>
+                        <small>REGENERATING BOARD...</small>
+                    </div>
                 </div>
             )}
         </div>
