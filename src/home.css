@@ -1,0 +1,124 @@
+/* 🏙️ wide-screen layout fix for laptop */
+.home-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 4vw;
+}
+
+.elite-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brand-logo {
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: -3px;
+    color: #fff;
+    margin: 0;
+}
+
+.hud-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.pill-stat {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 900;
+    font-size: 0.85rem;
+}
+
+.pill-stat.daily {
+    border-color: #00f2ff;
+}
+
+.pill-stat.daily span {
+    color: #00f2ff;
+    margin-left: 8px;
+}
+
+.pill-stat.star {
+    color: #ffd700;
+    border-color: #ffd700;
+}
+
+.feedback-trigger {
+    background: none;
+    border: 1px solid #ffd700;
+    color: #ffd700;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+/* 🎮 dynamic grid fix */
+.arcade-grid-elite {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+    padding-bottom: 6rem;
+}
+
+.game-card-premium {
+    background: #080808;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3rem;
+    border-radius: 40px;
+    text-align: center;
+    transition: 0.4s;
+}
+
+.game-card-premium:hover {
+    transform: translateY(-15px);
+    border-color: var(--game-theme);
+    box-shadow: 0 0 35px var(--game-theme);
+}
+
+.game-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+.review-strip {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    opacity: 0.5;
+    padding: 5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.review-card {
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.footer-minimal {
+    text-align: center;
+    padding-bottom: 5rem;
+}
+
+.privacy-link {
+    background: none;
+    border: none;
+    color: #4b5563;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.privacy-text {
+    max-width: 600px;
+    margin: 1.5rem auto;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
