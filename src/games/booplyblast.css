@@ -1,88 +1,141 @@
-.blast-container {
+.blast-pro-root {
     height: 100vh;
-    background: radial-gradient(circle at center, #111, #000);
+    background: #000;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+}
+
+/* 🌈 DYNAMIC AMBIENT GLOW */
+.vibrant-bg-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, var(--level-color), transparent 70%);
+    opacity: 0.15;
+    transition: background 1s ease;
+    pointer-events: none;
+}
+
+/* 📊 ELITE HEADS-UP DISPLAY */
+.blast-header-elite {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 5%;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+.stat-pill {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 25px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 10px;
+    font-weight: 800;
+}
+
+.stat-pill span {
+    color: var(--level-color);
+    margin-left: 8px;
+}
+
+.highlight {
+    border-color: var(--level-color);
+    box-shadow: 0 0 15px var(--level-color);
+}
+
+/* 🏟️ PROFESSIONAL PUZZLE GRID */
+.puzzle-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    transition: filter 0.5s;
+}
+
+.grid-container-elite {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 12px;
+    padding: 20px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 2px solid var(--level-color);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    max-width: 80vh;
+    aspect-ratio: 1/1;
+}
+
+.candy-unit {
+    aspect-ratio: 1/1;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.candy-unit:hover {
+    transform: scale(1.1);
+    z-index: 10;
+    border-color: var(--unit-color);
+    box-shadow: 0 0 20px var(--unit-color);
+}
+
+.inner-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, var(--unit-color) 0%, transparent 80%);
+    opacity: 0.1;
+}
+
+.emoji-layer {
+    font-size: clamp(1.2rem, 3vw, 2.5rem);
+    filter: drop-shadow(0 0 8px var(--unit-color));
+}
+
+/* 🎊 LEVEL UP OVERLAY */
+.level-up-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 1000;
 }
 
-.blast-hud {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem;
+.shimmer-text {
+    font-size: 4rem;
     font-weight: 900;
+    background: linear-gradient(90deg, #fff, var(--level-color), #fff);
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 2s infinite;
 }
 
-.score-glow {
-    font-size: 2rem;
-    color: #ffd700;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-}
-
-/* 🏟️ THE PUZZLE GRID */
-.puzzle-board {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 15px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    /* Laptop scaling: stays contained */
-    max-width: 60vh;
-    aspect-ratio: 1/1;
-}
-
-.candy-cell {
-    aspect-ratio: 1/1;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(1.2rem, 3vw, 2rem);
-    cursor: pointer;
-    transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid transparent;
-}
-
-.candy-cell:hover {
-    transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--candy-color);
-    box-shadow: 0 0 15px var(--candy-color);
-}
-
-.active-pulse {
-    border: 2px solid #fff;
-    animation: cellPulse 1s infinite;
-    z-index: 10;
-}
-
-@keyframes cellPulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 5px #fff;
+@keyframes shimmer {
+    from {
+        background-position: 0%;
     }
 
-    50% {
-        transform: scale(1.15);
-        box-shadow: 0 0 25px #fff;
+    to {
+        background-position: 200%;
     }
 }
 
-@media (max-width: 600px) {
-    .puzzle-board {
-        gap: 5px;
-        padding: 10px;
-        width: 95vw;
-        max-width: 95vw;
-    }
+.level-up-blur {
+    filter: blur(20px) grayscale(1);
 }
