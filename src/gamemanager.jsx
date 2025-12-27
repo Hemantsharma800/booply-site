@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import './gamemanager.css';
 
-// 📂 DYNAMIC IMPORTS MATCHING YOUR ACTUAL DISK
+// 📂 DYNAMIC IMPORTS: Every path below is verified from your disk
 const games = {
     'g1': lazy(() => import('./games/booplyblast.jsx')),
-    'g2': lazy(() => import('./games/dinogame.jsx')), // 🛠️ Points correctly to dinogame.jsx
+    'g2': lazy(() => import('./games/dinogame.jsx')), // 🛠️ Replaces the non-existent junglegame
     'g3': lazy(() => import('./games/ailab.jsx')),
     'g4': lazy(() => import('./games/fightergame.jsx')),
     'g5': lazy(() => import('./games/colourgame.jsx')),
