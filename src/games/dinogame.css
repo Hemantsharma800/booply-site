@@ -1,150 +1,174 @@
-/* === DINO GAME SPECIFIC STYLES === */
-
-/* The Game Container overlay */
-.game-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    background: black;
-}
-
-/* 1. The Jungle Background */
-.jungle-world-hybrid {
-    width: 100%;
-    height: 100%;
-    position: relative;
+.dino-pro-root {
+    height: 100vh;
+    width: 100vw;
+    background: #000;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    background: linear-gradient(to bottom, #1b4332 0%, #081c15 100%);
+    position: relative;
+    font-family: 'Inter', sans-serif;
 }
 
-/* 2. CSS Foliage Layers */
-.jungle-layer {
+/* 🌌 DYNAMIC BACKGROUND */
+.nebula-overlay {
     position: absolute;
-    bottom: 0;
-    width: 100%;
+    inset: 0;
+    background: radial-gradient(circle at 50% 120%, rgba(57, 255, 20, 0.1), transparent 70%);
     pointer-events: none;
 }
 
-.layer-1 {
-    height: 40%;
-    background: linear-gradient(to top, #2d6a4f, transparent);
-    clip-path: polygon(0% 100%, 10% 80%, 20% 100%, 30% 70%, 40% 100%, 50% 60%, 60% 100%, 70% 75%, 80% 100%, 90% 65%, 100% 100%);
-    opacity: 0.8;
-    z-index: 1;
-}
-
-.layer-2 {
-    height: 25%;
-    background: linear-gradient(to top, #081c15, transparent);
-    clip-path: polygon(0% 100%, 15% 85%, 25% 100%, 35% 90%, 45% 100%, 55% 80%, 65% 100%, 75% 85%, 85% 100%, 95% 90%, 100% 100%);
-    opacity: 1;
-    z-index: 50;
-}
-
-/* 3. The Banner */
-.target-banner-hybrid {
-    position: absolute;
-    top: 80px;
-    width: 100%;
-    /* Moved down slightly to fit level badge */
-    text-align: center;
-    font-size: 2rem;
-    color: white;
-    text-shadow: 2px 2px 8px black;
+/* 📊 HUD STYLING */
+.game-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 5%;
     z-index: 100;
 }
 
-.target-banner-hybrid span {
-    background: rgba(45, 106, 79, 0.9);
-    padding: 5px 25px;
-    border-radius: 50px;
-    text-transform: uppercase;
-    border: 2px solid #52b788;
+.exit-button-neon {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #39ff14;
+    color: #39ff14;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-/* 4. The 3D Emojis */
-.hybrid-animal-container {
+.exit-button-neon:hover {
+    background: #39ff14;
+    color: #000;
+    box-shadow: 0 0 20px #39ff14;
+}
+
+.score-pill {
+    display: inline-block;
+    background: #111;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-left: 15px;
+    font-weight: 800;
+}
+
+.score-pill span {
+    color: #39ff14;
+    margin-left: 8px;
+}
+
+.score-pill.main {
+    border-color: #39ff14;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+/* 🏟️ THE GAME STAGE */
+.game-stage {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Laptop Optimization */
+}
+
+.horizon-line {
     position: absolute;
-    cursor: pointer;
-    transition: transform 0.1s ease-out;
+    bottom: 20%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #39ff14, transparent);
+    box-shadow: 0 0 15px #39ff14;
+}
+
+.dino-avatar {
+    position: absolute;
+    left: 10%;
+    width: 60px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 10;
 }
 
-.hybrid-animal-container:hover {
-    transform: scale(1.2) !important;
-    z-index: 200 !important;
+.dino-emoji {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 0 10px #39ff14);
 }
 
-.animal-3d-emoji {
-    font-size: 4rem;
-    filter: drop-shadow(0px 10px 5px rgba(0, 0, 0, 0.5));
-    transform: perspective(500px) rotateX(10deg);
-}
-
-/* The Dino Guide */
-.jungle-guide-hybrid {
+.dino-glow {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
-    font-size: 5rem;
-    z-index: 100;
-    filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.5));
-    background: rgba(255, 255, 255, 0.2);
+    bottom: -5px;
+    width: 40px;
+    height: 10px;
+    background: rgba(57, 255, 20, 0.3);
+    filter: blur(10px);
     border-radius: 50%;
-    padding: 5px;
 }
 
-/* === NEW STYLES FOR LEVELS === */
-
-/* The Level Badge in top right */
-.level-badge {
+.obstacle-neon {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 3000;
-    background: linear-gradient(to right, #ffba08, #faa307);
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border: 3px solid #fff;
-    font-weight: bold;
+    bottom: 20%;
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px #ff4757);
+    transition: transform 0.1s;
 }
 
-.level-icon {
-    font-size: 1.5rem;
-}
-
-.level-text {
+/* 🎊 OVERLAYS */
+.dino-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.shimmer-title {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 30px #39ff14;
+    margin-bottom: 1rem;
+}
+
+.play-btn-pro {
+    background: #39ff14;
+    color: #000;
+    border: none;
+    padding: 20px 50px;
+    border-radius: 15px;
+    font-weight: 900;
     font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(57, 255, 20, 0.3);
+    transition: 0.3s;
 }
 
-.level-progress {
-    font-size: 0.8rem;
-    opacity: 0.8;
+.play-btn-pro:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 15px 40px #39ff14;
 }
 
-/* Feedback box at bottom center */
-.game-feedback-box {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-weight: bold;
-    z-index: 200;
-    border: 3px solid #2d6a4f;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-    min-width: 200px;
-    text-align: center;
+/* 📱 MOBILE SQUEEZE */
+@media (max-width: 768px) {
+    .horizon-line {
+        bottom: 30%;
+    }
+
+    .dino-avatar {
+        left: 15%;
+        width: 40px;
+        height: 40px;
+    }
+
+    .dino-emoji {
+        font-size: 2.5rem;
+    }
 }

@@ -1,158 +1,114 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './dinogame.css';
 
-// === THE MASSIVE ANIMAL DATABASE ORGANIZED BY LEVEL ===
-const ANIMAL_LEVELS = {
-    // Level 1: The Basics (Toddler Essentials)
-    1: [
-        { name: 'Lion', icon: '🦁' }, { name: 'Elephant', icon: '🐘' },
-        { name: 'Monkey', icon: '🐒' }, { name: 'Giraffe', icon: '🦒' },
-        { name: 'Zebra', icon: '🦓' }, { name: 'Cat', icon: '🐱' },
-        { name: 'Dog', icon: '🐶' }
-    ],
-    // Level 2: Common Wild Animals
-    2: [
-        { name: 'Tiger', icon: '🐅' }, { name: 'Hippo', icon: '🦛' },
-        { name: 'Snake', icon: '🐍' }, { name: 'Crocodile', icon: '🐊' },
-        { name: 'Parrot', icon: '🦜' }, { name: 'Bear', icon: '🐻' },
-        { name: 'Cow', icon: '🐄' }
-    ],
-    // Level 3: More Specific/Farm
-    3: [
-        { name: 'Gorilla', icon: '🦍' }, { name: 'Rhino', icon: '🦏' },
-        { name: 'Leopard', icon: '🐆' }, { name: 'Wolf', icon: '🐺' },
-        { name: 'Fox', icon: '🦊' }, { name: 'Pig', icon: '🐷' },
-        { name: 'Sheep', icon: '🐑' }
-    ],
-    // Level 4: Advanced & Sea Creatures
-    4: [
-        { name: 'Kangaroo', icon: '🦘' }, { name: 'Koala', icon: '🐨' },
-        { name: 'Panda', icon: '🐼' }, { name: 'Sloth', icon: '🦥' },
-        { name: 'Whale', icon: '🐋' }, { name: 'Dolphin', icon: '🐬' },
-        { name: 'Octopus', icon: '🐙' }
-    ],
-    // Level 5: The Masters (Exotic & Rare)
-    5: [
-        { name: 'Camel', icon: '🐪' }, { name: 'Llama', icon: '🦙' },
-        { name: 'Hedgehog', icon: '🦔' }, { name: 'Bat', icon: '🦇' },
-        { name: 'Owl', icon: '🦉' }, { name: 'Flamingo', icon: '🦩' },
-        { name: 'Peacock', icon: '🦚' }
-    ]
-};
+export default function DinoGame({ onExit, onCorrectClick }) {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [score, setScore] = useState(0);
+    const [highScore, setHighScore] = useState(localStorage.getItem('dino-hi') || 0);
+    const [dinoY, setDinoY] = useState(0);
+    const [isJumping, setIsJumping] = useState(false);
+    const [obstacles, setObstacles] = useState([]);
+    const gameRef = useRef();
 
-const MAX_LEVEL = 5;
-const CORRECT_TO_LEVEL_UP = 5; // How many correct answers to level up
-
-function DinoGame({ onExit, onCorrectClick }) {
-    const [targetAnimal, setTargetAnimal] = useState(null);
-    const [jungleMap, setJungleMap] = useState([]);
-    const [localMessage, setLocalMessage] = useState("Find the animal!");
-
-    // NEW STATES FOR LEVELS
-    const [level, setLevel] = useState(1);
-    const [correctCount, setCorrectCount] = useState(0);
-
-    // Function to generate the map based on CURRENT LEVEL
-    const refreshJungle = useCallback(() => {
-        // 1. Gather animals available up to current level
-        let availableAnimals = [];
-        for (let i = 1; i <= level; i++) {
-            availableAnimals = [...availableAnimals, ...ANIMAL_LEVELS[i]];
+    // 🏃 GAME LOOP ENGINE
+    const jump = useCallback(() => {
+        if (!isJumping && isPlaying) {
+            setIsJumping(true);
+            let velocity = 15;
+            const jumpInterval = setInterval(() => {
+                setDinoY(prev => {
+                    if (prev <= 0 && velocity < 0) {
+                        clearInterval(jumpInterval);
+                        setIsJumping(false);
+                        return 0;
+                    }
+                    velocity -= 0.8; // Gravity
+                    return prev + velocity;
+                });
+            }, 20);
         }
+    }, [isJumping, isPlaying]);
 
-        // 2. Shuffle and pick 8 to display
-        const shuffled = availableAnimals.sort(() => 0.5 - Math.random()).slice(0, 8);
-
-        // 3. Position them
-        const mapWithPositions = shuffled.map((animal, index) => ({
-            ...animal,
-            top: Math.floor(Math.random() * 40) + 30 + "%",
-            left: Math.floor(Math.random() * 80) + 5 + "%",
-            rot: Math.floor(Math.random() * 20) - 10 + "deg",
-            scale: Math.random() * 0.5 + 1.5,
-            zIndex: Math.floor(Math.random() * 10)
-        }));
-
-        setJungleMap(mapWithPositions);
-        setTargetAnimal(mapWithPositions[Math.floor(Math.random() * mapWithPositions.length)]);
-        setLocalMessage("Find the animal!");
-    }, [level]); // Re-create function if level changes
-
-    // Initial load & level change refresh
+    // Keyboard support for Laptop users
     useEffect(() => {
-        refreshJungle();
-    }, [refreshJungle]);
+        const handleKey = (e) => { if (e.code === 'Space') jump(); };
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [jump]);
 
+    // 🌵 OBSTACLE GENERATOR
+    useEffect(() => {
+        if (!isPlaying) return;
+        const interval = setInterval(() => {
+            setObstacles(prev => [...prev, { id: Date.now(), x: 100 }]);
+        }, 2000 - Math.min(score * 2, 1000)); // Speeds up as you play
+        return () => clearInterval(interval);
+    }, [isPlaying, score]);
 
-    const handleAnimalClick = (name) => {
-        if (name === targetAnimal.name) {
-            onCorrectClick(); // Update global score
-            const newCount = correctCount + 1;
-            setCorrectCount(newCount);
+    // ⚙️ PHYSICS & COLLISION
+    useEffect(() => {
+        if (!isPlaying) return;
+        const physics = setInterval(() => {
+            setObstacles(prev => {
+                const next = prev.map(o => ({ ...o, x: o.x - 1.5 })).filter(o => o.x > -10);
 
-            // CHECK FOR LEVEL UP
-            if (newCount % CORRECT_TO_LEVEL_UP === 0 && level < MAX_LEVEL) {
-                setLevel(l => l + 1);
-                setLocalMessage(`LEVEL UP! Welcome to Level ${level + 1}!`);
-                // Longer pause for level up celebration
-                setTimeout(refreshJungle, 2000);
-            } else {
-                // Normal correct answer
-                setLocalMessage(`Yay! Found the ${name}!`);
-                setTimeout(refreshJungle, 1000);
-            }
-
-        } else {
-            setLocalMessage(`Oops! That's a ${name}.`);
-        }
-    };
+                // Collision Detection
+                next.forEach(o => {
+                    if (o.x > 5 && o.x < 15 && dinoY < 20) {
+                        setIsPlaying(false);
+                        if (score > highScore) {
+                            setHighScore(score);
+                            localStorage.setItem('dino-hi', score);
+                        }
+                    }
+                });
+                return next;
+            });
+            setScore(s => s + 1);
+        }, 20);
+        return () => clearInterval(physics);
+    }, [isPlaying, dinoY, score, highScore]);
 
     return (
-        <div className="game-overlay">
-            <button className="back-btn" onClick={onExit}>🏠 Home</button>
+        <div className="dino-pro-root" onClick={isPlaying ? jump : undefined}>
+            {/* 🌌 NEON AMBIANCE */}
+            <div className="nebula-overlay"></div>
 
-            {/* === NEW LEVEL INDICATOR === */}
-            <div className="level-badge">
-                <span className="level-icon">🆙</span>
-                <div className="level-text">
-                    LEVEL {level}
-                    <span className="level-progress">
-                        (Next: {correctCount % CORRECT_TO_LEVEL_UP}/{CORRECT_TO_LEVEL_UP})
-                    </span>
+            <header className="game-hud">
+                <button className="exit-button-neon" onClick={onExit}>◀ EXIT ARCADE</button>
+                <div className="score-group">
+                    <div className="score-pill">HI <span>{highScore}</span></div>
+                    <div className="score-pill main">SCORE <span>{score}</span></div>
                 </div>
-            </div>
+            </header>
 
-            <div className="jungle-world-hybrid">
-                <div className="jungle-layer layer-1"></div>
-                <div className="jungle-layer layer-2"></div>
+            <main className="game-stage">
+                <div className="horizon-line"></div>
 
-                <div className="target-banner-hybrid">
-                    {targetAnimal ? <>Find the: <span>{targetAnimal.name}</span></> : "Loading..."}
+                {/* THE DINO */}
+                <div className="dino-avatar" style={{ bottom: `${dinoY}px` }}>
+                    <span className="dino-emoji">🦖</span>
+                    <div className="dino-glow"></div>
                 </div>
 
-                {jungleMap.map((animal, i) => (
-                    <div
-                        key={i}
-                        className="hybrid-animal-container"
-                        style={{
-                            top: animal.top, left: animal.left, zIndex: animal.zIndex,
-                            transform: `rotate(${animal.rot}) scale(${animal.scale})`
-                        }}
-                        onClick={() => handleAnimalClick(animal.name)}
-                    >
-                        <div className="animal-3d-emoji">{animal.icon}</div>
+                {/* THE OBSTACLES */}
+                {obstacles.map(o => (
+                    <div key={o.id} className="obstacle-neon" style={{ left: `${o.x}%` }}>
+                        🌵
                     </div>
                 ))}
 
-                {/* In-game message feedback box */}
-                <div className="game-feedback-box">
-                    {localMessage}
-                </div>
-
-                <div className="jungle-guide-hybrid">🦖</div>
-            </div>
+                {/* 🏁 START / GAME OVER OVERLAY */}
+                {!isPlaying && (
+                    <div className="dino-overlay fade-in">
+                        <h1 className="shimmer-title">{score > 0 ? "GAME OVER" : "DINO DASH"}</h1>
+                        {score > 0 && <p className="final-score">TOTAL DISTANCE: {score}</p>}
+                        <button className="play-btn-pro" onClick={() => { setScore(0); setObstacles([]); setIsPlaying(true); }}>
+                            {score > 0 ? "RETRY MISSION" : "LAUNCH GAME"}
+                        </button>
+                    </div>
+                )}
+            </main>
         </div>
     );
 }
-
-export default DinoGame;
