@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// 🛠️ RELATIVE PATHS: Standard for files in the same folder
+// 🛠️ FIX: Remove '/src/' because app.jsx is already in the src folder
 import home from './home.jsx';
 import gamemanager from './gamemanager.jsx';
 
@@ -19,39 +19,25 @@ const booply_games = [
 export default function app() {
   const [view, setview] = useState('lobby');
   const [activegameid, setactivegameid] = useState(null);
-  const [showfeedback, setshowfeedback] = useState(false);
-  const [privacyopen, setprivacyopen] = useState(false);
 
-  // 🍪 Persistence for your 278 stars
+  // 🍪 Persistence logic for your stars
   const [stars, setstars] = useState(() => Number(localStorage.getItem('stars')) || 278);
-  const [dailyscore, setdailyscore] = useState(() => {
-    const saved = JSON.parse(localStorage.getItem('daily-stats'));
-    const today = new Date().toDateString();
-    return (saved && saved.date === today) ? saved.score : 0;
-  });
-
-  useEffect(() => {
-    localStorage.setItem('stars', stars);
-    localStorage.setItem('daily-stats', JSON.stringify({ score: dailyscore, date: new Date().toDateString() }));
-  }, [stars, dailyscore]);
+  const [dailyscore, setdailyscore] = useState(0);
 
   return (
-    <div className="booply-main">
+    <div className="booply-app">
       {view === 'lobby' ? (
         <home
           stars={stars}
           dailyscore={dailyscore}
           gamelist={booply_games}
-          privacyopen={privacyopen}
-          setprivacyopen={setprivacyopen}
           onlaunchgame={(id) => { setactivegameid(id); setview('game'); }}
-          onshowfeedback={() => setshowfeedback(true)}
         />
       ) : (
         <gamemanager
           activegameid={activegameid}
           onexit={() => setview('lobby')}
-          onscoreupdate={(s, d) => { setstars(prev => prev + s); setdailyscore(prev => prev + d); }}
+          onscoreupdate={(s, d) => { setstars(prev => prev + s); }}
         />
       )}
     </div>
