@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import home from './home';
-import gamemanager from './gamemanager';
+import home from './home.jsx'; // 🛠️ Added .jsx to fix red line
+import gamemanager from './gamemanager.jsx'; // 🛠️ Added .jsx to fix red line
 
-// 📋 OFFICIAL 10-GAME LIST SYNCED TO YOUR SCREENSHOT
 const booply_games = [
   { id: 'g1', name: 'booply blast', icon: '🍭', color: '#ff00de', cat: 'puzzle' },
   { id: 'g2', name: 'safari study', icon: '🦁', color: '#39ff14', cat: 'identification' },
@@ -22,13 +21,12 @@ export default function app() {
   const [showfeedback, setshowfeedback] = useState(false);
   const [privacyopen, setprivacyopen] = useState(false);
 
-  // 🍪 PERSISTENCE
   const [stars, setstars] = useState(() => Number(localStorage.getItem('stars')) || 278);
   const [dailyscore, setdailyscore] = useState(() => {
     const saved = JSON.parse(localStorage.getItem('daily-stats'));
     const today = new Date().toDateString();
     if (saved && saved.date === today) return saved.score;
-    return 0; // Daily reset
+    return 0;
   });
 
   useEffect(() => {
@@ -37,7 +35,7 @@ export default function app() {
   }, [stars, dailyscore]);
 
   return (
-    <div className="booply-root-app">
+    <div className="booply-app-root">
       {view === 'lobby' ? (
         <home
           stars={stars}
