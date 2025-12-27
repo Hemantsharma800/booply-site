@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // 🛠️ FIX: Adding .jsx extension clears the red lines
-import home from './home.jsx';
-import gamemanager from './gamemanager.jsx';
+import home from './src/home.jsx';
+import gamemanager from '/src./gamemanager.jsx';
 
 const booply_games = [
   { id: 'g1', name: 'booply blast', icon: '🍭', color: '#ff00de', cat: 'puzzle' },
