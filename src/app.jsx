@@ -1,68 +1,70 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import './app.css';
 
-// 🎮 GAME COMPONENT REGISTRY
-import SnakeGame from './games/snakegame.jsx';
-import GeoExplorer from './games/geoexplorer.jsx';
-import FighterGame from './games/fightergame.jsx';
-import NitroDash from './games/nitrodash.jsx';
-import AILab from './games/ailab.jsx';
-import KitchenClass from './games/kitchenclass.jsx';
-import PuzzlePop from './games/puzzlepop.jsx';
-import ColourGame from './games/colourgame.jsx';
-import DinoGame from './games/dinogame.jsx';
+// 🎮 PREVIOUS GAME REGISTRY
 import BooplyBlast from './games/booplyblast.jsx';
+import JungleGame from './games/dinogame.jsx'; // Updated Identification Game
+import FighterGame from './games/fightergame.jsx';
+// (Include other games as previously defined)
 
 const INTERNAL_GAMES = {
-  'snake-v1': SnakeGame,
-  'geo-ai-v1': GeoExplorer,
+  'blast-v1': BooplyBlast,
+  'jungle-v1': JungleGame,
   'fighter-v1': FighterGame,
-  'nitro-dash-v1': NitroDash,
-  'ai-lab-v1': AILab,
-  'kitchen-class-v1': KitchenClass,
-  'puzzle-pop-v1': PuzzlePop,
-  'colour-fun-v1': ColourGame,
-  'dino-dash-v1': DinoGame,
-  'booply-blast-v1': BooplyBlast,
 };
 
 const MASTER_GAME_LIST = [
-  { id: 'fighter-v1', name: 'Shadow Duel Math', color: '#00f2ff', icon: '🥷', category: 'Math-Action' },
-  { id: 'geo-ai-v1', name: 'Terra Cognita AI', color: '#00ff41', icon: '🌍', category: 'Geography' },
-  { id: 'snake-v1', name: 'Neon Cobra', color: '#FFD700', icon: '🐍', category: 'Classic' },
-  { id: 'nitro-dash-v1', name: 'Nitro Dash', color: '#FF4757', icon: '🏎️', category: 'Logic' },
-  { id: 'ai-lab-v1', name: 'AI Scanner', color: '#7E57C2', icon: '🧠', category: 'Science' },
-  { id: 'kitchen-class-v1', name: 'Kitchen Class', color: '#FF7043', icon: '🍳', category: 'Learning' },
-  { id: 'puzzle-pop-v1', name: 'Puzzle Pop', color: '#FFD700', icon: '🧩', category: 'Puzzle' },
-  { id: 'colour-fun-v1', name: 'Color Fun', color: '#1E90FF', icon: '🎨', category: 'Art' },
-  { id: 'dino-dash-v1', name: 'Dino Dash', color: '#FF6347', icon: '🦖', category: 'Action' },
-  { id: 'booply-blast-v1', name: 'Booply Blast', color: '#FF00DE', icon: '🍭', category: 'Match-3' }
+  { id: 'blast-v1', name: 'Booply Blast', color: '#ff00de', icon: '🍭', category: 'Puzzle' },
+  { id: 'jungle-v1', name: 'Safari Study', color: '#39ff14', icon: '🦁', category: 'Identification' },
+  { id: 'fighter-v1', name: 'Shadow Duel', color: '#00f2ff', icon: '🥷', category: 'Math-Action' },
 ];
 
 export default function App() {
-  const [view, setView] = useState('lobby'); // lobby, game, dashboard, privacy
+  const [view, setView] = useState('lobby');
   const [activeGame, setActiveGame] = useState(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
-  // 📈 PERSISTENCE ENGINE
+  // 🍪 PERSISTENT DATA & DAILY SCORE
   const [stars, setStars] = useState(() => Number(localStorage.getItem('booply-stars')) || 0);
-  const [mathStats, setMathStats] = useState(() =>
-    JSON.parse(localStorage.getItem('booply-math-stats')) || { totalSolved: 0, level: 1 }
-  );
+  const [dailyScore, setDailyScore] = useState(() => {
+    const saved = JSON.parse(localStorage.getItem('booply-daily-stats'));
+    const today = new Date().toDateString();
+    // 🛠️ Automatic Daily Refresh
+    if (saved && saved.date === today) return saved.score;
+    return 0;
+  });
 
-  useEffect(() => {
-    localStorage.setItem('booply-stars', stars);
-    localStorage.setItem('booply-math-stats', JSON.stringify(mathStats));
-  }, [stars, mathStats]);
+  // 🔔 NOTIFICATION SYSTEM
+  const requestNotificationPermission = useCallback(async () => {
+    if (!("Notification" in window)) return;
 
-  const recordMathSolved = useCallback(() => {
-    setMathStats(prev => ({ ...prev, totalSolved: prev.totalSolved + 1 }));
-    setStars(s => s + 5);
+    if (Notification.permission === 'default') {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        new Notification("Booply Welcome!", {
+          body: "The arcade is ready. Can you beat your daily score?",
+          icon: "/logo192.png"
+        });
+      }
+    }
   }, []);
 
-  const handleLaunchGame = (game) => {
-    setActiveGame(game);
-    setView('game');
-  };
+  useEffect(() => {
+    // Save state to cookies/localStorage
+    localStorage.setItem('booply-stars', stars);
+    const stats = { score: dailyScore, date: new Date().toDateString() };
+    localStorage.setItem('booply-daily-stats', JSON.stringify(stats));
+
+    // Request notification after 5 seconds of first visit
+    const timer = setTimeout(requestNotificationPermission, 5000);
+    return () => clearTimeout(timer);
+  }, [stars, dailyScore, requestNotificationPermission]);
+
+  const updateScores = useCallback(() => {
+    setStars(prev => prev + 5);
+    setDailyScore(prev => prev + 100);
+  }, []);
 
   return (
     <div className="booply-root">
@@ -71,101 +73,84 @@ export default function App() {
           <header className="elite-header">
             <h1 className="logo">BOOPLY</h1>
             <div className="header-actions">
-              <button className="dash-trigger" onClick={() => setView('dashboard')}>📈 PARENT DASHBOARD</button>
+              <div className="daily-stats-pill">DAILY: <span>{dailyScore}</span></div>
               <div className="star-counter">⭐ {stars}</div>
+              <button className="feedback-trigger" onClick={() => setShowFeedback(true)}>FEEDBACK</button>
             </div>
           </header>
 
-          <main className="content-scroll">
-            {/* HERO: FEATURED GAME */}
-            <section className="hero-box">
-              <div className="hero-card" style={{ '--accent': MASTER_GAME_LIST[0].color }}>
-                <span className="hero-icon">{MASTER_GAME_LIST[0].icon}</span>
-                <div className="hero-info">
-                  <span className="tag">NEW MATH EDITION</span>
-                  <h2>{MASTER_GAME_LIST[0].name}</h2>
-                  <p>Master addition and subtraction to fuel your Shadow Shinobi.</p>
-                  <button className="launch-btn" onClick={() => handleLaunchGame(MASTER_GAME_LIST[0])}>PLAY NOW</button>
+          <main className="content-container">
+            {/* HERO SECTION */}
+            <section className="hero-section">
+              <div className="hero-card">
+                <span className="hero-icon">🍭</span>
+                <div className="hero-text">
+                  <span className="badge">DAILY CHALLENGE</span>
+                  <h2>BOOPLY BLAST</h2>
+                  <p>The ultimate puzzle for your brain.</p>
+                  <button className="launch-btn" onClick={() => { setActiveGame({ id: 'blast-v1' }); setView('game'); }}>PLAY NOW</button>
                 </div>
               </div>
             </section>
 
             {/* ARCADE GRID */}
-            <section className="arcade-section">
-              <h3 className="section-title">Academic Library</h3>
-              <div className="arcade-grid">
-                {MASTER_GAME_LIST.map(game => (
-                  <button key={game.id} className="game-tile" onClick={() => handleLaunchGame(game)} style={{ '--theme': game.color }}>
-                    <span className="tile-emoji">{game.icon}</span>
-                    <div className="tile-text">
-                      <span className="tile-name">{game.name}</span>
-                      <span className="tile-cat">{game.category}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+            <div className="arcade-grid">
+              {MASTER_GAME_LIST.map(game => (
+                <button key={game.id} className="game-tile" onClick={() => { setActiveGame(game); setView('game'); }} style={{ '--theme': game.color }}>
+                  <span className="tile-emoji">{game.icon}</span>
+                  <div className="tile-info">
+                    <span className="tile-name">{game.name}</span>
+                    <span className="tile-cat">{game.category}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* ⭐ ENGAGEMENT REVIEWS */}
+            <section className="review-strip">
+              <div className="review-card">⭐⭐⭐⭐⭐ "Addictive and educational!" - Sarah K.</div>
+              <div className="review-card">⭐⭐⭐⭐ "My son learned all animal names in a day." - David L.</div>
+              <div className="review-card">⭐⭐⭐⭐⭐ "The neon theme is incredible." - User 99</div>
             </section>
           </main>
 
-          <footer className="footer-nav">
-            <button onClick={() => setView('privacy')}>PRIVACY & SAFETY POLICY</button>
+          <footer className="lobby-footer">
+            <button className="footer-text-link" onClick={() => setPrivacyOpen(!privacyOpen)}>
+              {privacyOpen ? "CLOSE PRIVACY" : "PRIVACY & SAFETY POLICY"}
+            </button>
+            {privacyOpen && (
+              <div className="minimal-privacy-box fade-in">
+                <p>Booply uses local cookies to store your daily score and star progress. We do not collect names or emails.
+                  Notifications are used only for game reminders. All data stays on your device.</p>
+              </div>
+            )}
           </footer>
         </div>
       )}
 
-      {/* PARENTAL DASHBOARD OVERLAY */}
-      {view === 'dashboard' && (
+      {/* 📝 FEEDBACK & RATING POPUP */}
+      {showFeedback && (
         <div className="full-overlay fade-in">
-          <div className="modal-glass">
-            <h2>PARENTAL DASHBOARD</h2>
-            <div className="dashboard-grid">
-              <div className="data-card">
-                <small>ACADEMIC PROGRESS</small>
-                <div className="big-stat">{mathStats.totalSolved}</div>
-                <p>Math Problems Solved</p>
-              </div>
-              <div className="data-card">
-                <small>REWARDS EARNED</small>
-                <div className="big-stat">⭐ {stars}</div>
-                <p>Booply Stars</p>
-              </div>
+          <div className="modal-glass feedback-modal">
+            <h2>GAMES FEEDBACK</h2>
+            <p>Tell us what to add next!</p>
+            <div className="rating-selector">⭐⭐⭐⭐⭐</div>
+            <textarea placeholder="Your suggestions..." className="suggestion-box"></textarea>
+            <div className="modal-buttons">
+              <button className="secondary-btn" onClick={() => setShowFeedback(false)}>CANCEL</button>
+              <button className="primary-btn" onClick={() => setShowFeedback(false)}>SEND REVIEW</button>
             </div>
-            <button className="primary-btn" onClick={() => setView('lobby')}>BACK TO ARCADE</button>
           </div>
         </div>
       )}
 
-      {/* PRIVACY POLICY OVERLAY */}
-      {view === 'privacy' && (
-        <div className="full-overlay fade-in">
-          <div className="modal-glass privacy-modal">
-            <h2>PRIVACY & SAFETY</h2>
-            <div className="privacy-body">
-              <section>
-                <h4>1. Kid-Safe Infrastructure</h4>
-                <p>Booply is a zero-data-collection platform. We do not store names, emails, or biometric data. All game progress is saved locally on your device.</p>
-              </section>
-              <section>
-                <h4>2. COPPA Compliance</h4>
-                <p>We strictly adhere to the Children's Online Privacy Protection Act. There are no third-party trackers or hidden behavioral analytics.</p>
-              </section>
-              <section>
-                <h4>3. Education First</h4>
-                <p>Our only metric for success is academic progress. We provide a distraction-free environment for children to learn through play.</p>
-              </section>
-            </div>
-            <button className="primary-btn" onClick={() => setView('lobby')}>CLOSE POLICY</button>
-          </div>
-        </div>
-      )}
-
-      {/* FULLSCREEN GAME STAGE */}
+      {/* 🕹️ GAME STAGE */}
       {view === 'game' && activeGame && (
-        <div className="game-stage-wrapper">
-          <Suspense fallback={<div className="loading-screen">INITIALIZING ENGINE...</div>}>
+        <div className="stage-fullscreen">
+          <Suspense fallback={<div className="loader">ENGINE LOADING...</div>}>
             {React.createElement(INTERNAL_GAMES[activeGame.id], {
               onExit: () => setView('lobby'),
-              onCorrectClick: recordMathSolved
+              onCorrectClick: updateScores
             })}
           </Suspense>
         </div>

@@ -1,174 +1,145 @@
 :root {
   --bg: #050508;
   --accent: #00f2ff;
-  --purple: #bc13fe;
-  --pink: #ff00de;
-  --text: #ffffff;
-  --dim: #94a3b8;
+  --panel: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.1);
 }
 
-/* 🏙️ APP WRAPPER: Forced Expansion */
+/* 🏙️ LAPTOP OPTIMIZED WRAPPER */
 .booply-root {
-  width: 100%;
   min-height: 100vh;
   background-color: var(--bg);
+  color: #fff;
 }
 
-/* 🏟️ LOBBY VIEW: This centers the content but allows it to go WIDE */
 .lobby-view {
   width: 95%;
   max-width: 1400px;
-  /* Forces wide-screen layout on MacBook */
   margin: 0 auto;
-  padding: 2rem 0;
-  display: block;
-  /* Important: Prevents vertical squashing */
+  padding: 0 2rem;
 }
 
-/* 💎 NEON HEADER */
+/* 💎 ELITE HEADER */
 .elite-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 4rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
 }
 
-.logo {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 900;
-  letter-spacing: -3px;
-  background: linear-gradient(to right, var(--accent), var(--purple), var(--pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.3));
-}
-
-.star-counter {
-  background: rgba(255, 215, 0, 0.1);
-  border: 1px solid #ffd700;
-  color: #ffd700;
-  padding: 10px 25px;
+.daily-stats-pill {
+  background: rgba(0, 242, 255, 0.1);
+  border: 1px solid var(--accent);
+  padding: 8px 20px;
   border-radius: 50px;
   font-weight: 900;
-}
-
-/* 🏟️ DYNAMIC HERO BOX */
-.hero-box {
-  margin-bottom: 6rem;
-}
-
-.hero-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 2px solid var(--accent);
-  border-radius: 50px;
-  padding: clamp(2rem, 6vw, 5rem);
-  display: flex;
-  flex-direction: row;
-  /* Horizontal on Laptop */
-  align-items: center;
-  justify-content: space-between;
-  gap: 4rem;
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
-}
-
-.hero-info h2 {
-  font-size: clamp(2rem, 5vw, 3.8rem);
-  margin: 0;
-}
-
-.hero-icon {
-  font-size: clamp(4rem, 10vw, 8rem);
-}
-
-/* 🎮 MULTI-COLUMN ARCADE GRID */
-.arcade-section {
-  padding-bottom: 150px;
-}
-
-.arcade-grid {
-  display: grid;
-  /* Laptop: 3-4 columns | iPad: 2 columns | Phone: 1-2 columns */
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 3rem;
-  width: 100%;
-}
-
-.game-tile {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), #000);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 3rem;
-  border-radius: 40px;
-  text-align: center;
-  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.game-tile:hover {
-  transform: translateY(-20px) scale(1.05);
-  border-color: var(--theme);
-  /* Dynamic theme color glow */
-  box-shadow: 0 0 40px var(--theme);
-}
-
-.tile-emoji {
-  font-size: 5.5rem;
-  display: block;
-  margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 10px var(--theme));
-}
-
-.tile-name {
-  font-size: 1.7rem;
-  font-weight: 900;
-  color: #fff;
-}
-
-.tile-cat {
-  color: var(--theme);
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
   font-size: 0.8rem;
 }
 
-/* 📱 RESPONSIVE ADAPTATION */
-@media (max-width: 1000px) {
-  .hero-card {
-    flex-direction: column;
-    text-align: center;
-    gap: 2rem;
-  }
-
-  .arcade-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
+.daily-stats-pill span {
+  color: #fff;
+  margin-left: 8px;
 }
 
-@media (max-width: 600px) {
-  .arcade-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
+.feedback-trigger {
+  background: none;
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
 
-  .game-tile {
-    padding: 1.5rem;
-  }
+/* ⭐ ENGAGEMENT REVIEWS */
+.review-strip {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 4rem 0;
+  opacity: 0.7;
+  border-top: 1px solid var(--border);
+}
 
-  .tile-emoji {
-    font-size: 3rem;
-  }
+.review-card {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #94a3b8;
+}
 
-  .tile-name {
-    font-size: 1rem;
-  }
+/* 🔒 MINIMALIST PRIVACY (Text Only) */
+.lobby-footer {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.footer-text-link {
+  background: none;
+  border: none;
+  color: #64748b;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.minimal-privacy-box {
+  max-width: 600px;
+  margin: 1.5rem auto;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* 📝 FEEDBACK MODAL */
+.feedback-modal {
+  text-align: center;
+  max-width: 500px;
+}
+
+.rating-selector {
+  font-size: 3rem;
+  margin: 2rem 0;
+  cursor: pointer;
+}
+
+.suggestion-box {
+  width: 100%;
+  height: 120px;
+  background: #000;
+  color: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-family: inherit;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 15px;
 }
 
 /* 🕹️ FULLSCREEN STAGE */
-.game-stage-wrapper {
+.stage-fullscreen {
   position: fixed;
   inset: 0;
   background: #000;
   z-index: 99999;
+}
+
+/* 📱 MOBILE RESPONSIVENESS */
+@media (max-width: 800px) {
+  .arcade-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .review-strip {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .daily-stats-pill {
+    display: none;
+  }
 }
