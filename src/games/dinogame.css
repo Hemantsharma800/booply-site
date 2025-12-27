@@ -1,4 +1,4 @@
-.dino-pro-root {
+.safari-root {
     height: 100vh;
     width: 100vw;
     background: #000;
@@ -9,16 +9,14 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* 🌌 DYNAMIC BACKGROUND */
-.nebula-overlay {
+.nebula-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 120%, rgba(57, 255, 20, 0.1), transparent 70%);
+    background: radial-gradient(circle at 50% 120%, rgba(57, 255, 20, 0.15), transparent 70%);
     pointer-events: none;
 }
 
-/* 📊 HUD STYLING */
-.game-hud {
+.safari-hud {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -26,7 +24,7 @@
     z-index: 100;
 }
 
-.exit-button-neon {
+.exit-btn-neon {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid #39ff14;
     color: #39ff14;
@@ -37,13 +35,7 @@
     transition: 0.3s;
 }
 
-.exit-button-neon:hover {
-    background: #39ff14;
-    color: #000;
-    box-shadow: 0 0 20px #39ff14;
-}
-
-.score-pill {
+.score-box {
     display: inline-block;
     background: #111;
     padding: 10px 20px;
@@ -51,39 +43,37 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     margin-left: 15px;
     font-weight: 800;
+    color: #fff;
 }
 
-.score-pill span {
+.score-box span {
     color: #39ff14;
-    margin-left: 8px;
 }
 
-.score-pill.main {
+.score-box.main {
     border-color: #39ff14;
-    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
 }
 
-/* 🏟️ THE GAME STAGE */
-.game-stage {
+.safari-stage {
     flex: 1;
     position: relative;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    /* Laptop Optimization */
 }
 
-.horizon-line {
+.ground-line {
     position: absolute;
     bottom: 20%;
     left: 0;
     right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #39ff14, transparent);
-    box-shadow: 0 0 15px #39ff14;
+    box-shadow: 0 0 20px #39ff14;
 }
 
-.dino-avatar {
+.dino-character {
     position: absolute;
     left: 10%;
     width: 60px;
@@ -94,81 +84,64 @@
     z-index: 10;
 }
 
-.dino-emoji {
-    font-size: 3.5rem;
-    filter: drop-shadow(0 0 10px #39ff14);
+.dino-icon {
+    font-size: 4rem;
+    filter: drop-shadow(0 0 15px #39ff14);
 }
 
-.dino-glow {
-    position: absolute;
-    bottom: -5px;
-    width: 40px;
-    height: 10px;
-    background: rgba(57, 255, 20, 0.3);
-    filter: blur(10px);
-    border-radius: 50%;
-}
-
-.obstacle-neon {
+.animal-obstacle {
     position: absolute;
     bottom: 20%;
-    font-size: 2.5rem;
-    filter: drop-shadow(0 0 10px #ff4757);
-    transition: transform 0.1s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateX(-50%);
 }
 
-/* 🎊 OVERLAYS */
-.dino-overlay {
+.animal-emoji {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+.animal-label {
+    background: #39ff14;
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.safari-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    backdrop-filter: blur(10px);
 }
 
-.shimmer-title {
-    font-size: clamp(3rem, 8vw, 5rem);
+.glow-title {
+    font-size: 4rem;
     font-weight: 900;
     color: #fff;
     text-shadow: 0 0 30px #39ff14;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
-.play-btn-pro {
+.start-btn-pro {
     background: #39ff14;
     color: #000;
     border: none;
-    padding: 20px 50px;
+    padding: 20px 60px;
     border-radius: 15px;
     font-weight: 900;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     cursor: pointer;
-    box-shadow: 0 10px 30px rgba(57, 255, 20, 0.3);
-    transition: 0.3s;
-}
-
-.play-btn-pro:hover {
-    transform: scale(1.1) translateY(-5px);
-    box-shadow: 0 15px 40px #39ff14;
-}
-
-/* 📱 MOBILE SQUEEZE */
-@media (max-width: 768px) {
-    .horizon-line {
-        bottom: 30%;
-    }
-
-    .dino-avatar {
-        left: 15%;
-        width: 40px;
-        height: 40px;
-    }
-
-    .dino-emoji {
-        font-size: 2.5rem;
-    }
+    box-shadow: 0 10px 30px rgba(57, 255, 20, 0.4);
 }
