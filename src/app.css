@@ -1,145 +1,262 @@
 :root {
   --bg: #050508;
   --accent: #00f2ff;
-  --panel: rgba(255, 255, 255, 0.03);
+  --gold: #ffd700;
+  --glass: rgba(255, 255, 255, 0.03);
   --border: rgba(255, 255, 255, 0.1);
 }
 
-/* 🏙️ LAPTOP OPTIMIZED WRAPPER */
-.booply-root {
-  min-height: 100vh;
+body {
+  margin: 0;
   background-color: var(--bg);
   color: #fff;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
 }
 
-.lobby-view {
-  width: 95%;
+/* 🏟️ WIDE-SCREEN ENGINE */
+.booply-platform-root {
+  min-height: 100vh;
+}
+
+.lobby-content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 5vw;
 }
 
-/* 💎 ELITE HEADER */
+/* 💎 HEADER HUD */
 .elite-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2.5rem 0;
+  padding: 3rem 0;
   border-bottom: 1px solid var(--border);
 }
 
-.daily-stats-pill {
-  background: rgba(0, 242, 255, 0.1);
-  border: 1px solid var(--accent);
-  padding: 8px 20px;
-  border-radius: 50px;
+.logo {
+  font-size: 3.5rem;
   font-weight: 900;
-  font-size: 0.8rem;
+  letter-spacing: -3px;
+  margin: 0;
 }
 
-.daily-stats-pill span {
-  color: #fff;
+.hud-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.pill {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  padding: 10px 25px;
+  border-radius: 50px;
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+.pill.daily {
+  border-color: var(--accent);
+}
+
+.pill.daily span {
+  color: var(--accent);
   margin-left: 8px;
+}
+
+.pill.star {
+  color: var(--gold);
+  border-color: var(--gold);
 }
 
 .feedback-trigger {
   background: none;
-  border: 1px solid #ffd700;
-  color: #ffd700;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 800;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 10px 20px;
+  border-radius: 12px;
   cursor: pointer;
+  font-weight: 800;
 }
 
-/* ⭐ ENGAGEMENT REVIEWS */
-.review-strip {
+/* 🔥 HERO CARD */
+.hero-arena {
+  padding: 4rem 0;
+}
+
+.featured-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), #000);
+  border: 1px solid var(--accent);
+  border-radius: 40px;
+  padding: 5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+}
+
+.badge {
+  letter-spacing: 4px;
+  color: #64748b;
+  font-weight: 900;
+  font-size: 0.75rem;
+}
+
+.featured-info h2 {
+  font-size: 4rem;
+  margin: 15px 0;
+  font-weight: 900;
+}
+
+.featured-visual {
+  font-size: 8rem;
+  filter: drop-shadow(0 0 30px var(--accent));
+}
+
+.cta-play {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 20px 50px;
+  border-radius: 15px;
+  font-weight: 900;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+}
+
+/* 🎮 DYNAMIC GRID FIX */
+.arcade-grid-system {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 3rem;
+  padding-bottom: 6rem;
+}
+
+.premium-tile {
+  background: #080808;
+  border: 1px solid var(--border);
+  padding: 3.5rem;
+  border-radius: 40px;
+  text-align: center;
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.premium-tile:hover {
+  transform: translateY(-20px);
+  border-color: var(--theme);
+  box-shadow: 0 0 40px var(--theme);
+}
+
+.tile-emoji {
+  font-size: 4.5rem;
+  display: block;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 10px var(--theme));
+}
+
+.tile-title {
+  font-size: 1.7rem;
+  font-weight: 900;
+  display: block;
+}
+
+.tile-subtitle {
+  color: var(--theme);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* ⭐ SOCIAL PROOF */
+.rating-strip {
   display: flex;
   justify-content: center;
-  gap: 30px;
-  padding: 4rem 0;
-  opacity: 0.7;
+  gap: 4rem;
+  opacity: 0.5;
+  padding-bottom: 5rem;
   border-top: 1px solid var(--border);
+  padding-top: 5rem;
 }
 
-.review-card {
+.review-item {
   font-size: 0.85rem;
   font-style: italic;
-  color: #94a3b8;
 }
 
-/* 🔒 MINIMALIST PRIVACY (Text Only) */
-.lobby-footer {
-  padding: 4rem 0;
+/* 🔒 COMPACT FOOTER */
+.compact-footer {
   text-align: center;
+  padding-bottom: 5rem;
 }
 
-.footer-text-link {
+.policy-toggle {
   background: none;
   border: none;
-  color: #64748b;
+  color: #4b5563;
   text-decoration: underline;
-  font-size: 0.8rem;
   cursor: pointer;
+  font-size: 0.8rem;
 }
 
-.minimal-privacy-box {
+.policy-text {
   max-width: 600px;
   margin: 1.5rem auto;
   color: #94a3b8;
   font-size: 0.85rem;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-/* 📝 FEEDBACK MODAL */
-.feedback-modal {
+/* 📝 MODAL */
+.overlay-blur {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(20px);
+}
+
+.feedback-modal-card {
+  background: #111;
+  padding: 4rem;
+  border-radius: 50px;
+  border: 1px solid var(--gold);
   text-align: center;
-  max-width: 500px;
+  width: 90%;
+  max-width: 550px;
 }
 
-.rating-selector {
-  font-size: 3rem;
-  margin: 2rem 0;
-  cursor: pointer;
-}
-
-.suggestion-box {
+.modal-input {
   width: 100%;
-  height: 120px;
+  height: 130px;
   background: #000;
   color: #fff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 20px;
+  border: 1px solid #333;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 2rem 0;
   font-family: inherit;
 }
 
-.modal-buttons {
-  display: flex;
-  gap: 15px;
+.btn-send {
+  background: var(--gold);
+  color: #000;
+  border: none;
+  padding: 15px 45px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
 }
 
-/* 🕹️ FULLSCREEN STAGE */
-.stage-fullscreen {
+/* 🕹️ STAGE */
+.game-stage-fullscreen {
   position: fixed;
   inset: 0;
   background: #000;
   z-index: 99999;
-}
-
-/* 📱 MOBILE RESPONSIVENESS */
-@media (max-width: 800px) {
-  .arcade-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .review-strip {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .daily-stats-pill {
-    display: none;
-  }
 }
