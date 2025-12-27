@@ -1,4 +1,4 @@
-.safari-id-root {
+.jungle-root {
     height: 100vh;
     width: 100vw;
     background: #000;
@@ -6,38 +6,41 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    font-family: 'Inter', sans-serif;
 }
 
-/* 🎯 IDENTIFICATION BANNER STYLING */
-.goal-banner {
+.nebula-bg {
     position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 100;
-    pointer-events: none;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(57, 255, 20, 0.05), transparent 80%);
 }
 
-.goal-banner small {
-    color: #94a3b8;
-    letter-spacing: 4px;
-    font-weight: 800;
-    font-size: 0.8rem;
-}
-
-.goal-banner h1 {
-    font-size: 4.5rem;
-    margin: 0;
-    font-weight: 900;
-    text-shadow: 0 0 30px currentColor;
-}
-
-.game-controls {
+/* 🎯 TARGET BANNER */
+.jungle-header {
     display: flex;
     justify-content: space-between;
-    padding: 2rem;
-    z-index: 200;
+    align-items: center;
+    padding: 2rem 5%;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.target-banner {
+    text-align: center;
+}
+
+.target-banner small {
+    letter-spacing: 3px;
+    color: #94a3b8;
+    font-weight: 900;
+    font-size: 0.7rem;
+}
+
+.target-name {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin: 0;
+    text-shadow: 0 0 20px currentColor;
 }
 
 .exit-btn {
@@ -49,77 +52,110 @@
     cursor: pointer;
 }
 
-.score-badge {
-    font-size: 1.5rem;
+.score-pill {
     font-weight: 900;
     color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 10px 25px;
+    border-radius: 50px;
 }
 
-.safari-stage {
+/* 🏟️ ANIMAL GRID */
+.jungle-stage {
     flex: 1;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.animal-grid {
+    display: grid;
+    /* Laptop Optimization: Wide grid for MacBook Pro */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
+    max-width: 1200px;
 }
 
-.neon-ground {
-    position: absolute;
-    bottom: 20%;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: #39ff14;
-    box-shadow: 0 0 20px #39ff14;
+.animal-card {
+    aspect-ratio: 1/1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.dino-player {
-    position: absolute;
-    left: 10%;
-    font-size: 4.5rem;
-    z-index: 10;
-    filter: drop-shadow(0 0 15px #39ff14);
+.animal-card:hover {
+    transform: scale(1.05) translateY(-10px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
 }
 
-.animal-unit {
-    position: absolute;
-    bottom: 20%;
-    font-size: 4rem;
-    transform: translateX(-50%);
+.animal-sprite {
+    font-size: clamp(3rem, 8vw, 6rem);
+    z-index: 2;
 }
 
-.start-overlay {
+.card-glow {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.95);
+    opacity: 0.1;
+    filter: blur(40px);
+    transition: 0.3s;
+}
+
+/* 🎊 FEEDBACK */
+.feedback-overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s forwards;
 }
 
-.glow-text {
-    font-size: 4rem;
-    color: #fff;
-    text-shadow: 0 0 20px #39ff14;
-    margin-bottom: 1rem;
+.feedback-overlay.success {
+    color: #39ff14;
+    text-shadow: 0 0 30px #39ff14;
 }
 
-.feedback-sub {
+.feedback-overlay.error {
     color: #ff4757;
-    font-weight: 900;
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
+    text-shadow: 0 0 30px #ff4757;
 }
 
-.launch-btn {
-    background: #39ff14;
-    color: #000;
-    border: none;
-    padding: 20px 60px;
-    border-radius: 15px;
+.feedback-overlay h1 {
+    font-size: 5rem;
     font-weight: 900;
-    cursor: pointer;
-    font-size: 1.2rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* 📱 MOBILE SQUEEZE */
+@media (max-width: 768px) {
+    .animal-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .jungle-stage {
+        padding: 1rem;
+    }
 }
