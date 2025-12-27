@@ -1,27 +1,34 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './dinogame.css';
 
-// 🦁 Safari Obstacle Library for better study
 const SAFARI_ANIMALS = [
-    { emoji: '🐘', name: 'Elephant' }, { emoji: '🦒', name: 'Giraffe' },
-    { emoji: '🦓', name: 'Zebra' }, { emoji: '🦁', name: 'Lion' },
-    { emoji: '🐅', name: 'Tiger' }, { emoji: '🦏', name: 'Rhino' },
-    { emoji: '🦛', name: 'Hippo' }, { emoji: '🐪', name: 'Camel' }
+    { emoji: '🐘', name: 'ELEPHANT', color: '#00f2ff' },
+    { emoji: '🦒', name: 'GIRAFFE', color: '#ffd700' },
+    { emoji: '🦓', name: 'ZEBRA', color: '#ffffff' },
+    { emoji: '🦁', name: 'LION', color: '#ff4757' },
+    { emoji: '🐅', name: 'TIGER', color: '#ff7043' },
+    { emoji: '🦏', name: 'RHINO', color: '#94a3b8' }
 ];
 
-export default function DinoGame({ onExit }) {
+export default function DinoGame({ onExit, onCorrectClick }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [score, setScore] = useState(0);
     const [dinoY, setDinoY] = useState(0);
     const [isJumping, setIsJumping] = useState(false);
     const [obstacles, setObstacles] = useState([]);
-    const [highScore, setHighScore] = useState(localStorage.getItem('booply-dino-hi') || 0);
+    const [targetAnimal, setTargetAnimal] = useState(null);
+    const [feedback, setFeedback] = useState("");
 
-    // 🛠️ FIX: Balanced Jump Physics
+    // 🎯 SET NEW IDENTIFICATION GOAL
+    const setNewGoal = useCallback(() => {
+        const goal = SAFARI_ANIMALS[Math.floor(Math.random() * SAFARI_ANIMALS.length)];
+        setTargetAnimal(goal);
+    }, []);
+
     const jump = useCallback(() => {
         if (!isJumping && isPlaying) {
             setIsJumping(true);
-            let velocity = 14;
+            let velocity = 15;
             const jumpInterval = setInterval(() => {
                 setDinoY(prev => {
                     if (prev <= 0 && velocity < 0) {
@@ -29,93 +36,82 @@ export default function DinoGame({ onExit }) {
                         setIsJumping(false);
                         return 0;
                     }
-                    velocity -= 0.7; // Gravity constant
+                    velocity -= 0.8;
                     return prev + velocity;
                 });
             }, 16);
         }
     }, [isJumping, isPlaying]);
 
-    // Support for both Spacebar (Laptop) and Click (Phone)
-    useEffect(() => {
-        const handleKey = (e) => { if (e.code === 'Space') jump(); };
-        window.addEventListener('keydown', handleKey);
-        return () => window.removeEventListener('keydown', handleKey);
-    }, [jump]);
-
-    // 🛠️ FIX: Reliable Obstacle Spawning
     useEffect(() => {
         if (!isPlaying) return;
+        setNewGoal();
         const spawnTimer = setInterval(() => {
-            const randomAnimal = SAFARI_ANIMALS[Math.floor(Math.random() * SAFARI_ANIMALS.length)];
-            setObstacles(prev => [...prev, {
-                id: Date.now(),
-                x: 100,
-                ...randomAnimal
-            }]);
-        }, 1800 - Math.min(score / 5, 1000)); // Becomes harder as score increases
-
+            const animal = SAFARI_ANIMALS[Math.floor(Math.random() * SAFARI_ANIMALS.length)];
+            setObstacles(prev => [...prev, { id: Date.now(), x: 100, ...animal }]);
+        }, 2000);
         return () => clearInterval(spawnTimer);
-    }, [isPlaying, score]);
+    }, [isPlaying, setNewGoal]);
 
-    // 🛠️ FIX: Collision & Score Synchronization
     useEffect(() => {
         if (!isPlaying) return;
         const gameTimer = setInterval(() => {
             setObstacles(prev => {
-                const next = prev.map(o => ({ ...o, x: o.x - 1.2 })).filter(o => o.x > -10);
+                const next = prev.map(o => ({ ...o, x: o.x - 1.5 })).filter(o => o.x > -10);
 
-                // Accurate Collision detection
                 next.forEach(o => {
+                    // Collision detection
                     if (o.x > 8 && o.x < 18 && dinoY < 35) {
-                        setIsPlaying(false);
-                        if (score > highScore) {
-                            setHighScore(score);
-                            localStorage.setItem('booply-dino-hi', score);
+                        if (o.name === targetAnimal.name) {
+                            setScore(s => s + 10);
+                            setFeedback("CORRECT! ✨");
+                            if (onCorrectClick) onCorrectClick(); // Award Star
+                            setNewGoal();
+                        } else {
+                            setFeedback("WRONG ANIMAL! ❌");
+                            setIsPlaying(false);
                         }
                     }
                 });
                 return next;
             });
-            // Score only increases while Dino is running
-            setScore(s => s + 1);
         }, 20);
-
         return () => clearInterval(gameTimer);
-    }, [isPlaying, dinoY, score, highScore]);
+    }, [isPlaying, dinoY, targetAnimal, setNewGoal, onCorrectClick]);
 
     return (
-        <div className="safari-root" onClick={isPlaying ? jump : undefined}>
-            <div className="nebula-bg"></div>
+        <div className="safari-id-root" onClick={jump}>
+            <div className="star-field"></div>
 
-            <header className="safari-hud">
-                <button className="exit-btn-neon" onClick={onExit}>◀ EXIT ARCADE</button>
-                <div className="safari-scores">
-                    <div className="score-box">HI <span>{highScore}</span></div>
-                    <div className="score-box main">SCORE <span>{score}</span></div>
+            {/* 🏛️ IDENTIFICATION BANNER */}
+            {isPlaying && targetAnimal && (
+                <div className="goal-banner fade-in">
+                    <small>IDENTIFY AND JUMP OVER THE</small>
+                    <h1 style={{ color: targetAnimal.color }}>{targetAnimal.name}</h1>
                 </div>
+            )}
+
+            <header className="game-controls">
+                <button className="exit-btn" onClick={onExit}>◀ BACK</button>
+                <div className="score-badge">SCORE: {score}</div>
             </header>
 
             <div className="safari-stage">
-                <div className="ground-line"></div>
-
-                <div className="dino-character" style={{ bottom: `calc(20% + ${dinoY}px)` }}>
-                    <span className="dino-icon">🦖</span>
-                    <div className="dino-trail"></div>
-                </div>
+                <div className="neon-ground"></div>
+                <div className="dino-player" style={{ bottom: `calc(20% + ${dinoY}px)` }}>🦖</div>
 
                 {obstacles.map(o => (
-                    <div key={o.id} className="animal-obstacle" style={{ left: `${o.x}%` }}>
-                        <span className="animal-emoji">{o.emoji}</span>
-                        <div className="animal-label">{o.name}</div>
+                    <div key={o.id} className="animal-unit" style={{ left: `${o.x}%` }}>
+                        <span className="emoji">{o.emoji}</span>
                     </div>
                 ))}
 
                 {!isPlaying && (
-                    <div className="safari-overlay fade-in">
-                        <h1 className="glow-title">{score > 0 ? "MISSION FAILED" : "SAFARI DASH"}</h1>
-                        <button className="start-btn-pro" onClick={() => { setScore(0); setObstacles([]); setIsPlaying(true); }}>
-                            {score > 0 ? "RETRY DASH" : "START STUDY RUN"}
+                    <div className="start-overlay">
+                        <h1 className="glow-text">{score > 0 ? "GAME OVER" : "ANIMAL STUDY"}</h1>
+                        {feedback && <p className="feedback-sub">{feedback}</p>}
+                        <button className="launch-btn" onClick={() => { setScore(0); setObstacles([]); setIsPlaying(true); }}>
+                            {score > 0 ? "TRY AGAIN" : "START MISSION"}
                         </button>
                     </div>
                 )}
