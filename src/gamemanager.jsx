@@ -25,7 +25,7 @@ const gamemanager = ({ activegameid, onexit, onscoreupdate }) => {
                     <ActiveGame onExit={onexit} onCorrectClick={() => onscoreupdate(5, 100)} />
                 ) : (
                     <div className="error-screen">
-                        <h2>game not found</h2>
+                        <h2>game module not found</h2>
                         <button onClick={onexit}>back home</button>
                     </div>
                 )}
