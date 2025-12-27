@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-// 🛠️ FIX: Adding .jsx extension clears the red lines
+// 🛠️ RELATIVE PATHS: Standard for files in the same folder
 import home from './home.jsx';
 import gamemanager from './gamemanager.jsx';
 
 const booply_games = [
   { id: 'g1', name: 'booply blast', icon: '🍭', color: '#ff00de', cat: 'puzzle' },
-  { id: 'g2', name: 'safari study', icon: '🦁', color: '#39ff14', cat: 'identification' }, // Maps to g2
+  { id: 'g2', name: 'safari study', icon: '🦁', color: '#39ff14', cat: 'identification' },
   { id: 'g3', name: 'ai lab', icon: '🤖', color: '#00f2ff', cat: 'study' },
   { id: 'g4', name: 'fighter game', icon: '🥷', color: '#ff4757', cat: 'action' },
   { id: 'g5', name: 'colour game', icon: '🎨', color: '#ffd700', cat: 'logic' },
@@ -27,8 +27,7 @@ export default function app() {
   const [dailyscore, setdailyscore] = useState(() => {
     const saved = JSON.parse(localStorage.getItem('daily-stats'));
     const today = new Date().toDateString();
-    if (saved && saved.date === today) return saved.score;
-    return 0;
+    return (saved && saved.date === today) ? saved.score : 0;
   });
 
   useEffect(() => {
@@ -37,7 +36,7 @@ export default function app() {
   }, [stars, dailyscore]);
 
   return (
-    <div className="booply-root">
+    <div className="booply-main">
       {view === 'lobby' ? (
         <home
           stars={stars}

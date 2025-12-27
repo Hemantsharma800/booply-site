@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import './gamemanager.css';
 
-// 📂 DYNAMIC IMPORTS: Synced exactly to your games folder
+// 📂 DYNAMIC IMPORTS: Verified against your actual file list
 const games = {
     'g1': lazy(() => import('./games/booplyblast.jsx')),
-    'g2': lazy(() => import('./games/dinogame.jsx')), // 🛠️ Corrected: points to your verified file
+    'g2': lazy(() => import('./games/dinogame.jsx')), // 🛠️ FIXED: Removed junglegame
     'g3': lazy(() => import('./games/ailab.jsx')),
     'g4': lazy(() => import('./games/fightergame.jsx')),
     'g5': lazy(() => import('./games/colourgame.jsx')),
@@ -22,13 +22,10 @@ const gamemanager = ({ activegameid, onexit, onscoreupdate }) => {
         <div className="game-stage-fullscreen">
             <Suspense fallback={<div className="booply-loader">loading arcade...</div>}>
                 {ActiveGame ? (
-                    <ActiveGame
-                        onExit={onexit}
-                        onCorrectClick={() => onscoreupdate(5, 100)}
-                    />
+                    <ActiveGame onExit={onexit} onCorrectClick={() => onscoreupdate(5, 100)} />
                 ) : (
-                    <div className="error-stage">
-                        <h2>game module not found</h2>
+                    <div className="error-screen">
+                        <h2>game not found</h2>
                         <button onClick={onexit}>back home</button>
                     </div>
                 )}
