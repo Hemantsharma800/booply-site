@@ -1,34 +1,37 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import './gamemanager.css';
 
-// import game engines
-import booplyblast from './games/booplyblast.jsx';
-import safaristudy from './games/junglegame.jsx'; // identification mode
-import safaridash from './games/dinogame.jsx';   // runner mode
-
-const placeholder = ({ onexit }) => (
-    <div className="placeholder-stage">
-        <h2>game engine initializing...</h2>
-        <button className="btn-exit" onClick={onexit}>back to home</button>
-    </div>
-);
-
-const game_registry = {
-    'g1': booplyblast, 'g2': safaristudy, 'g3': safaridash,
-    'g4': placeholder, 'g5': placeholder, 'g6': placeholder,
-    'g7': placeholder, 'g8': placeholder, 'g9': placeholder, 'g10': placeholder
+// 📂 DYNAMIC IMPORTS FROM YOUR FOLDER
+const games = {
+    'g1': lazy(() => import('./games/booplyblast')),
+    'g2': lazy(() => import('./games/dinogame')),
+    'g3': lazy(() => import('./games/ailab')),
+    'g4': lazy(() => import('./games/fightergame')),
+    'g5': lazy(() => import('./games/colourgame')),
+    'g6': lazy(() => import('./games/geoexplorer')),
+    'g7': lazy(() => import('./games/kitchenclass')),
+    'g8': lazy(() => import('./games/nitrodash')),
+    'g9': lazy(() => import('./games/puzzlepop')),
+    'g10': lazy(() => import('./games/snakegame'))
 };
 
 const gamemanager = ({ activegameid, onexit, onscoreupdate }) => {
-    const ActiveGame = game_registry[activegameid] || placeholder;
+    const ActiveGame = games[activegameid];
 
     return (
-        <div className="fullscreen-stage">
-            <Suspense fallback={<div className="booply-loader">engine loading...</div>}>
-                <ActiveGame
-                    onExit={onexit}
-                    onCorrectClick={() => onscoreupdate(5, 100)}
-                />
+        <div className="game-stage-fullscreen">
+            <Suspense fallback={<div className="booply-loader">loading arcade engine...</div>}>
+                {ActiveGame ? (
+                    <ActiveGame
+                        onExit={onexit}
+                        onCorrectClick={() => onscoreupdate(5, 100)}
+                    />
+                ) : (
+                    <div className="error-stage">
+                        <h2>game not found</h2>
+                        <button onClick={onexit}>back home</button>
+                    </div>
+                )}
             </Suspense>
         </div>
     );
