@@ -1,10 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import './gamemanager.css';
 
-// 📂 DYNAMIC IMPORTS: Pointing to verified filenames only
+// 📂 DYNAMIC IMPORTS: Synced to your verified filenames
 const games = {
     'g1': lazy(() => import('./games/booplyblast.jsx')),
-    'g2': lazy(() => import('./games/dinogame.jsx')),
+    'g2': lazy(() => import('./games/dinogame.jsx')), // 🛠️ Replaces non-existent junglegame
     'g3': lazy(() => import('./games/ailab.jsx')),
     'g4': lazy(() => import('./games/fightergame.jsx')),
     'g5': lazy(() => import('./games/colourgame.jsx')),
@@ -19,14 +19,14 @@ const gamemanager = ({ activegameid, onexit, onscoreupdate }) => {
     const ActiveGame = games[activegameid];
 
     return (
-        <div className="fullscreen-stage">
-            <Suspense fallback={<div className="loading-text">ENGINE STARTING...</div>}>
+        <div className="fullscreen-game-stage">
+            <Suspense fallback={<div className="booply-loader">BOOTING ARCADE...</div>}>
                 {ActiveGame ? (
-                    <ActiveGame onExit={onexit} onCorrectClick={() => onscoreupdate(5, 100)} />
+                    <ActiveGame onExit={onexit} onCorrectClick={() => onscoreupdate(5)} />
                 ) : (
-                    <div className="error-view">
-                        <h2>MODULE MISSING</h2>
-                        <button onClick={onexit}>EXIT</button>
+                    <div className="error-screen">
+                        <h2>GAME MODULE NOT FOUND</h2>
+                        <button onClick={onexit}>BACK TO HOME</button>
                     </div>
                 )}
             </Suspense>
