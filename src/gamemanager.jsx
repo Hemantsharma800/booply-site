@@ -12,6 +12,7 @@ const games = {
     'g8': lazy(() => import('./games/nitrodash.jsx')),
     'g9': lazy(() => import('./games/puzzlepop.jsx')),
     'g10': lazy(() => import('./games/snakegame.jsx'))
+    'g11': lazy(() => import('./games/playingcards.jsx'))
 };
 
 const gamemanager = ({ activegameid, onexit, onscoreupdate }) => {
