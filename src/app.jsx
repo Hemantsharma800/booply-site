@@ -1,27 +1,25 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
-// 🏗️ Core Layout Components
+// 🏗️ Core Layout Components (from /src)
 import Home from './home';
 import Legal from './legal';
+import MainEntry from './main'; // Added to ensure main entry point is recognized
 
-// ♟️ Elite Chess Module (Ensure the filename is exactly 'chess.jsx')
-import ChessGame from './chess'
-
-// 🎮 All 11 Arcade Titles
-// IMPORTANT: Ensure these files exist in your src/games/ folder
-import PlayingCards from './games/playingcards';
+// 🎮 All Arcade Games (from /src/games/)
+import ChessGame from './games/chess';
 import BooplyBlast from './games/booplyblast';
+import ColourGame from './games/colourgame';
+import DinoGame from './games/dinogame';
+import FighterGame from './games/fightergame';
+import GeoExplorer from './games/geoexplorer';
+import KitchenClass from './games/kitchenclass';
 import NitroDash from './games/nitrodash';
-import MathSurge from './games/mathsurge';
-import LogicFlow from './games/logicflow';
-import NumberCrunch from './games/numbercrunch';
-import EquationEscape from './games/equationescape';
-import FractalFun from './games/fractalfun';
-import GeoGenius from './games/geogenius';
-import PatternPro from './games/patternpro';
-import AlgebraAce from './games/algebraace';
+import PlayingCards from './games/playingcards';
+import PuzzlePop from './games/puzzlepop';
+import SnakeGame from './games/snakegame';
 
+// 💰 AdSense Refresh logic
 const AdSenseProvider = () => {
   const location = useLocation();
   useEffect(() => {
@@ -30,7 +28,7 @@ const AdSenseProvider = () => {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       }
     } catch (e) {
-      console.error("AdSense refresh error");
+      console.log("AdSense waiting for content...");
     }
   }, [location]);
   return null;
@@ -40,23 +38,29 @@ function App() {
   return (
     <Router>
       <AdSenseProvider />
-      <div className="app-monetized-wrapper" style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
+      <div className="app-main-container" style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
         <Routes>
+          {/* Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/legal" element={<Legal />} />
+
+          {/* ♟️ Chess (Moved to /games/ path) */}
           <Route path="/chess" element={<ChessGame />} />
           <Route path="/chess/:roomId" element={<ChessGame />} />
-          <Route path="/playing-cards" element={<PlayingCards />} />
+
+          {/* 🎮 All Other Games */}
           <Route path="/booply-blast" element={<BooplyBlast />} />
+          <Route path="/colour-game" element={<ColourGame />} />
+          <Route path="/dino-game" element={<DinoGame />} />
+          <Route path="/fighter-game" element={<FighterGame />} />
+          <Route path="/geo-explorer" element={<GeoExplorer />} />
+          <Route path="/kitchen-class" element={<KitchenClass />} />
           <Route path="/nitro-dash" element={<NitroDash />} />
-          <Route path="/math-surge" element={<MathSurge />} />
-          <Route path="/logic-flow" element={<LogicFlow />} />
-          <Route path="/number-crunch" element={<NumberCrunch />} />
-          <Route path="/equation-escape" element={<EquationEscape />} />
-          <Route path="/fractal-fun" element={<FractalFun />} />
-          <Route path="/geo-genius" element={<GeoGenius />} />
-          <Route path="/pattern-pro" element={<PatternPro />} />
-          <Route path="/algebra-ace" element={<AlgebraAce />} />
+          <Route path="/playing-cards" element={<PlayingCards />} />
+          <Route path="/puzzle-pop" element={<PuzzlePop />} />
+          <Route path="/snake-game" element={<SnakeGame />} />
+
+          {/* Fallback */}
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
