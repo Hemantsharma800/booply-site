@@ -1,67 +1,41 @@
 .chess-table-container {
-    background: radial-gradient(circle at center, #0a0a1f 0%, #050508 100%);
-    min-height: 100vh;
+    background: #050508;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: white;
+    overflow: hidden;
 }
 
-/* 🕒 30s Timer Styling */
-.timer-ring {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
+/* Fixes scaling issue */
+.neon-board-frame {
+    width: 80vmin;
+    /* Responsive: stays inside the screen */
+    max-width: 550px;
     border: 4px solid #00d2ff;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
+    padding: 8px;
+    background: #000;
+}
+
+.timer-ring {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #00d2ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
-    font-weight: 800;
-    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
-    margin-bottom: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00d2ff;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
 }
 
 .timer-ring.urgent {
     border-color: #ff0055;
     color: #ff0055;
-    box-shadow: 0 0 25px rgba(255, 0, 85, 0.5);
-    animation: pulse 1s infinite;
-}
-
-/* ♟️ Multi-Color Neon Table Edge */
-.neon-table-frame {
-    width: 90vmin;
-    max-width: 600px;
-    border: 6px solid;
-    border-image: linear-gradient(45deg, #00d2ff, #bf00ff) 1;
-    box-shadow: 0 0 50px rgba(0, 210, 255, 0.3);
-    background: #000;
-    padding: 8px;
-}
-
-.leave-btn {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    padding: 10px 20px;
-    border: 1px solid #00d2ff;
-    color: #00d2ff;
-    text-decoration: none;
-    border-radius: 8px;
-}
-
-@keyframes pulse {
-    0% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.6;
-    }
-
-    100% {
-        opacity: 1;
-    }
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
 }
