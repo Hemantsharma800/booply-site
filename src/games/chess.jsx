@@ -11,7 +11,6 @@ function ChessGame() {
     const [timeLeft, setTimeLeft] = useState(30);
     const timerRef = useRef(null);
 
-    // 🕒 30s Master Timer for both sides
     const resetTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
         setTimeLeft(30);
@@ -27,53 +26,51 @@ function ChessGame() {
     }, [game]);
 
     const handleTimeout = () => {
-        // Force turn swipe if player or AI takes > 30s
-        makeRandomMove();
+        const moves = game.moves();
+        if (moves.length > 0) {
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            makeAMove(move);
+        }
     };
 
-    const makeRandomMove = useCallback(() => {
-        const moves = game.moves();
-        if (moves.length === 0) return;
-        const move = moves[Math.floor(Math.random() * moves.length)];
-        const newGame = new Chess(game.fen());
-        newGame.move(move);
-        setGame(newGame);
-        resetTimer();
-    }, [game, resetTimer]);
+    // ⚙️ This function locks the piece in place and prevents "Snapping Back"
+    function makeAMove(move) {
+        const gameCopy = new Chess(game.fen());
+        const result = gameCopy.move(move);
+        if (result) {
+            setGame(gameCopy); // Lock the new state
+            resetTimer();
+            return true;
+        }
+        return false;
+    }
 
-    // 🤖 AI Logic: Automates Black Turn
+    function onDrop(sourceSquare, targetSquare) {
+        const move = makeAMove({
+            from: sourceSquare,
+            to: targetSquare,
+            promotion: 'q',
+        });
+        return move;
+    }
+
+    // 🤖 AI Turn Logic
     useEffect(() => {
         if (gameMode === 'ai' && game.turn() === 'b' && !game.isGameOver()) {
-            // AI responds within its 30s limit (with a 1.2s thinking delay for realism)
-            const aiDelay = setTimeout(makeRandomMove, 1200);
-            return () => clearTimeout(aiDelay);
+            const moves = game.moves();
+            if (moves.length > 0) {
+                setTimeout(() => {
+                    const move = moves[Math.floor(Math.random() * moves.length)];
+                    makeAMove(move);
+                }, 1200); // AI thinks for 1.2s then moves
+            }
         }
-    }, [game.turn(), gameMode, makeRandomMove]);
+    }, [game.turn(), gameMode]);
 
     useEffect(() => {
         resetTimer();
         return () => clearInterval(timerRef.current);
     }, [game.turn(), resetTimer]);
-
-    // ♟️ Fix: Prevents pieces from snapping back
-    function onDrop(sourceSquare, targetSquare) {
-        try {
-            const gameCopy = new Chess(game.fen());
-            const move = gameCopy.move({
-                from: sourceSquare,
-                to: targetSquare,
-                promotion: 'q',
-            });
-
-            if (move === null) return false;
-
-            setGame(gameCopy); // Lock the piece in its new position
-            resetTimer();
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
 
     return (
         <div className="chess-table-env">
@@ -90,14 +87,9 @@ function ChessGame() {
             ) : (
                 <div className="board-active-env">
                     <div className="hud-header">
-                        <div className={`neon-timer ${timeLeft < 10 ? 'critical' : ''}`}>
-                            {timeLeft}s
-                        </div>
-                        <div className="turn-label">
-                            {game.turn() === 'w' ? 'PLAYER TURN' : 'AI TURN'}
-                        </div>
+                        <div className={`neon-timer ${timeLeft < 10 ? 'critical' : ''}`}>{timeLeft}s</div>
+                        <div className="turn-label">{game.turn() === 'w' ? 'PLAYER TURN' : 'AI TURN'}</div>
                     </div>
-
                     <div className="neon-board-frame">
                         <Chessboard
                             position={game.fen()}
