@@ -1,51 +1,45 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import './home.css';
 
-const Home = () => {
-    const navigate = useNavigate();
+const games = [
+    { id: 'chess', title: 'Elite Chess', desc: 'Strategy' },
+    { id: 'booplyblast', title: 'Booply Blast', desc: 'Arcade' },
+    { id: 'colourgame', title: 'Colour Match', desc: 'Logic' },
+    { id: 'dinogame', title: 'Dino Run', desc: 'Action' },
+    { id: 'fightergame', title: 'Street Fighter', desc: 'Combat' },
+    { id: 'geoexplorer', title: 'Geo Explorer', desc: '3D World' },
+    { id: 'kitchenclass', title: 'Kitchen Rush', desc: 'Cooking' },
+    { id: 'nitrodash', title: 'Nitro Dash', desc: 'Racing' },
+    { id: 'playingcards', title: 'Playing Cards', desc: 'Cards' },
+    { id: 'puzzlepop', title: 'Puzzle Pop', desc: 'Puzzles' },
+    { id: 'snakegame', title: 'Classic Snake', desc: 'Retro' }
+];
 
-    useEffect(() => {
-        try {
-            // Pushes the ad to the 'ins' tag when the component loads
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {
-            console.error("AdSense error:", e);
-        }
-    }, []);
-
+function Home() {
     return (
-        <div className="lobby-container">
-            {/* 🏦 MONETIZATION: TOP LEADERBOARD AD */}
-            <div className="ad-container-leaderboard">
-                <p className="ad-label">ADVERTISEMENT</p>
-                <ins className="adsbygoogle"
-                    style={{ display: 'block' }}
-                    data-ad-client={import.meta.env.VITE_ADSENSE_ID}
-                    data-ad-slot="YOUR_LEADERBOARD_SLOT_ID"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"></ins>
-            </div>
-
-            <header className="lobby-header">
+        <div className="arcade-container">
+            <header className="arcade-header">
                 <h1>Booply</h1>
                 <p>Elite Math Arcade</p>
             </header>
 
-            <main className="game-grid">
-                <div className="game-card" onClick={() => navigate('/playing-cards')}>
-                    <h3>Playing Cards</h3>
-                    <p>Logic & Strategy</p>
-                </div>
-                {/* Add more game cards here */}
-            </main>
+            <div className="game-grid">
+                {games.map((game) => (
+                    <Link to={`/${game.id}`} key={game.id} className="game-card">
+                        <div className="card-content">
+                            <h3>{game.title}</h3>
+                            <p>{game.desc}</p>
+                        </div>
+                    </Link>
+                ))}
+            </div>
 
-            <footer className="lobby-footer">
-                <button onClick={() => navigate('/legal')}>Privacy & Terms</button>
-                <p>© 2025 Booply | Elite Math Arcade</p>
+            <footer className="arcade-footer">
+                <Link to="/legal">Privacy & Terms</Link>
             </footer>
         </div>
     );
-};
+}
 
 export default Home;
