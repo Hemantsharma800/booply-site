@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './home';
 import Legal from './legal';
 
-// 🎮 All Arcade Games (from /src/games/)
+// 🎮 All Arcade Games (Corrected Path: /src/games/)
+// Ensure these match your sidebar filenames exactly
 import ChessGame from './games/chess';
 import BooplyBlast from './games/booplyblast';
 import ColourGame from './games/colourgame';
@@ -23,15 +24,11 @@ function App() {
     <Router>
       <div className="app-main-container" style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
         <Routes>
-          {/* Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/legal" element={<Legal />} />
 
-          {/* ♟️ Chess (located in /src/games/chess.jsx) */}
+          {/* Game Routes */}
           <Route path="/chess" element={<ChessGame />} />
-          <Route path="/chess/:roomId" element={<ChessGame />} />
-
-          {/* 🎮 All Other Games */}
           <Route path="/booply-blast" element={<BooplyBlast />} />
           <Route path="/colour-game" element={<ColourGame />} />
           <Route path="/dino-game" element={<DinoGame />} />
@@ -43,7 +40,6 @@ function App() {
           <Route path="/puzzle-pop" element={<PuzzlePop />} />
           <Route path="/snake-game" element={<SnakeGame />} />
 
-          {/* Fallback to Home */}
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
