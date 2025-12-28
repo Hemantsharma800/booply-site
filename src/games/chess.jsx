@@ -1,110 +1,71 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './chess.css';
 
 function ChessGame() {
     const { roomId } = useParams();
-    const navigate = useNavigate();
     const [game, setGame] = useState(new Chess());
     const [gameMode, setGameMode] = useState(roomId ? 'multiplayer' : null);
-    const [moveStatus, setMoveStatus] = useState("Your Turn");
 
-    // 🤖 AI Opponent Logic
-    const makeBestMove = useCallback(() => {
+    // 🤖 AI Logic: Automatically moves for Black if in AI mode
+    const makeAiMove = useCallback(() => {
         if (game.isGameOver()) return;
+        const moves = game.moves();
+        if (moves.length === 0) return;
 
-        const possibleMoves = game.moves();
-        if (possibleMoves.length === 0) return;
-
-        // Simple AI: Picks a random valid move
-        // You can later integrate Stockfish worker for "Grandmaster" level
-        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-        const move = possibleMoves[randomIndex];
-
-        const gameCopy = new Chess(game.fen());
-        gameCopy.move(move);
-        setGame(gameCopy);
-        setMoveStatus("Your Turn");
+        const move = moves[Math.floor(Math.random() * moves.length)];
+        const newGame = new Chess(game.fen());
+        newGame.move(move);
+        setGame(newGame);
     }, [game]);
 
-    // Trigger AI move
     useEffect(() => {
-        if (gameMode === 'ai' && game.turn() === 'b' && !game.isGameOver()) {
-            setMoveStatus("AI is thinking...");
-            const timer = setTimeout(makeBestMove, 1000);
-            return () => clearTimeout(timer);
+        if (gameMode === 'ai' && game.turn() === 'b') {
+            setTimeout(makeAiMove, 600);
         }
-    }, [game, gameMode, makeBestMove]);
+    }, [game, gameMode, makeAiMove]);
 
+    // ♟️ This function enables movement for your pieces
     function onDrop(sourceSquare, targetSquare) {
         try {
-            const move = game.move({
-                from: sourceSquare,
-                to: targetSquare,
-                promotion: 'q', // Always promote to queen for simplicity
-            });
-
-            if (move === null) return false;
+            const move = game.move({ from: sourceSquare, to: targetSquare, promotion: 'q' });
+            if (move === null) return false; // Invalid move
 
             setGame(new Chess(game.fen()));
             return true;
-        } catch (e) {
-            return false;
-        }
+        } catch (e) { return false; }
     }
-
-    const startMultiplayer = () => {
-        const id = Math.random().toString(36).substring(7);
-        navigate(`/chess/${id}`);
-        setGameMode('multiplayer');
-    };
 
     return (
         <div className="chess-table-container">
-            <Link to="/" className="leave-btn">← LEAVE TABLE</Link>
+            <Link to="/" className="leave-btn">← EXIT ARCADE</Link>
 
             {!gameMode ? (
-                <div className="table-menu">
-                    <h1 className="neon-text-multi">ELITE CHESS</h1>
-                    <div className="menu-grid">
-                        <button onClick={() => setGameMode('ai')} className="neon-card blue">
-                            <span className="icon">🤖</span>
-                            <h3>VS AI</h3>
-                        </button>
-                        <button onClick={startMultiplayer} className="neon-card purple">
-                            <span className="icon">🌐</span>
-                            <h3>MULTIPLAYER</h3>
-                        </button>
+                <div className="selection-screen">
+                    <h1 className="neon-title">ELITE CHESS</h1>
+                    <div className="btn-group">
+                        <button onClick={() => setGameMode('ai')} className="neon-btn blue">PLAY AI</button>
+                        <button onClick={() => setGameMode('multiplayer')} className="neon-btn purple">MULTIPLAYER</button>
                     </div>
                 </div>
             ) : (
                 <div className="active-table">
-                    <div className="game-meta">
-                        <div className="badge">{gameMode === 'ai' ? '🤖 AI MODE' : `🌐 ROOM: ${roomId}`}</div>
-                        <div className="status-text">{game.isGameOver() ? "GAME OVER" : moveStatus}</div>
+                    <div className="table-header">
+                        <span className="badge">{gameMode.toUpperCase()}</span>
+                        <span className="turn-indicator">TURN: {game.turn() === 'w' ? 'WHITE' : 'BLACK'}</span>
                     </div>
 
-                    <div className="board-neon-glow">
+                    <div className="neon-board-wrapper">
                         <Chessboard
                             position={game.fen()}
                             onPieceDrop={onDrop}
-                            customDarkSquareStyle={{ backgroundColor: '#0a0a1a' }} // Deep space dark
-                            customLightSquareStyle={{ backgroundColor: '#1a1a4e' }} // Neon blue light
-                            customBoardStyle={{
-                                borderRadius: '4px',
-                                boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
-                            }}
+                            boardOrientation="white"
+                            customDarkSquareStyle={{ backgroundColor: '#0a0a1a' }}
+                            customLightSquareStyle={{ backgroundColor: '#1a1a4e' }}
                         />
                     </div>
-
-                    {gameMode === 'multiplayer' && (
-                        <div className="share-link">
-                            <p>Invite Opponent:</p>
-                            <input readOnly value={window.location.href} onClick={(e) => e.target.select()} />
-                        </div>
-                    )}
                 </div>
             )}
         </div>
