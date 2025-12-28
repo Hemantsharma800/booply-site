@@ -1,78 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import './chess.css';
 
 function ChessGame() {
-    const { roomId } = useParams();
-    const [gameMode, setGameMode] = useState(null); // 'ai', 'multiplayer', or null
-    const [status, setStatus] = useState("Waiting for selection...");
+    const { roomId } = useParams(); // Detects link like booply.vercel.app/chess/room-123
+    const navigate = useNavigate();
+    const [gameMode, setGameMode] = useState(roomId ? 'multiplayer' : null);
+    const [status, setStatus] = useState("Initializing Table...");
 
-    // If a roomId exists in the URL, automatically set mode to multiplayer
-    useEffect(() => {
-        if (roomId) {
-            setGameMode('multiplayer');
-            setStatus(`Joined Room: ${roomId}`);
-        }
-    }, [roomId]);
-
-    const handleSelection = (mode) => {
-        setGameMode(mode);
-        setStatus(mode === 'ai' ? "Playing against Stockfish AI" : "Searching for opponents...");
+    // Generate a random link for Multiplayer
+    const createRoom = () => {
+        const newRoomId = Math.random().toString(36).substring(7);
+        navigate(`/chess/${newRoomId}`);
+        setGameMode('multiplayer');
     };
 
     return (
-        <div className="chess-page-wrapper">
-            {/* 🔙 Neon Back Button */}
-            <Link to="/" className="neon-back-btn">
-                <span className="arrow">←</span> BACK TO ARCADE
-            </Link>
+        <div className="chess-table-env">
+            <Link to="/" className="exit-btn">← LEAVE TABLE</Link>
 
-            <div className="chess-main-content">
-                {!gameMode ? (
-                    /* 🏠 Mode Selection Screen */
-                    <div className="mode-selection-overlay">
-                        <h1 className="neon-title">ELITE CHESS</h1>
-                        <p className="neon-subtitle">Select your challenge level</p>
-
-                        <div className="button-group">
-                            <button onClick={() => handleSelection('ai')} className="mode-btn ai-btn">
-                                <div className="icon">🤖</div>
-                                <h3>PLAY VS AI</h3>
-                                <span>Challenge the computer</span>
-                            </button>
-
-                            <button onClick={() => handleSelection('multiplayer')} className="mode-btn pvp-btn">
-                                <div className="icon">🌐</div>
-                                <h3>MULTIPLAYER</h3>
-                                <span>Battle players online</span>
-                            </button>
-                        </div>
+            {!gameMode ? (
+                <div className="table-selection">
+                    <h1 className="neon-text">SELECT YOUR TABLE</h1>
+                    <div className="table-options">
+                        <button onClick={() => setGameMode('ai')} className="table-card ai">
+                            <span className="glow-icon">🤖</span>
+                            <h3>VS STOCKFISH AI</h3>
+                        </button>
+                        <button onClick={createRoom} className="table-card pvp">
+                            <span className="glow-icon">🌐</span>
+                            <h3>ONLINE MULTIPLAYER</h3>
+                            <p>Creates a shareable invite link</p>
+                        </button>
                     </div>
-                ) : (
-                    /* 🎮 Active Game Screen */
-                    <div className="active-game-container">
-                        <div className="game-info-panel">
-                            <div className="status-badge">{status}</div>
-                            <button onClick={() => setGameMode(null)} className="reset-btn">Change Mode</button>
-                        </div>
-
-                        <div className="chessboard-neon-frame">
-                            {/* This is where your chessboard logic (like react-chessboard) integrates */}
-                            <div id="board-placeholder">
-                                <div className="loading-spinner"></div>
-                                <p>INITIALIZING NEON BOARD...</p>
+                </div>
+            ) : (
+                <div className="active-game-env">
+                    <div className="game-sidebar">
+                        <div className="status-monitor">{roomId ? `ROOM: ${roomId}` : 'MODE: AI'}</div>
+                        {gameMode === 'multiplayer' && (
+                            <div className="invite-box">
+                                <p>Share this link to invite opponent:</p>
+                                <input readOnly value={window.location.href} onClick={(e) => e.target.select()} />
                             </div>
-                        </div>
+                        )}
+                    </div>
 
-                        <div className="move-history">
-                            <h4>MOVE LOG</h4>
-                            <div className="log-entries">
-                                <p>1. e4 ...</p>
+                    <div className="chess-table-surface">
+                        {/* The Chess Board Graphic Frame */}
+                        <div className="neon-board-frame">
+                            <div id="chessboard-visual">
+                                {/* Board graphics and pieces would be rendered here */}
+                                <div className="loading-board">SETTING UP PIECES...</div>
                             </div>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 }
