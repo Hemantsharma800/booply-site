@@ -1,99 +1,62 @@
-:root {
-    --bg: #050508;
-    --glass: rgba(255, 255, 255, 0.03);
-    --border: rgba(255, 255, 255, 0.08);
+.monetized-header {
+    padding: 40px 20px;
+    background: linear-gradient(180deg, rgba(0, 242, 255, 0.05) 0%, transparent 100%);
 }
 
-.booply-premium-root {
-    min-height: 100vh;
-    /* 🛠️ FORCES visibility */
-    background: var(--bg);
-    color: white;
-    padding: 0 5vw;
-    font-family: 'Outfit', sans-serif;
+.ad-leaderboard-container {
+    width: 100%;
+    max-width: 728px;
+    min-height: 90px;
+    /* Standard Leaderboard Height */
+    margin: 0 auto 40px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.glass-nav {
+.ad-attribution {
+    font-size: 9px;
+    color: #444;
+    text-align: center;
+    padding: 4px;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.ad-infeed-container {
+    width: 90%;
+    max-width: 970px;
+    margin: 60px auto;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.05);
+}
+
+.monetized-footer {
+    margin-top: 100px;
+    padding: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+
+.footer-nav {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2.5rem 0;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
 }
 
-.logo-glow {
-    font-size: 3rem;
-    font-weight: 900;
-    letter-spacing: -3px;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
-}
-
-/* 🎡 TOP PICKS */
-.picks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
-}
-
-.pick-card {
-    background: linear-gradient(135deg, var(--glass), #000);
-    border: 1px solid var(--accent);
-    border-radius: 40px;
-    padding: 3rem;
-    display: flex;
-    gap: 2rem;
-    align-items: center;
+.footer-nav button {
+    background: none;
+    border: none;
+    color: #888;
     cursor: pointer;
-    transition: 0.4s;
-}
-
-.pick-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 40px -10px var(--accent);
-}
-
-.pick-visual {
-    font-size: 5rem;
-    filter: drop-shadow(0 0 15px var(--accent));
-}
-
-/* 🎮 ELITE GRID */
-.elite-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    padding-bottom: 5rem;
-}
-
-.premium-tile {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: 25px;
-    padding: 2rem;
+    font-size: 13px;
     transition: 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    text-align: left;
 }
 
-.premium-tile:hover {
-    border-color: var(--theme);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.fade-in {
-    animation: fadeIn 0.8s ease-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.footer-nav button:hover {
+    color: #00f2ff;
 }
