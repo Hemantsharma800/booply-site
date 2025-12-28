@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Chess } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { Link, useParams } from 'react-router-dom';
@@ -6,12 +6,15 @@ import './chess.css';
 
 function ChessGame() {
     const { roomId } = useParams();
-    const [game, setGame] = useState(new Chess());
+    // useMemo prevents the engine from restarting on every click
+    const game = useMemo(() => new Chess(), []);
+    const [fen, setFen] = useState(game.fen());
     const [gameMode, setGameMode] = useState(roomId ? 'multiplayer' : null);
     const [timeLeft, setTimeLeft] = useState(30);
     const timerRef = useRef(null);
 
-    const resetTimer = useCallback(() => {
+    // 🕒 30s Dual Timer: Handles Turn Swiping
+    const startTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
         setTimeLeft(30);
         timerRef.current = setInterval(() => {
@@ -23,76 +26,83 @@ function ChessGame() {
                 return prev - 1;
             });
         }, 1000);
-    }, [game]);
+    }, []);
 
     const handleTimeout = () => {
         const moves = game.moves();
         if (moves.length > 0) {
             const move = moves[Math.floor(Math.random() * moves.length)];
-            makeAMove(move);
+            game.move(move);
+            setFen(game.fen());
         }
     };
 
-    // ⚙️ This function locks the piece in place and prevents "Snapping Back"
-    function makeAMove(move) {
-        const gameCopy = new Chess(game.fen());
-        const result = gameCopy.move(move);
-        if (result) {
-            setGame(gameCopy); // Lock the new state
-            resetTimer();
-            return true;
-        }
-        return false;
-    }
-
-    function onDrop(sourceSquare, targetSquare) {
-        const move = makeAMove({
-            from: sourceSquare,
-            to: targetSquare,
-            promotion: 'q',
-        });
-        return move;
-    }
-
-    // 🤖 AI Turn Logic
+    // 🤖 Professional AI Movement
     useEffect(() => {
         if (gameMode === 'ai' && game.turn() === 'b' && !game.isGameOver()) {
-            const moves = game.moves();
-            if (moves.length > 0) {
-                setTimeout(() => {
+            const aiDelay = setTimeout(() => {
+                const moves = game.moves();
+                if (moves.length > 0) {
                     const move = moves[Math.floor(Math.random() * moves.length)];
-                    makeAMove(move);
-                }, 1200); // AI thinks for 1.2s then moves
-            }
+                    game.move(move);
+                    setFen(game.fen());
+                    startTimer();
+                }
+            }, 1000);
+            return () => clearTimeout(aiDelay);
         }
-    }, [game.turn(), gameMode]);
+    }, [fen, gameMode, startTimer]);
 
     useEffect(() => {
-        resetTimer();
+        startTimer();
         return () => clearInterval(timerRef.current);
-    }, [game.turn(), resetTimer]);
+    }, [fen, startTimer]);
+
+    // ♟️ The Fix: Instant State Update to prevent Snapping
+    function onDrop(sourceSquare, targetSquare) {
+        try {
+            const move = game.move({
+                from: sourceSquare,
+                to: targetSquare,
+                promotion: 'q',
+            });
+
+            if (move === null) return false;
+
+            setFen(game.fen()); // Force immediate render
+            startTimer();
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
 
     return (
         <div className="chess-table-env">
             <Link to="/" className="exit-btn">← LEAVE TABLE</Link>
 
             {!gameMode ? (
-                <div className="table-menu">
-                    <h1 className="neon-text-main">ELITE CHESS</h1>
-                    <div className="mode-grid">
-                        <button onClick={() => setGameMode('ai')} className="neon-card cyan">VS AI</button>
-                        <button onClick={() => setGameMode('multiplayer')} className="neon-card pink">MULTIPLAYER</button>
+                <div className="table-selection">
+                    <h1 className="neon-text-pro">ELITE CHESS</h1>
+                    <div className="grid-options">
+                        <button onClick={() => setGameMode('ai')} className="neon-btn cyan">VS AI</button>
+                        <button onClick={() => setGameMode('multiplayer')} className="neon-btn purple">MULTIPLAYER</button>
                     </div>
                 </div>
             ) : (
-                <div className="board-active-env">
-                    <div className="hud-header">
-                        <div className={`neon-timer ${timeLeft < 10 ? 'critical' : ''}`}>{timeLeft}s</div>
-                        <div className="turn-label">{game.turn() === 'w' ? 'PLAYER TURN' : 'AI TURN'}</div>
+                <div className="pro-active-env">
+                    <div className="game-hud">
+                        <div className={`neon-timer-ring ${timeLeft < 10 ? 'alert' : ''}`}>
+                            {timeLeft}s
+                        </div>
+                        <div className="turn-indicator">
+                            {game.turn() === 'w' ? '⚪ PLAYER' : '⚫ AI'} TURN
+                        </div>
                     </div>
+
                     <div className="neon-board-frame">
                         <Chessboard
-                            position={game.fen()}
+                            position={fen}
                             onPieceDrop={onDrop}
                             boardOrientation="white"
                             customDarkSquareStyle={{ backgroundColor: '#0a0a1a' }}
