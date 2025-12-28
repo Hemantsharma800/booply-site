@@ -6,7 +6,7 @@ import Home from './home';
 import Legal from './legal';
 
 // ♟️ Elite Chess Module (Ensure the filename is exactly 'chess.jsx')
-import ChessGame from './chess';
+import ChessGame from './chess'
 
 // 🎮 All 11 Arcade Titles
 // IMPORTANT: Ensure these files exist in your src/games/ folder
@@ -21,7 +21,6 @@ import FractalFun from './games/fractalfun';
 import GeoGenius from './games/geogenius';
 import PatternPro from './games/patternpro';
 import AlgebraAce from './games/algebraace';
-import ChessGame from './games/chess';
 
 const AdSenseProvider = () => {
   const location = useLocation();
