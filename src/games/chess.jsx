@@ -11,7 +11,7 @@ function ChessGame() {
     const [timeLeft, setTimeLeft] = useState(30);
     const timerRef = useRef(null);
 
-    // 🕒 Timer Logic: Swipes turn after 30 seconds
+    // 🕒 Timer Logic: Automatic Turn Swipe
     const startTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
         setTimeLeft(30);
@@ -27,40 +27,41 @@ function ChessGame() {
     }, [game]);
 
     const handleTimeout = () => {
-        // If time runs out, we force a random move to "swipe" the turn
+        // Force turn swipe by making a random move if time runs out
         makeRandomMove();
     };
 
-    // 🤖 AI Engine: Plays for the Black side
     const makeRandomMove = useCallback(() => {
         if (game.isGameOver()) return;
-        const possibleMoves = game.moves();
-        if (possibleMoves.length === 0) return;
-
-        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-        const gameCopy = new Chess(game.fen());
-        gameCopy.move(possibleMoves[randomIndex]);
-        setGame(gameCopy);
+        const moves = game.moves();
+        if (moves.length === 0) return;
+        const move = moves[Math.floor(Math.random() * moves.length)];
+        const newGame = new Chess(game.fen());
+        newGame.move(move);
+        setGame(newGame);
         startTimer();
     }, [game, startTimer]);
 
-    // Trigger AI and Timer
+    // 🤖 AI Opponent for Black Turn
     useEffect(() => {
-        startTimer();
         if (gameMode === 'ai' && game.turn() === 'b') {
-            const aiDelay = setTimeout(makeRandomMove, 1000);
+            const aiDelay = setTimeout(makeRandomMove, 800);
             return () => clearTimeout(aiDelay);
         }
-        return () => clearInterval(timerRef.current);
-    }, [game.turn(), gameMode, makeRandomMove, startTimer]);
+    }, [game.turn(), gameMode, makeRandomMove]);
 
-    // ♟️ Movement Logic for "Soldiers"
+    useEffect(() => {
+        startTimer();
+        return () => clearInterval(timerRef.current);
+    }, [game.turn(), startTimer]);
+
+    // ♟️ Critical Movement Function: Enables "Soldier" Drag-and-Drop
     function onDrop(sourceSquare, targetSquare) {
         try {
             const move = game.move({
                 from: sourceSquare,
                 to: targetSquare,
-                promotion: 'q',
+                promotion: 'q', // Always promote to queen for simplicity
             });
 
             if (move === null) return false;
@@ -75,28 +76,28 @@ function ChessGame() {
 
     return (
         <div className="chess-table-container">
-            <Link to="/" className="leave-btn">← EXIT TABLE</Link>
+            <Link to="/" className="leave-btn">← LEAVE TABLE</Link>
 
             {!gameMode ? (
-                <div className="selection-overlay">
-                    <h1 className="neon-title">ELITE CHESS</h1>
-                    <div className="btn-row">
-                        <button onClick={() => setGameMode('ai')} className="neon-btn blue">VS COMPUTER</button>
+                <div className="mode-overlay">
+                    <h1 className="neon-text">ELITE CHESS</h1>
+                    <div className="selection-btns">
+                        <button onClick={() => setGameMode('ai')} className="neon-btn blue">VS AI</button>
                         <button onClick={() => setGameMode('multiplayer')} className="neon-btn purple">MULTIPLAYER</button>
                     </div>
                 </div>
             ) : (
                 <div className="active-table">
-                    <div className="game-hud">
-                        <div className={`timer-circle ${timeLeft < 10 ? 'warning' : ''}`}>
+                    <div className="hud-display">
+                        <div className={`timer-ring ${timeLeft < 10 ? 'urgent' : ''}`}>
                             {timeLeft}s
                         </div>
-                        <div className="turn-badge">
+                        <div className="turn-status">
                             {game.turn() === 'w' ? '⚪ WHITE TURN' : '⚫ BLACK TURN'}
                         </div>
                     </div>
 
-                    <div className="neon-board-frame">
+                    <div className="neon-table-frame">
                         <Chessboard
                             position={game.fen()}
                             onPieceDrop={onDrop}
