@@ -1,109 +1,89 @@
 :root {
-    --neon-cyan: #00f2ff;
-    --neon-pink: #ff00de;
-    --dark-bg: #050508;
-    --card-bg: rgba(255, 255, 255, 0.03);
+    --bg: #050508;
+    --glass: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
 }
 
-.booply-container {
+.booply-premium-root {
     min-height: 100vh;
     /* 🛠️ FORCES visibility */
-    background: var(--dark-bg);
+    background: var(--bg);
     color: white;
     padding: 0 5vw;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
-.home-nav {
+.glass-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 2.5rem 0;
 }
 
-.brand-logo {
-    font-size: 2.8rem;
-    letter-spacing: -2px;
+.logo-glow {
+    font-size: 3rem;
     font-weight: 900;
-    background: linear-gradient(to right, #fff, #555);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    letter-spacing: -3px;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
 }
 
-/* 🎮 DYNAMIC GRID: MacBook Pro Optimization */
-.arcade-grid {
+/* 🎡 TOP PICKS */
+.picks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.pick-card {
+    background: linear-gradient(135deg, var(--glass), #000);
+    border: 1px solid var(--accent);
+    border-radius: 40px;
+    padding: 3rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.pick-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 40px -10px var(--accent);
+}
+
+.pick-visual {
+    font-size: 5rem;
+    filter: drop-shadow(0 0 15px var(--accent));
+}
+
+/* 🎮 ELITE GRID */
+.elite-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
     padding-bottom: 5rem;
 }
 
-.game-tile {
-    background: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 35px;
-    padding: 3rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.game-tile:hover {
-    transform: translateY(-15px);
-    border-color: var(--theme);
-    box-shadow: 0 25px 50px -12px var(--theme);
-}
-
-.game-icon {
-    font-size: 4rem;
-    display: block;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 0 10px var(--theme));
-}
-
-/* 🛡️ PARENTAL DASHBOARD UI */
-.portal-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.portal-card {
-    background: #0f0f12;
-    padding: 2.5rem;
-    border-radius: 30px;
-    border: 1px solid #1a1a1e;
-}
-
-.portal-card.full-width {
-    grid-column: span 2;
-}
-
-.skill-bar {
-    background: #1a1a1e;
-    height: 35px;
-    border-radius: 50px;
-    margin: 15px 0;
-    overflow: hidden;
-}
-
-.skill-bar .fill {
-    background: var(--neon-cyan);
-    height: 100%;
+.premium-tile {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    padding: 2rem;
+    transition: 0.3s;
     display: flex;
     align-items: center;
-    padding-left: 20px;
-    font-weight: 900;
-    font-size: 0.85rem;
+    gap: 1rem;
+    text-align: left;
 }
 
-.skill-bar .fill.pink {
-    background: var(--neon-pink);
+.premium-tile:hover {
+    border-color: var(--theme);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .fade-in {
-    animation: fadeIn 0.6s ease-out;
+    animation: fadeIn 0.8s ease-out;
 }
 
 @keyframes fadeIn {
