@@ -10,18 +10,21 @@ function ChessGame() {
     return (
         <div className="chess-table-env">
             {!mode ? (
-                <div className="selection-menu">
-                    <h1 className="neon-title">elite chess</h1>
-                    <button onClick={() => setMode('ai')} className="neon-btn">vs computer</button>
+                <div className="start-menu">
+                    <h1 className="neon-text">booply chess</h1>
+                    <button onClick={() => setMode('ai')} className="neon-btn">play vs pro ai</button>
                 </div>
             ) : (
-                <div className="active-board">
-                    <div className={`timer ${timeLeft < 10 ? 'red-glow' : ''}`}>{timeLeft}s</div>
-                    <div className="neon-board-container">
+                <div className="game-container">
+                    <div className={`neon-timer ${timeLeft < 10 ? 'critical' : ''}`}>
+                        {timeLeft}s
+                    </div>
+                    <div className="neon-board-wrapper">
                         <Chessboard
                             position={fen}
                             onPieceDrop={onDrop}
-                            animationDuration={350}
+                            snapToCursor={false} // ensures piece snaps into the box, not cursor
+                            animationDuration={300} // smoothing the movement
                             customDarkSquareStyle={{ backgroundColor: '#0a0a1a' }}
                             customLightSquareStyle={{ backgroundColor: '#1a1a4e' }}
                         />
