@@ -11,15 +11,14 @@ function ChessGame() {
     const [timeLeft, setTimeLeft] = useState(30);
     const timerRef = useRef(null);
 
-    // 🕒 Master Timer: Handles 30s for BOTH players
+    // 🕒 30s Master Timer for both sides
     const resetTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
         setTimeLeft(30);
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => {
                 if (prev <= 1) {
-                    clearInterval(timerRef.current);
-                    handleTimeout(); // Swipes turn automatically
+                    handleTimeout();
                     return 30;
                 }
                 return prev - 1;
@@ -28,82 +27,74 @@ function ChessGame() {
     }, [game]);
 
     const handleTimeout = () => {
-        const moves = game.moves();
-        if (moves.length > 0) {
-            const move = moves[Math.floor(Math.random() * moves.length)];
-            safeGameMutate((g) => { g.move(move); });
-        }
+        // Force turn swipe if player or AI takes > 30s
+        makeRandomMove();
     };
 
-    // 🔩 Helper to update game state without snapping back
-    function safeGameMutate(modify) {
-        setGame((g) => {
-            const update = new Chess(g.fen());
-            modify(update);
-            return update;
-        });
-    }
-
-    // 🤖 AI Opponent: Also bound by the 30s rule
-    const makeAiMove = useCallback(() => {
-        if (game.isGameOver()) return;
+    const makeRandomMove = useCallback(() => {
         const moves = game.moves();
+        if (moves.length === 0) return;
         const move = moves[Math.floor(Math.random() * moves.length)];
-
-        // AI moves after a slight delay for realism, but within its 30s limit
-        setTimeout(() => {
-            safeGameMutate((g) => { g.move(move); });
-            resetTimer();
-        }, 1200);
+        const newGame = new Chess(game.fen());
+        newGame.move(move);
+        setGame(newGame);
+        resetTimer();
     }, [game, resetTimer]);
 
+    // 🤖 AI Logic: Automates Black Turn
     useEffect(() => {
-        if (gameMode === 'ai' && game.turn() === 'b') {
-            makeAiMove();
+        if (gameMode === 'ai' && game.turn() === 'b' && !game.isGameOver()) {
+            // AI responds within its 30s limit (with a 1.2s thinking delay for realism)
+            const aiDelay = setTimeout(makeRandomMove, 1200);
+            return () => clearTimeout(aiDelay);
         }
-    }, [game.turn(), gameMode, makeAiMove]);
+    }, [game.turn(), gameMode, makeRandomMove]);
 
     useEffect(() => {
         resetTimer();
         return () => clearInterval(timerRef.current);
     }, [game.turn(), resetTimer]);
 
-    // ♟️ Movement Function: Fixes the "Snap Back" error
+    // ♟️ Fix: Prevents pieces from snapping back
     function onDrop(sourceSquare, targetSquare) {
-        let move = null;
-        safeGameMutate((g) => {
-            move = g.move({
+        try {
+            const gameCopy = new Chess(game.fen());
+            const move = gameCopy.move({
                 from: sourceSquare,
                 to: targetSquare,
                 promotion: 'q',
             });
-        });
 
-        if (move === null) return false; // Invalid move
-        resetTimer();
-        return true;
+            if (move === null) return false;
+
+            setGame(gameCopy); // Lock the piece in its new position
+            resetTimer();
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     return (
-        <div className="chess-table-container">
-            <Link to="/" className="leave-btn">← LEAVE TABLE</Link>
+        <div className="chess-table-env">
+            <Link to="/" className="exit-btn">← LEAVE TABLE</Link>
 
             {!gameMode ? (
-                <div className="selection-overlay">
-                    <h1 className="neon-title">PRO CHESS</h1>
-                    <div className="btn-row">
-                        <button onClick={() => setGameMode('ai')} className="neon-btn blue">VS AI</button>
-                        <button onClick={() => setGameMode('multiplayer')} className="neon-btn purple">MULTIPLAYER</button>
+                <div className="table-menu">
+                    <h1 className="neon-text-main">ELITE CHESS</h1>
+                    <div className="mode-grid">
+                        <button onClick={() => setGameMode('ai')} className="neon-card cyan">VS AI</button>
+                        <button onClick={() => setGameMode('multiplayer')} className="neon-card pink">MULTIPLAYER</button>
                     </div>
                 </div>
             ) : (
-                <div className="active-table">
-                    <div className="hud">
-                        <div className={`timer-ring ${timeLeft < 10 ? 'urgent' : ''}`}>
+                <div className="board-active-env">
+                    <div className="hud-header">
+                        <div className={`neon-timer ${timeLeft < 10 ? 'critical' : ''}`}>
                             {timeLeft}s
                         </div>
-                        <div className="turn-badge">
-                            {game.turn() === 'w' ? '⚪ PLAYER TURN' : '⚫ AI TURN'}
+                        <div className="turn-label">
+                            {game.turn() === 'w' ? 'PLAYER TURN' : 'AI TURN'}
                         </div>
                     </div>
 
