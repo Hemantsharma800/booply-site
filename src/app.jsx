@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-// 🛠️ RELATIVE PATHS: Necessary because app.jsx is already in 'src'
-import home from './home.jsx';
-import gamemanager from './gamemanager.jsx';
+// 🛠️ FIXED: Removed '/src/' because we are already in the src folder
+import Home from './home.jsx';
+import GameManager from './gamemanager.jsx';
+import './app.css';
 
 const booply_games = [
   { id: 'g1', name: 'booply blast', icon: '🍭', color: '#ff00de', cat: 'puzzle' },
-  { id: 'g2', name: 'safari study', icon: '🦁', color: '#39ff14', cat: 'study' },
+  { id: 'g2', name: 'safari study', icon: '🦁', color: '#39ff14', cat: 'logic' },
   { id: 'g3', name: 'ai lab', icon: '🤖', color: '#00f2ff', cat: 'lab' },
   { id: 'g4', name: 'fighter game', icon: '🥷', color: '#ff4757', cat: 'action' },
   { id: 'g5', name: 'colour game', icon: '🎨', color: '#ffd700', cat: 'logic' },
@@ -17,28 +18,24 @@ const booply_games = [
 ];
 
 export default function app() {
-  const [view, setview] = useState('lobby');
+  const [view, setview] = useState('lobby'); // This state controls the Home Page visibility
   const [activegameid, setactivegameid] = useState(null);
-
-  // 🍪 PERSISTENCE: Starting at 278 stars
   const [stars, setstars] = useState(() => Number(localStorage.getItem('stars')) || 278);
-  const [dailyscore, setdailyscore] = useState(0);
 
   useEffect(() => {
     localStorage.setItem('stars', stars);
   }, [stars]);
 
   return (
-    <div className="booply-platform-root">
+    <div className="booply-root">
       {view === 'lobby' ? (
-        <home
+        <Home
           stars={stars}
-          dailyscore={dailyscore}
           gamelist={booply_games}
           onlaunchgame={(id) => { setactivegameid(id); setview('game'); }}
         />
       ) : (
-        <gamemanager
+        <GameManager
           activegameid={activegameid}
           onexit={() => setview('lobby')}
           onscoreupdate={(s) => setstars(prev => prev + s)}
