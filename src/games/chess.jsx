@@ -9,71 +9,96 @@ function ChessGame() {
     const navigate = useNavigate();
     const [game, setGame] = useState(new Chess());
     const [gameMode, setGameMode] = useState(roomId ? 'multiplayer' : null);
+    const [moveStatus, setMoveStatus] = useState("Your Turn");
 
-    // 🤖 Basic AI Logic (Random Move for now)
-    const makeRandomMove = useCallback(() => {
+    // 🤖 AI Opponent Logic
+    const makeBestMove = useCallback(() => {
+        if (game.isGameOver()) return;
+
         const possibleMoves = game.moves();
-        if (game.isGameOver() || game.isDraw() || possibleMoves.length === 0) return;
+        if (possibleMoves.length === 0) return;
+
+        // Simple AI: Picks a random valid move
+        // You can later integrate Stockfish worker for "Grandmaster" level
         const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-        const newGame = new Chess(game.fen());
-        newGame.move(possibleMoves[randomIndex]);
-        setGame(newGame);
+        const move = possibleMoves[randomIndex];
+
+        const gameCopy = new Chess(game.fen());
+        gameCopy.move(move);
+        setGame(gameCopy);
+        setMoveStatus("Your Turn");
     }, [game]);
 
-    // Trigger AI move if it's black's turn and mode is AI
+    // Trigger AI move
     useEffect(() => {
-        if (gameMode === 'ai' && game.turn() === 'b') {
-            setTimeout(makeRandomMove, 500);
+        if (gameMode === 'ai' && game.turn() === 'b' && !game.isGameOver()) {
+            setMoveStatus("AI is thinking...");
+            const timer = setTimeout(makeBestMove, 1000);
+            return () => clearTimeout(timer);
         }
-    }, [game, gameMode, makeRandomMove]);
+    }, [game, gameMode, makeBestMove]);
 
     function onDrop(sourceSquare, targetSquare) {
         try {
-            const move = game.move({ from: sourceSquare, to: targetSquare, promotion: 'q' });
+            const move = game.move({
+                from: sourceSquare,
+                to: targetSquare,
+                promotion: 'q', // Always promote to queen for simplicity
+            });
+
             if (move === null) return false;
+
             setGame(new Chess(game.fen()));
             return true;
-        } catch (e) { return false; }
+        } catch (e) {
+            return false;
+        }
     }
 
-    const createRoom = () => {
+    const startMultiplayer = () => {
         const id = Math.random().toString(36).substring(7);
         navigate(`/chess/${id}`);
         setGameMode('multiplayer');
     };
 
     return (
-        <div className="chess-table-env">
-            <Link to="/" className="exit-btn">← LEAVE TABLE</Link>
+        <div className="chess-table-container">
+            <Link to="/" className="leave-btn">← LEAVE TABLE</Link>
 
             {!gameMode ? (
-                <div className="table-selection">
-                    <h1 className="neon-title">ELITE CHESS</h1>
-                    <div className="button-group">
-                        <button onClick={() => setGameMode('ai')} className="mode-btn ai">VS COMPUTER</button>
-                        <button onClick={createRoom} className="mode-btn pvp">MULTIPLAYER</button>
+                <div className="table-menu">
+                    <h1 className="neon-text-multi">ELITE CHESS</h1>
+                    <div className="menu-grid">
+                        <button onClick={() => setGameMode('ai')} className="neon-card blue">
+                            <span className="icon">🤖</span>
+                            <h3>VS AI</h3>
+                        </button>
+                        <button onClick={startMultiplayer} className="neon-card purple">
+                            <span className="icon">🌐</span>
+                            <h3>MULTIPLAYER</h3>
+                        </button>
                     </div>
                 </div>
             ) : (
-                <div className="game-layout">
-                    <div className="game-status-bar">
-                        <span>MODE: {gameMode === 'ai' ? 'AI' : `ROOM ${roomId}`}</span>
-                        <span>TURN: {game.turn() === 'w' ? 'White' : 'Black'}</span>
+                <div className="active-table">
+                    <div className="game-meta">
+                        <div className="badge">{gameMode === 'ai' ? '🤖 AI MODE' : `🌐 ROOM: ${roomId}`}</div>
+                        <div className="status-text">{game.isGameOver() ? "GAME OVER" : moveStatus}</div>
                     </div>
 
-                    <div className="neon-board-container">
+                    <div className="board-neon-glow">
                         <Chessboard
                             position={game.fen()}
                             onPieceDrop={onDrop}
                             boardOrientation="white"
-                            customDarkSquareStyle={{ backgroundColor: '#050508' }}
-                            customLightSquareStyle={{ backgroundColor: '#1a1a2e' }}
+                            customDarkSquareStyle={{ backgroundColor: '#1a1a2e' }}
+                            customLightSquareStyle={{ backgroundColor: '#2a2a4e' }}
                         />
                     </div>
 
                     {gameMode === 'multiplayer' && (
-                        <div className="invite-section">
-                            <p>Share Link to Play:</p>
+                        <div className="share-link">
+                            <p>Invite Opponent:</p>
                             <input readOnly value={window.location.href} onClick={(e) => e.target.select()} />
                         </div>
                     )}
