@@ -23,15 +23,10 @@ function App() {
     <Router>
       <div className="app-main-container" style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
         <Routes>
-          {/* Main Entry Points */}
           <Route path="/" element={<Home />} />
           <Route path="/legal" element={<Legal />} />
-
-          {/* ♟️ Chess with Multiplayer Room Support */}
           <Route path="/chess" element={<ChessGame />} />
           <Route path="/chess/:roomId" element={<ChessGame />} />
-
-          {/* 🎮 Arcade Games */}
           <Route path="/booply-blast" element={<BooplyBlast />} />
           <Route path="/colour-game" element={<ColourGame />} />
           <Route path="/dino-game" element={<DinoGame />} />
@@ -42,7 +37,6 @@ function App() {
           <Route path="/playing-cards" element={<PlayingCards />} />
           <Route path="/puzzle-pop" element={<PuzzlePop />} />
           <Route path="/snake-game" element={<SnakeGame />} />
-
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
