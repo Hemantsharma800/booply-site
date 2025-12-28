@@ -1,46 +1,50 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './home.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-const games = [
-  { id: 'chess', title: 'Elite Chess', desc: 'Strategy' },
-  { id: 'booply-blast', title: 'Booply Blast', desc: 'Arcade' },
-  { id: 'colour-game', title: 'Colour Match', desc: 'Logic' },
-  { id: 'dino-game', title: 'Dino Run', desc: 'Action' },
-  { id: 'fighter-game', title: 'Street Fighter', desc: 'Combat' },
-  { id: 'geo-explorer', title: 'Geo Explorer', desc: '3D World' },
-  { id: 'kitchen-class', title: 'Kitchen Rush', desc: 'Cooking' },
-  { id: 'nitro-dash', title: 'Nitro Dash', desc: 'Racing' },
-  { id: 'playing-cards', title: 'Playing Cards', desc: 'Cards' },
-  { id: 'puzzle-pop', title: 'Puzzle Pop', desc: 'Puzzles' },
-  { id: 'snake-game', title: 'Classic Snake', desc: 'Retro' }
-];
+// Layouts
+import Home from './home';
+import Legal from './legal';
 
-function Home() {
+// Existing Games (Paths from /src/games/)
+import ChessGame from './games/chess';
+import BooplyBlast from './games/booplyblast';
+import ColourGame from './games/colourgame';
+import DinoGame from './games/dinogame';
+import FighterGame from './games/fightergame';
+import GeoExplorer from './games/geoexplorer';
+import KitchenClass from './games/kitchenclass';
+import NitroDash from './games/nitrodash';
+import PlayingCards from './games/playingcards';
+import PuzzlePop from './games/puzzlepop';
+import SnakeGame from './games/snakegame';
+
+function App() {
   return (
-    <div className="arcade-container">
-      <header className="arcade-header">
-        <h1>Booply</h1>
-        <p>Elite Math Arcade</p>
-      </header>
+    <Router>
+      <div style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/legal" element={<Legal />} />
 
-      <div className="game-grid">
-        {games.map((game) => (
-          <Link to={`/${game.id}`} key={game.id} className="game-card">
-            <div className="card-content">
-              <h3>{game.title}</h3>
-              <span>{game.desc}</span>
-            </div>
-          </Link>
-        ))}
+          {/* Routes matching existing files */}
+          <Route path="/chess" element={<ChessGame />} />
+          <Route path="/chess/:roomId" element={<ChessGame />} />
+          <Route path="/booply-blast" element={<BooplyBlast />} />
+          <Route path="/colour-game" element={<ColourGame />} />
+          <Route path="/dino-game" element={<DinoGame />} />
+          <Route path="/fighter-game" element={<FighterGame />} />
+          <Route path="/geo-explorer" element={<GeoExplorer />} />
+          <Route path="/kitchen-class" element={<KitchenClass />} />
+          <Route path="/nitro-dash" element={<NitroDash />} />
+          <Route path="/playing-cards" element={<PlayingCards />} />
+          <Route path="/puzzle-pop" element={<PuzzlePop />} />
+          <Route path="/snake-game" element={<SnakeGame />} />
+
+          <Route path="*" element={<Home />} />
+        </Routes>
       </div>
-
-      <footer className="arcade-footer">
-        <Link to="/legal">Privacy & Terms</Link>
-        <p>© 2025 Booply | Elite Math Arcade</p>
-      </footer>
-    </div>
+    </Router>
   );
 }
 
-export default Home;
+export default App;
