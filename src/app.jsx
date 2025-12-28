@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // 🏗️ Core Layout Components (from /src)
 import Home from './home';
 import Legal from './legal';
-import MainEntry from './main'; // Added to ensure main entry point is recognized
 
 // 🎮 All Arcade Games (from /src/games/)
 import ChessGame from './games/chess';
@@ -19,32 +18,16 @@ import PlayingCards from './games/playingcards';
 import PuzzlePop from './games/puzzlepop';
 import SnakeGame from './games/snakegame';
 
-// 💰 AdSense Refresh logic
-const AdSenseProvider = () => {
-  const location = useLocation();
-  useEffect(() => {
-    try {
-      if (window.adsbygoogle) {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      }
-    } catch (e) {
-      console.log("AdSense waiting for content...");
-    }
-  }, [location]);
-  return null;
-};
-
 function App() {
   return (
     <Router>
-      <AdSenseProvider />
       <div className="app-main-container" style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
         <Routes>
           {/* Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/legal" element={<Legal />} />
 
-          {/* ♟️ Chess (Moved to /games/ path) */}
+          {/* ♟️ Chess (located in /src/games/chess.jsx) */}
           <Route path="/chess" element={<ChessGame />} />
           <Route path="/chess/:roomId" element={<ChessGame />} />
 
@@ -60,7 +43,7 @@ function App() {
           <Route path="/puzzle-pop" element={<PuzzlePop />} />
           <Route path="/snake-game" element={<SnakeGame />} />
 
-          {/* Fallback */}
+          {/* Fallback to Home */}
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
