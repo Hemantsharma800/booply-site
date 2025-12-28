@@ -1,12 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// 🏗️ Core Layout Components (from /src)
+// 🏗️ Core Layout (from /src)
 import Home from './home';
 import Legal from './legal';
 
-// 🎮 All Arcade Games (Corrected Path: /src/games/)
-// Ensure these match your sidebar filenames exactly
+// 🎮 Games Folder (Corrected Paths: /src/games/)
 import ChessGame from './games/chess';
 import BooplyBlast from './games/booplyblast';
 import ColourGame from './games/colourgame';
@@ -24,11 +23,15 @@ function App() {
     <Router>
       <div className="app-main-container" style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
         <Routes>
+          {/* Main Entry Points */}
           <Route path="/" element={<Home />} />
           <Route path="/legal" element={<Legal />} />
 
-          {/* Game Routes */}
+          {/* ♟️ Chess with Multiplayer Room Support */}
           <Route path="/chess" element={<ChessGame />} />
+          <Route path="/chess/:roomId" element={<ChessGame />} />
+
+          {/* 🎮 Arcade Games */}
           <Route path="/booply-blast" element={<BooplyBlast />} />
           <Route path="/colour-game" element={<ColourGame />} />
           <Route path="/dino-game" element={<DinoGame />} />
