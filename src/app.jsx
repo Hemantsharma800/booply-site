@@ -1,17 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-/**
- * 🏗️ CORE LAYOUT COMPONENTS
- * Located in the root of the /src folder
- */
+// Core Layout
 import Home from './home';
 import Legal from './legal';
 
-/**
- * 🎮 ARCADE GAMES
- * All these files must reside in /src/games/ exactly as named
- */
+// Games (Corrected Path: /src/games/)
 import ChessGame from './games/chess';
 import BooplyBlast from './games/booplyblast';
 import ColourGame from './games/colourgame';
@@ -27,17 +21,12 @@ import SnakeGame from './games/snakegame';
 function App() {
   return (
     <Router>
-      <div className="booply-app-root" style={{ backgroundColor: '#050508', minHeight: '100vh', color: 'white' }}>
+      <div style={{ backgroundColor: '#050508', minHeight: '100vh', color: 'white' }}>
         <Routes>
-          {/* 🏠 Main Landing Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/legal" element={<Legal />} />
-
-          {/* ♟️ Chess: Standard & Multiplayer Room Links */}
           <Route path="/chess" element={<ChessGame />} />
           <Route path="/chess/:roomId" element={<ChessGame />} />
-
-          {/* 🎮 Integrated Arcade Titles */}
           <Route path="/booply-blast" element={<BooplyBlast />} />
           <Route path="/colour-game" element={<ColourGame />} />
           <Route path="/dino-game" element={<DinoGame />} />
@@ -48,8 +37,6 @@ function App() {
           <Route path="/playing-cards" element={<PlayingCards />} />
           <Route path="/puzzle-pop" element={<PuzzlePop />} />
           <Route path="/snake-game" element={<SnakeGame />} />
-
-          {/* 🔄 Safety Redirect: Always return to Home on broken links */}
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
