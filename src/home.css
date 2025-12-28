@@ -1,28 +1,119 @@
-.lobby-vibe {
-    min-height: 100vh;
-    /* 🛠️ FORCES visibility on your MacBook screen */
-    background: #08080a;
-    color: white;
-    padding: 2rem;
+:root {
+    --neon-cyan: #00f2ff;
+    --neon-pink: #ff00de;
+    --dark-bg: #050508;
+    --card-bg: rgba(255, 255, 255, 0.03);
 }
 
-.game-grid {
+.booply-container {
+    min-height: 100vh;
+    /* 🛠️ FORCES visibility */
+    background: var(--dark-bg);
+    color: white;
+    padding: 0 5vw;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.home-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5rem 0;
+}
+
+.brand-logo {
+    font-size: 2.8rem;
+    letter-spacing: -2px;
+    font-weight: 900;
+    background: linear-gradient(to right, #fff, #555);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 🎮 DYNAMIC GRID: MacBook Pro Optimization */
+.arcade-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    gap: 2rem;
+    padding-bottom: 5rem;
+}
+
+.game-tile {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 35px;
+    padding: 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-tile:hover {
+    transform: translateY(-15px);
+    border-color: var(--theme);
+    box-shadow: 0 25px 50px -12px var(--theme);
+}
+
+.game-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px var(--theme));
+}
+
+/* 🛡️ PARENTAL DASHBOARD UI */
+.portal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
     margin-top: 2rem;
 }
 
-.tile {
-    background: #151518;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 3rem;
+.portal-card {
+    background: #0f0f12;
+    padding: 2.5rem;
     border-radius: 30px;
-    transition: 0.3s;
+    border: 1px solid #1a1a1e;
 }
 
-.tile:hover {
-    transform: translateY(-10px);
-    border-color: var(--color);
-    box-shadow: 0 10px 30px var(--color);
+.portal-card.full-width {
+    grid-column: span 2;
+}
+
+.skill-bar {
+    background: #1a1a1e;
+    height: 35px;
+    border-radius: 50px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.skill-bar .fill {
+    background: var(--neon-cyan);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    font-weight: 900;
+    font-size: 0.85rem;
+}
+
+.skill-bar .fill.pink {
+    background: var(--neon-pink);
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
