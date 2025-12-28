@@ -1,0 +1,57 @@
+.legal-container {
+    min-height: 100vh;
+    /* 🛠️ FIX: Prevents blank screen on MacBook Pro */
+    background: #050508;
+    color: #e0e0e0;
+    padding: 3rem 10vw;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+.legal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+}
+
+.logo-legal {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    color: #fff;
+}
+
+.legal-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.legal-section {
+    margin-bottom: 3rem;
+}
+
+.legal-section h2,
+.legal-section h3 {
+    color: #00f2ff;
+    /* Matches your elite theme */
+    margin-bottom: 1rem;
+    text-transform: lowercase;
+}
+
+.btn-back {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background: #00f2ff;
+    color: #000;
+}

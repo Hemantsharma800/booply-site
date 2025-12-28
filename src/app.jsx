@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 // 🛠️ FIXED: Removed '/src/' because we are already in the src folder
 import Home from './home.jsx';
 import GameManager from './gamemanager.jsx';
+import copyrights from './copyrights.jsx';
 import './app.css';
+import { viewZToLogarithmicDepth } from 'three/tsl';
 
 const booply_games = [
   { id: 'g1', name: 'booply blast', icon: '🍭', color: '#ff00de', cat: 'puzzle' },
@@ -22,6 +24,7 @@ export default function app() {
   const [view, setview] = useState('lobby'); // This state controls the Home Page visibility
   const [activegameid, setactivegameid] = useState(null);
   const [stars, setstars] = useState(() => Number(localStorage.getItem('stars')) || 278);
+  view === 'copyrights'
 
   useEffect(() => {
     localStorage.setItem('stars', stars);
