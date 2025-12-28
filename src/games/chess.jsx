@@ -90,9 +90,12 @@ function ChessGame() {
                         <Chessboard
                             position={game.fen()}
                             onPieceDrop={onDrop}
-                            boardOrientation="white"
-                            customDarkSquareStyle={{ backgroundColor: '#1a1a2e' }}
-                            customLightSquareStyle={{ backgroundColor: '#2a2a4e' }}
+                            customDarkSquareStyle={{ backgroundColor: '#0a0a1a' }} // Deep space dark
+                            customLightSquareStyle={{ backgroundColor: '#1a1a4e' }} // Neon blue light
+                            customBoardStyle={{
+                                borderRadius: '4px',
+                                boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
+                            }}
                         />
                     </div>
 
