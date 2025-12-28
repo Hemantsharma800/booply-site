@@ -1,107 +1,102 @@
-.home-layout-root {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 4vw;
-    color: #fff;
+:root {
+    --neon-cyan: #00f2ff;
+    --neon-pink: #ff00de;
+    --dark-bg: #050508;
 }
 
-.home-nav-bar {
+.booply-container {
+    min-height: 100vh;
+    /* 🛠️ FIX: Forces content to show even if body is bugged */
+    background: var(--dark-bg);
+    color: white;
+    padding: 0 5vw;
+    font-family: 'Inter', sans-serif;
+}
+
+.home-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 3rem 0;
+    padding: 2rem 0;
 }
 
-.logo-text {
-    font-size: 3.5rem;
+.brand-logo {
+    font-size: 2.5rem;
+    letter-spacing: -2px;
     font-weight: 900;
-    letter-spacing: -3px;
 }
 
-.hud-display {
-    display: flex;
-    gap: 1rem;
+/* 🎮 GRID FIX: Prevents overlap on MacBook Pro */
+.arcade-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding-bottom: 4rem;
 }
 
-.hud-box {
+.game-tile {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 25px;
+    border-radius: 30px;
+    padding: 2.5rem;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-tile:hover {
+    transform: translateY(-12px);
+    border-color: var(--theme);
+    box-shadow: 0 20px 40px -10px var(--theme);
+}
+
+/* 🛡️ PARENTAL PORTAL STYLING */
+.portal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.portal-card {
+    background: #111;
+    padding: 2rem;
+    border-radius: 24px;
+    border: 1px solid #222;
+}
+
+.portal-card.full-width {
+    grid-column: span 2;
+}
+
+.skill-bar {
+    background: #222;
+    height: 30px;
     border-radius: 50px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.skill-bar .fill {
+    background: var(--neon-cyan);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    font-size: 0.8rem;
     font-weight: 900;
 }
 
-.hud-box.daily {
-    border-color: #00f2ff;
+.fade-in {
+    animation: fadeIn 0.8s ease-out;
 }
 
-.hud-box.daily span {
-    color: #00f2ff;
-}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 
-.hud-box.stars {
-    color: #ffd700;
-    border-color: #ffd700;
-}
-
-.btn-rate {
-    background: none;
-    border: 1px solid #ffd700;
-    color: #ffd700;
-    padding: 10px 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 800;
-}
-
-/* 🎮 DYNAMIC GRID: Fixes MacBook Pro overlap */
-.arcade-grid-system {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2.5rem;
-    padding-bottom: 6rem;
-}
-
-.arcade-tile {
-    background: #080808;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 3.5rem;
-    border-radius: 40px;
-    text-align: center;
-    transition: 0.4s;
-}
-
-.arcade-tile:hover {
-    transform: translateY(-15px);
-    border-color: var(--theme);
-    box-shadow: 0 0 40px var(--theme);
-}
-
-.tile-icon {
-    font-size: 4.5rem;
-    display: block;
-    margin-bottom: 1.5rem;
-    filter: drop-shadow(0 0 10px var(--theme));
-}
-
-.review-strip {
-    display: flex;
-    justify-content: center;
-    gap: 4rem;
-    opacity: 0.4;
-    padding: 4rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.home-footer {
-    text-align: center;
-    padding-bottom: 5rem;
-}
-
-.privacy-toggle {
-    background: none;
-    border: none;
-    color: #4b5563;
-    text-decoration: underline;
-    cursor: pointer;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
