@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// 🏗️ Core Layout (from /src)
+// Layouts
 import Home from './home';
 import Legal from './legal';
 
-// 🎮 Games Folder (Corrected Paths: /src/games/)
+// Games (Path: /src/games/)
 import ChessGame from './games/chess';
 import BooplyBlast from './games/booplyblast';
 import ColourGame from './games/colourgame';
@@ -21,7 +21,7 @@ import SnakeGame from './games/snakegame';
 function App() {
   return (
     <Router>
-      <div className="app-main-container" style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
+      <div style={{ backgroundColor: '#050508', minHeight: '100vh' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/legal" element={<Legal />} />
