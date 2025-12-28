@@ -1,42 +1,42 @@
 .chess-table-env {
-    background: radial-gradient(circle at center, #1a1a2e 0%, #050508 100%);
-    height: 100vh;
+    background: #050508;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    overflow: hidden;
+    justify-content: center;
+    color: #00d2ff;
 }
 
-.neon-board-frame {
-    width: 650px;
-    height: 650px;
-    background: #111;
-    border: 8px solid #00d2ff;
-    border-radius: 10px;
-    box-shadow: 0 0 50px rgba(0, 210, 255, 0.4), inset 0 0 20px #00d2ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#chessboard-visual {
+.neon-board-container {
     width: 600px;
+    /* Large professional size */
     height: 600px;
-    background-image: repeating-conic-gradient(#1a1a2e 0% 25%, #050508 0% 50%);
-    background-size: 150px 150px;
-    border: 2px solid #00d2ff;
+    border: 5px solid #00d2ff;
+    box-shadow: 0 0 40px rgba(0, 210, 255, 0.5);
+    background: #000;
 }
 
-.table-card {
-    background: #000;
-    border: 2px solid #333;
-    padding: 50px;
-    border-radius: 30px;
+.mode-btn {
+    padding: 20px 40px;
+    background: transparent;
+    border: 2px solid #00d2ff;
+    color: white;
+    margin: 10px;
     cursor: pointer;
+    border-radius: 12px;
     transition: 0.3s;
 }
 
-.table-card:hover {
-    border-color: #00d2ff;
-    box-shadow: 0 0 30px #00d2ff;
+.mode-btn:hover {
+    background: #00d2ff;
+    color: black;
+    box-shadow: 0 0 20px #00d2ff;
+}
+
+.game-status-bar {
+    margin-bottom: 20px;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    gap: 40px;
 }
