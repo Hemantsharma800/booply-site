@@ -11,16 +11,16 @@ const games = {
     'g7': lazy(() => import('./games/kitchenclass.jsx')),
     'g8': lazy(() => import('./games/nitrodash.jsx')),
     'g9': lazy(() => import('./games/puzzlepop.jsx')),
-    'g10': lazy(() => import('./games/snakegame.jsx'))
-    'g11': lazy(() => import('./games/playingcards.jsx'))
+    'g10': lazy(() => import('./games/snakegame.jsx')),
+    'g11': lazy(() => import('./games/playingcards.jsx')) // 🛠️ NEW INTEGRATION
 };
 
 const gamemanager = ({ activegameid, onexit, onscoreupdate }) => {
     const ActiveGame = games[activegameid];
     return (
-        <div className="fullscreen-stage" style={{ background: '#000', minHeight: '100vh' }}>
-            <Suspense fallback={<h2 style={{ color: '#00f2ff', padding: '50px' }}>BOOTING ARCADE...</h2>}>
-                {ActiveGame ? <ActiveGame onExit={onexit} onCorrectClick={() => onscoreupdate(5)} /> : <h2>Error</h2>}
+        <div className="fullscreen-stage">
+            <Suspense fallback={<div className="loader">BOOTING...</div>}>
+                {ActiveGame ? <ActiveGame onExit={onexit} onCorrectClick={() => onscoreupdate(5)} /> : <h2>Game Not Found</h2>}
             </Suspense>
         </div>
     );

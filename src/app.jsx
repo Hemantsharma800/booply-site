@@ -15,7 +15,7 @@ const booply_games = [
   { id: 'g8', name: 'nitro dash', icon: '🏎️', color: '#00d4ff', cat: 'racing' },
   { id: 'g9', name: 'puzzle pop', icon: '🧩', color: '#9c88ff', cat: 'puzzle' },
   { id: 'g10', name: 'snake game', icon: '🐍', color: '#fbc531', cat: 'classic' },
-  { id: 'g11', name: 'space invaders', icon: '👾', color: '#00f2ff', cat: 'arcade' }
+  { id: 'g11', name: 'playing cards', icon: '🃏', color: '#ff4757', cat: 'math' }
 ];
 
 export default function app() {
