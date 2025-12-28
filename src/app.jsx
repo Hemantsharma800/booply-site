@@ -24,7 +24,7 @@ export default function app() {
   const [view, setview] = useState('lobby'); // This state controls the Home Page visibility
   const [activegameid, setactivegameid] = useState(null);
   const [stars, setstars] = useState(() => Number(localStorage.getItem('stars')) || 278);
-  view === 'copyrights'
+  view === 'copyrights' && setview('copyrights');
 
   useEffect(() => {
     localStorage.setItem('stars', stars);
