@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Chessboard } from 'react-chessboard';
 import { useChessLogic } from './chesslogic';
+import { Link } from 'react-router-dom';
 import './chess.css';
 
 function ChessGame() {
@@ -9,22 +10,23 @@ function ChessGame() {
 
     return (
         <div className="chess-table-env">
+            <Link to="/" className="back-btn">← exit</Link>
+
             {!mode ? (
-                <div className="start-menu">
-                    <h1 className="neon-text">booply chess</h1>
-                    <button onClick={() => setMode('ai')} className="neon-btn">play vs pro ai</button>
+                <div className="menu-overlay">
+                    <h1 className="neon-title">booply pro chess</h1>
+                    <button onClick={() => setMode('ai')} className="neon-btn">play vs ai</button>
                 </div>
             ) : (
-                <div className="game-container">
-                    <div className={`neon-timer ${timeLeft < 10 ? 'critical' : ''}`}>
+                <div className="game-layout">
+                    <div className={`timer-ring ${timeLeft < 10 ? 'urgent' : ''}`}>
                         {timeLeft}s
                     </div>
-                    <div className="neon-board-wrapper">
+                    <div className="neon-board-container">
                         <Chessboard
                             position={fen}
                             onPieceDrop={onDrop}
-                            snapToCursor={false} // ensures piece snaps into the box, not cursor
-                            animationDuration={300} // smoothing the movement
+                            animationDuration={300} // makes piece movement smooth
                             customDarkSquareStyle={{ backgroundColor: '#0a0a1a' }}
                             customLightSquareStyle={{ backgroundColor: '#1a1a4e' }}
                         />
