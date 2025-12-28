@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Core Layout
+// Layouts
 import Home from './home';
 import Legal from './legal';
 
-// Games (Corrected Path: /src/games/)
+// Games (Correct Path: /src/games/)
 import ChessGame from './games/chess';
 import BooplyBlast from './games/booplyblast';
 import ColourGame from './games/colourgame';

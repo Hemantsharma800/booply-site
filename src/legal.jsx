@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './legal.css';
 
 const Legal = () => {
     const [view, setView] = useState('privacy');
