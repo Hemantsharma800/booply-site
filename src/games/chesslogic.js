@@ -2,23 +2,18 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { Chess } from 'chess.js';
 
 export const useChessLogic = (mode) => {
-    const game = useMemo(() => new Chess(), []); // ensures the engine stays locked in place
+    const game = useMemo(() => new Chess(), []); //
     const [fen, setFen] = useState(game.fen());
     const [timeLeft, setTimeLeft] = useState(30);
     const timerRef = useRef(null);
 
-    // 🕒 30s timer: automatically swipes the turn
     const startTimer = useCallback(() => {
         if (timerRef.current) clearInterval(timerRef.current);
         setTimeLeft(30);
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => {
                 if (prev <= 1) {
-                    const moves = game.moves();
-                    if (moves.length > 0) {
-                        game.move(moves[Math.floor(Math.random() * moves.length)]);
-                        setFen(game.fen());
-                    }
+                    handleTimeout(); // Swipes turn automatically
                     return 30;
                 }
                 return prev - 1;
@@ -26,21 +21,29 @@ export const useChessLogic = (mode) => {
         }, 1000);
     }, [game]);
 
-    // ♟️ movement validation: fixes pieces in boxes instantly
+    const handleTimeout = () => {
+        const moves = game.moves();
+        if (moves.length > 0) {
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            game.move(move);
+            setFen(game.fen());
+        }
+    };
+
+    // ♟️ Position Fixing: Locks soldier in the new box instantly
     const onDrop = (source, target) => {
         try {
             const move = game.move({ from: source, to: target, promotion: 'q' });
-            if (move === null) return false;
-
-            setFen(game.fen()); // forces the soldier to snap into the box
+            if (move === null) return false; // Snaps back if illegal move
+            setFen(game.fen()); // LOCK POSITION
             startTimer();
             return true;
         } catch (e) { return false; }
     };
 
-    // 🤖 pro ai: reacts properly during its turn
+    // 🤖 AI Turn Logic: Reacts and plays during its turn
     useEffect(() => {
-        if (mode === 'ai' && game.turn() === 'b') {
+        if (mode === 'ai' && game.turn() === 'b' && !game.isGameOver()) {
             const aiDelay = setTimeout(() => {
                 const moves = game.moves();
                 if (moves.length > 0) {
@@ -51,7 +54,12 @@ export const useChessLogic = (mode) => {
             }, 1200);
             return () => clearTimeout(aiDelay);
         }
-    }, [fen, mode, startTimer, game]);
+    }, [fen, mode, game, startTimer]);
+
+    useEffect(() => {
+        startTimer();
+        return () => clearInterval(timerRef.current);
+    }, [fen, startTimer]);
 
     return { fen, onDrop, timeLeft, turn: game.turn() };
 };

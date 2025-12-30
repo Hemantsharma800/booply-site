@@ -1,15 +1,16 @@
 .chess-table-env {
-    background: radial-gradient(circle, #0a0a2a, #050508);
+    background: #050508;
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
+/* Fixes the oversized board layout issue */
 .neon-board-container {
     width: 85vmin;
-    /* prevents oversized pieces */
     max-width: 580px;
     border: 5px solid #00d2ff;
     box-shadow: 0 0 40px rgba(0, 210, 255, 0.5);
@@ -18,16 +19,16 @@
     border-radius: 8px;
 }
 
-.timer-ring {
+.timer {
     font-size: 2rem;
     color: #00d2ff;
-    border: 3px solid #00d2ff;
+    text-shadow: 0 0 10px #00d2ff;
+    border: 2px solid #00d2ff;
     border-radius: 50%;
     width: 85px;
     height: 85px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 25px;
-    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+    margin-bottom: 20px;
 }
